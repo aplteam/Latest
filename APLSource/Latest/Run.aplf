@@ -6,27 +6,24 @@
  A←##.APLTreeUtils ⋄ F←##.FilesAndDirs
  pathFlag←0
  :If 0=≢path
-     :If F.IsDir path←F.PWD,'\APLSource\'
-         acreFlag←1
+     :If F.IsDir path←F.PWD,F.CurrentSep,'APLSource',F.CurrentSep
+         pathFlag←acreFlag←1
      :EndIf
  :EndIf
- :If (,'#')≢,path
-     :If '#'=1⍴path
-         :If 0<+/bool←path{⍵[;1]≡¨⊂⍺}projects←⎕SE.acre.Projects ⍬
-             path←2⊃projects[bool⍳1;]
-             acreFlag←1
-         :EndIf
-     :Else
-         :If F.IsDir path,'/APLSource'
-             pathFlag←1
-             acreFlag←1
+ :If 0=acreFlag
+     :If (,'#')≢,path
+         :If '#'=1⍴path
+             :If 0<+/bool←path{⍵[;1]≡¨⊂⍺}projects←⎕SE.acre.Projects ⍬
+                 path←2⊃projects[bool⍳1;]
+                 acreFlag←1
+             :EndIf
          :Else
              path←'#'
          :EndIf
      :EndIf
  :EndIf
  :If acreFlag
-     path{⍵≡(-⍴⍵)↑⍺:⍺ ⋄ ⍺,'\',⍵}←'APLSource\'
+     path{⍵≡(-⍴⍵)↑⍺:⍺ ⋄ ⍺,F.CurrentSep,⍵}←'APLSource',F.CurrentSep
      path←'expand'F.NormalizePath path
  :EndIf
  :If acreFlag
@@ -54,13 +51,10 @@
          :EndIf
          :If 0=+/≢¨r[;0]
              r←0 2⍴''
-             ⎕←'Nothing found - not an open acre project?'
          :Else
              r←r[⍋⊃r[;1];]
          :EndIf
-         :If 0=≢r
-             ⎕←'Not an open acre project, therefore filenames cannot be converted to their APL names'
-         :Else
+         :If 0<≢r
              :If pathFlag
                  r[;0]←(≢path)↓¨r[;0]
              :Else

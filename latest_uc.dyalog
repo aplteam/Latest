@@ -73,8 +73,8 @@
           r,←⊂'       Currently opened acre project.'
           r,←⊂'       Instead you can also specify the top namespace of any open acre project.'
           r,←⊂'-stats If this flag is specified you get a matrix with two columns, the first'
-          r,←⊂'        one with all unique dates and the second one with the number of changes'
-          r,←⊂'        on that date. The number of rows is defined by the number of unique dates.'
+          r,←⊂'       one with all unique dates and the second one with the number of changes'
+          r,←⊂'       on that date. The number of rows is defined by the number of unique dates.'
       :EndSelect
     ∇
 
