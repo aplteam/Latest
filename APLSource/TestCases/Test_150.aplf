@@ -9,13 +9,14 @@
 
  R←T._Failed
 
- data←##.Latest.Run'' '' 0 1 ⍬
+ data←##.Latest.Run'' '' 0 ⍬
  →T.PassesIf∧/'#.Latest.'{⍺∘≡¨(≢⍺)↑¨⍵[;0]}data
 
  projectPath←↑(⎕SE.acre.Projects'')[0;1]
- data←##.Latest.Run''projectPath 0 1 ⍬
+ data←##.Latest.Run projectPath'' 0 ⍬
  →T.PassesIf 0<≢data
- →T.PassesIf∧/'Latest' 'TestCases'∊∪{⍵↑⍨⌊/⍵⍳'/\'}¨data[;0]
+ expected←'#.Latest.Latest' '#.Latest' '#.Latest.TestCases'
+ →T.PassesIf∧/expected∊∪{⍵↓⍨-1+'.'⍳⍨⌽⍵}¨data[;0]
 
  R←T._OK
 ⍝Done

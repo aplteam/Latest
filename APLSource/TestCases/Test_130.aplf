@@ -3,11 +3,11 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  R←T._Failed
 
- data←##.Latest.Run'' '#.TEMP' 1 0 ⍬
+ data←##.Latest.Run'#.TEMP' '' 1 ⍬
  →T.PassesIf 4=≢data
  →T.PassesIf 7=+/data[;1]
 
- data←##.Latest.Run'' '#' 1 0 ⍬
+ data←##.Latest.Run'#' '' 1 ⍬
  →T.PassesIf 4<≢data
  →T.PassesIf 7<+/data[;1]
 

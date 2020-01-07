@@ -9,11 +9,11 @@
 
  R←T._Failed
 
- data←##.Latest.Run'' '' 1 1 ⍬              ⍝ The default project
+ data←##.Latest.Run'' '' 1 ⍬              ⍝ The default project
  →T.PassesIf 0<≢data
 
  projectPath←↑(⎕SE.acre.Projects'')[0;1]    ⍝ A specific project
- data←##.Latest.Run''projectPath 1 1 ⍬
+ data←##.Latest.Run projectPath'' 1 ⍬
  →T.PassesIf 0<≢data
  →T.PassesIf 0<+/data[;1]
 

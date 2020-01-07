@@ -1,25 +1,23 @@
- r←Run(name path stats acreFlag noOf);acreFlag;F;A;bool;projects;buff;pathFlag
+ r←Run(path match stats noOf);acreFlag;F;A;bool;projects;buff;pathFlag
 ⍝ Handles all three cases:
 ⍝ * Investigate the workspace (simple namespace or #)
 ⍝ * Investigate (currently opened) acre projects
 ⍝ * Investigate an acre project that is not currently opened
  A←##.APLTreeUtils ⋄ F←##.FilesAndDirs
- pathFlag←0
+ pathFlag←acreFlag←0
  :If 0=≢path
      :If F.IsDir path←F.PWD,F.CurrentSep,'APLSource',F.CurrentSep
          pathFlag←acreFlag←1
      :EndIf
  :EndIf
- :If 0=acreFlag
-     :If (,'#')≢,path
-         :If '#'=1⍴path
-             :If 0<+/bool←path{⍵[;1]≡¨⊂⍺}projects←⎕SE.acre.Projects ⍬
-                 path←2⊃projects[bool⍳1;]
-                 acreFlag←1
-             :EndIf
-         :Else
-             path←'#'
+ :If (,'#')≢,path
+     :If (1⍴path)∊'#⎕'
+         :If 0<+/bool←path{⍵[;1]≡¨⊂⍺}projects←⎕SE.acre.Projects ⍬
+             path←2⊃projects[bool⍳1;]
+             acreFlag←1
          :EndIf
+     :Else
+         acreFlag←1
      :EndIf
  :EndIf
  :If acreFlag
@@ -34,6 +32,7 @@
      :If stats
          buff←10↑¨r[;1]
          r←⊖(∪buff),[0.5]buff{+/⍵}⌸(≢r)⍴1
+         r←r[⍋r[;0];]
      :Else
       ⍝ `noOf` is ...
       ⍝ ⍬ in case no argument was provided
@@ -56,12 +55,13 @@
          :EndIf
          :If 0<≢r
              :If pathFlag
+             :AndIf ~(⊂path)∊(F.NormalizePath{⍵[;1],¨⊂'APLSource\'}⎕SE.acre.Projects'')
                  r[;0]←(≢path)↓¨r[;0]
              :Else
                  r[;0]←⎕SE.acre.Itemname r[;0]
              :EndIf
-             :If 0≡noOf
-                 r←(name{⍺∘≡¨(≢⍺)↑¨⍵}r[;0])⌿r
+             :If 0<≢match
+                 r←(match{⍺∘≡¨(≢⍺)↑¨⍵}r[;0])⌿r
              :EndIf
          :EndIf
      :EndIf
@@ -77,9 +77,9 @@
      :EndIf
      :If stats
          buff←10↑¨r[;1]
-         r←⊖(∪buff),[0.5]buff{+/⍵}⌸(≢r)⍴1
-     :ElseIf 0<≢name
-         r←name{⍵⌿⍨⍺∘≡¨(≢⍺)↑¨{⍵↑⍨-(⌽⍵)⍳'.'}¨⍵[;0]}r
+         r←(∪buff),[0.5]buff{+/⍵}⌸(≢r)⍴1
+     :ElseIf 0<≢match
+         r←match{⍵⌿⍨⍺∘≡¨(≢⍺)↑¨{⍵↑⍨-(⌽⍵)⍳'.'}¨⍵[;0]}r
      :EndIf
  :Else
      'Not Found'⎕SIGNAL 6
