@@ -78,6 +78,8 @@
      :If stats
          buff←10↑¨r[;1]
          r←⊖(∪buff),[0.5]buff{+/⍵}⌸(≢r)⍴1
+     :ElseIf 0<≢name
+         r←name{⍵⌿⍨⍺∘≡¨(≢⍺)↑¨{⍵↑⍨-(⌽⍵)⍳'.'}¨⍵[;0]}r
      :EndIf
  :Else
      'Not Found'⎕SIGNAL 6
