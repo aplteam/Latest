@@ -1,0 +1,90 @@
+ r←Run(name path stats acreFlag noOf);acreFlag;F;A;bool;projects;buff;pathFlag
+⍝ Handles all three cases:
+⍝ * Investigate the workspace (simple namespace or #)
+⍝ * Investigate (currently opened) acre projects
+⍝ * Investigate an acre project that is not currently opened
+ A←##.APLTreeUtils ⋄ F←##.FilesAndDirs
+ pathFlag←0
+ :If 0=≢path
+     :If F.IsDir path←F.PWD,'\APLSource\'
+         acreFlag←1
+     :EndIf
+ :EndIf
+ :If (,'#')≢,path
+     :If '#'=1⍴path
+         :If 0<+/bool←path{⍵[;1]≡¨⊂⍺}projects←⎕SE.acre.Projects ⍬
+             path←2⊃projects[bool⍳1;]
+             acreFlag←1
+         :EndIf
+     :Else
+         :If F.IsDir path,'/APLSource'
+             pathFlag←1
+             acreFlag←1
+         :Else
+             path←'#'
+         :EndIf
+     :EndIf
+ :EndIf
+ :If acreFlag
+     path{⍵≡(-⍴⍵)↑⍺:⍺ ⋄ ⍺,'\',⍵}←'APLSource\'
+     path←'expand'F.NormalizePath path
+ :EndIf
+ :If acreFlag
+     r←⍉⊃('recursive' 1)('type'(0 1 3))F.Dir path
+     r←(r[;1]=2)⌿r                 ⍝ Only regular files
+     r←r[⍒⊃r[;1];0 2]
+     r[;1]←↓A.FormatDateTime⊃r[;1]
+     :If stats
+         buff←10↑¨r[;1]
+         r←⊖(∪buff),[0.5]buff{+/⍵}⌸(≢r)⍴1
+     :Else
+      ⍝ `noOf` is ...
+      ⍝ ⍬ in case no argument was provided
+      ⍝ 0 in case text was provided as argument
+      ⍝ An integer otherwise.
+         :If ⍬≡noOf
+             r←((10↑¨r[;1])≡¨⊂10↑1⊃r[0;])⌿r
+         :ElseIf 0≢noOf
+             :If ¯1=×noOf
+                 buff←10↑¨r[;1]  ⍝ YYYY-MM-DD
+                 r←(buff∊noOf{(⍺⌊≢⍵)↑⍵}∪⌽buff)⌿r
+             :Else
+                 r←(noOf⌊≢r)↑r
+             :EndIf
+         :EndIf
+         :If 0=+/≢¨r[;0]
+             r←0 2⍴''
+             ⎕←'Nothing found - not an open acre project?'
+         :Else
+             r←r[⍋⊃r[;1];]
+         :EndIf
+         :If 0=≢r
+             ⎕←'Not an open acre project, therefore filenames cannot be converted to their APL names'
+         :Else
+             :If pathFlag
+                 r[;0]←(≢path)↓¨r[;0]
+             :Else
+                 r[;0]←⎕SE.acre.Itemname r[;0]
+             :EndIf
+             :If 0≡noOf
+                 r←(name{⍺∘≡¨(≢⍺)↑¨⍵}r[;0])⌿r
+             :EndIf
+         :EndIf
+     :EndIf
+ :ElseIf ((,'#')≡,path)∨9=⎕NC path
+     :If 0=≢noOf
+     :AndIf 0=stats
+         noOf←¯1
+     :EndIf
+     :If (,'#')≡,path
+         r←List noOf 1
+     :Else
+         r←path List noOf 1
+     :EndIf
+     :If stats
+         buff←10↑¨r[;1]
+         r←⊖(∪buff),[0.5]buff{+/⍵}⌸(≢r)⍴1
+     :EndIf
+ :Else
+     'Not Found'⎕SIGNAL 6
+ :EndIf

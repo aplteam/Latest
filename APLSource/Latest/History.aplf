@@ -1,0 +1,4 @@
+ History
+⍝ * 3.0.0 from 2019-01-06
+⍝   * Can now handle accre projects as well as ordinary namespaces and
+⍝     even whole workspaces.

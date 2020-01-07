@@ -1,0 +1,28 @@
+ Initial;buff
+ 'TEMP'#.⎕NS''
+ #.TEMP.⎕FX'r←Hello1' 'r←''You'''
+ #.TEMP.⎕FX'r←Hello2' 'r←''Earth'''
+ #.TEMP.⎕FX'r←Hello3' 'r←''Solar system'''
+ 'Sub1'#.TEMP.⎕NS''
+ #.TEMP.Sub1.⎕FX'r←Hello4' 'r←''Milky Way'''
+ #.TEMP.Sub1.⎕FX'r←Hello5' 'r←''Local Galaxy Group'''
+ 'Sub2'#.TEMP.⎕NS''
+ #.TEMP.Sub2.⎕FX'r←Hello6' 'r←''Universe'''
+ #.TEMP.Sub2.⎕FX'r←Hello7' 'r←''Multiverse'''
+ buff←⎕AT'#.TEMP.Hello1'
+ ⍝ Far into the future in order to avoid clashes
+ buff[1]←⊂3000 1 1 12 0 0 0
+ buff(1159⌶)'#.TEMP.Hello1'
+ buff[1]←⊂3000 1 2 13 0 0 0
+ buff(1159⌶)'#.TEMP.Hello2'
+ buff[1]←⊂3000 1 3 14 0 0 0
+ buff(1159⌶)'#.TEMP.Hello3'
+ buff[1]←⊂3000 1 1 12 10 0 0
+ buff(1159⌶)'#.TEMP.Sub1.Hello4'
+ buff[1]←⊂3000 1 1 12 20 0 0
+ buff(1159⌶)'#.TEMP.Sub1.Hello5'
+ buff[1]←⊂3000 1 2 12 0 0 0
+ buff(1159⌶)'#.TEMP.Sub2.Hello6'
+ buff[1]←⊂3000 2 1 17 0 0 0
+ buff(1159⌶)'#.TEMP.Sub2.Hello7'
+⍝Done

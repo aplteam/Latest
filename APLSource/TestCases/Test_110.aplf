@@ -1,0 +1,32 @@
+ R←Test_110(stopFlag batchFlag);⎕TRAP;data;expected
+⍝ Specify a namespace path
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ R←T._Failed
+
+ data←##.Latest.Run'' '#.TEMP' 0 0 ⍬
+ →T.PassesIf 1=≢data
+ →T.PassesIf'3000-02-01 17:00:00'≡1⊃data[0;]
+
+ data←##.Latest.Run'' '#.TEMP' 0 0 ¯2
+ →T.PassesIf 2=≢data
+ expected←'#.TEMP.Hello3' '#.TEMP.Sub2.Hello7'
+ →T.PassesIf expected≡data[;0]
+ expected←'3000-01-03 14:00:00' '3000-02-01 17:00:00'
+ →T.PassesIf expected≡data[;1]
+
+ data←##.Latest.Run'' '#.TEMP' 0 0 ¯999             ⍝ All
+ →T.PassesIf(≢data)=⌈/{↑↑(//)⎕VFI ¯1↑⍵}¨data[;0]    ⍝ Works because the functions are numbered
+
+ data←##.Latest.Run'' '#.TEMP' 0 0 1
+ →T.PassesIf 1=≢data
+ →T.PassesIf'#.TEMP.Sub2.Hello7'≡0⊃data[0;]
+
+ data←##.Latest.Run'' '#.TEMP' 0 0 3
+ →T.PassesIf 3=≢data
+ expected←'#.TEMP.Hello2' '#.TEMP.Hello3' '#.TEMP.Sub2.Hello7'
+ →T.PassesIf expected≡data[;0]
+ expected←'3000-01-02 13:00:00' '3000-01-03 14:00:00' '3000-02-01 17:00:00'
+ →T.PassesIf expected≡data[;1]
+
+ R←T._OK
+⍝Done
