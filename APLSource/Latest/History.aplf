@@ -1,4 +1,6 @@
  History
+⍝ * 3.0.1 from 2019-01-07
+⍝   * Bug fix: result was not ordered correctly under certain circumstances.
 ⍝ * 3.0.0 from 2019-01-06
 ⍝   * Can now handle accre projects as well as ordinary namespaces and
 ⍝     even whole workspaces.

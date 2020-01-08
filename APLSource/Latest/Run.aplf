@@ -27,8 +27,8 @@
  :If acreFlag
      r←⍉⊃('recursive' 1)('type'(0 1 3))F.Dir path
      r←(r[;1]=2)⌿r                 ⍝ Only regular files
-     r←r[⍒⊃r[;1];0 2]
-     r[;1]←↓A.FormatDateTime⊃r[;1]
+     r[;2]←↓A.FormatDateTime⊃r[;2]
+     r←r[⍋⊃r[;2];0 2]
      :If stats
          buff←10↑¨r[;1]
          r←⊖(∪buff),[0.5]buff{+/⍵}⌸(≢r)⍴1
@@ -50,8 +50,6 @@
          :EndIf
          :If 0=+/≢¨r[;0]
              r←0 2⍴''
-         :Else
-             r←r[⍋⊃r[;1];]
          :EndIf
          :If 0<≢r
              :If pathFlag

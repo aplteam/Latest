@@ -1,0 +1,2 @@
+ r←r path
+ r←Latest.Run path'' 0 ⍬
