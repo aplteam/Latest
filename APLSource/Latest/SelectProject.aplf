@@ -1,0 +1,18 @@
+ path←SelectProject projects;flag;answer;ind
+ flag←0
+ path←''
+ :Repeat
+     ⎕←'There is more than one acre project open:'
+     ⎕←{⊃(⍕¨1+⍳≢⍵),¨'.',¨↓⍵}projects
+     ⎕←'   Which project? (q=quit)'
+     answer←⍞
+     →((answer~' ')∊'qQ')/0
+     ind←##.APLTreeUtils.ToNum answer
+     :If 1=≢ind
+         :If ind∊1+⍳≢projects
+             path←1⊃projects[↑ind-1;]
+             flag←1
+         :EndIf
+     :EndIf
+ :Until flag
+⍝Done

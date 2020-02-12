@@ -1,0 +1,12 @@
+* 3.1.0 from 2020-02-10
+  * Option -project= added to the user command/
+* 3.0.2 from 2019-01-19
+  * Default sequence was buggy.
+* 3.0.1 from 2019-01-07
+  * Bug fixes:
+    * Result was not ordered correctly under certain circumstances.
+    * If no acre project was open and the current directory did not have a sub-folder
+      `APLSource` an error was signalled. Should return an empty result instead.
+* 3.0.0 from 2019-01-06
+  * Can now handle accre projects as well as ordinary namespaces and
+    even whole workspaces.

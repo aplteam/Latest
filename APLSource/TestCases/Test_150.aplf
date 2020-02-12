@@ -1,4 +1,4 @@
- R←Test_150(stopFlag batchFlag);⎕TRAP;data;expected;projectPath
+ R←Test_150(stopFlag batchFlag);⎕TRAP;data;projectPath;expected
 ⍝ List for an acre project
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
@@ -12,11 +12,11 @@
  data←##.Latest.Run'' '' 0 ⍬
  →T.PassesIf∧/'#.Latest.'{⍺∘≡¨(≢⍺)↑¨⍵[;0]}data
 
- projectPath←↑(⎕SE.acre.Projects'')[0;1]
+ projectPath←(↑(⎕SE.acre.Projects'')[0;1]),'APLSource'
  data←##.Latest.Run projectPath'' 0 ⍬
  →T.PassesIf 0<≢data
- expected←'#.Latest.Latest' '#.Latest' '#.Latest.TestCases'
- →T.PassesIf∧/expected∊∪{⍵↓⍨-1+'.'⍳⍨⌽⍵}¨data[;0]
+ expected←'Latest\Version.aplf' 'TestCases\Test_150.aplf' 'Latest\Run.aplf'
+ →T.PassesIf∧/expected∊data[;0]
 
  R←T._OK
 ⍝Done

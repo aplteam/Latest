@@ -1,7 +1,26 @@
-﻿:Class  Latest
-⍝ User Command script for "Latest", a much more powerful and flexible replacement
-⍝ for Dyalog user command ]latest
-⍝ Version 3.0.0 from 2020-01-06
+﻿:Class  Latest  ⍝V3.1.0
+⍝ ## Overview
+⍝ ]Latest is designed to list the latest changes.\\
+⍝ * It can act on objects in the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
+⍝ * It can act on a specific folders like C:\MyProjects\ThisProject\APLSource
+⍝ * It can act on opened acre projects (no argument required at all)
+⍝ If no argument is specified **and** acre does not live in `⎕SE` (read: you are not an acre user), then it falls back to the
+⍝ current directory.\\
+⍝ By default the user command reports all objects or files changed lately (read: last day with any changes).\\
+⍝ Note that this limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do
+⍝ not own a timestamp that could be used. When acting on the file system however, this information is available.\\
+⍝ ## The argument(s)
+⍝ When an argument is specified it must be one of:
+⍝ * An integer
+⍝   * A positive one defines the number of objects/files to be listed
+⍝   * A negative one defines the number of days with any changes
+⍝ * A character vector. If it starts with `#` or `⎕` the argument is treated as a namespace path\\
+⍝   Otherwise it is treated as a path to an acre project
+⍝ * A vector of length two with an integer and a character vector in no particular order, see above.\\
+⍝ In case no argument or only an integer is specified, `]latest` will establish which acre projects are currently open. If it is
+⍝ just one it will act on it. If there are multiple acre projects open, then the user will be prompted.
+
+⍝ 2020-02-11 ⋄ Kai: multiple open projects are handled now & acre is not required anymore
 
     ∇ r←List;⎕IO;⎕ML ⍝ this function usually returns 1 or more namespaces (here only 1)
       :Access Shared Public
@@ -53,7 +72,7 @@
       r←ref.Latest.Run(path match stats noOf)
     ∇
 
-    ∇ r←l Help Cmd;⎕IO;⎕ML;sep
+    ∇ r←l Help Cmd;⎕IO;⎕ML;sep;buff;path;body
       ⎕IO←⎕ML←1
       sep←⎕UCS 13
       :Access Shared Public
@@ -61,34 +80,37 @@
       :Select l
       :Case 0
           r,←⊂List.Desc
-      :Else
+          r,←⊂'Lists the latest changes either in the workspace or a specific folder.'
+      :Case 1
           r←''
-          r,←⊂'Returns by default a list for all APL objects with timestamps in the'
-          r,←⊂'current directory''s APLSource\ folder or the current workspace.'
-          r,←⊂'This user command requires acre in ⎕SE.'
+          r,←⊂'May be called with:'
+          r,←⊂'* no argument at all'
+          r,←⊂'* an integer'
+          r,←⊂'* a character vector'
+          r,←⊂'* both an integer and a character vector'
           r,←⊂''
-          r,←⊂'By default (read: the user specifies no argument) the user command'
-          r,←⊂'reports all files changed lately (read: last day with changes).'
-          r,←⊂'When an argument is specified it must be one of:'
-          r,←⊂'* An integer. If positive this is treated as the number of items to be listed.'
-          r,←⊂'  If it is negative it defines the number of days with changes.'
-          r,←⊂'* A character vector. If it starts with a # it is treated as a namespace name.'
-          r,←⊂'  If it does not start with a # it is treated as a path to an acre project.'
-          r,←⊂'* A vector of length two with an integer and a character vector in no particular'
-          r,←⊂'  order; see above.'
-          r,←⊂''
-          r,←⊂'-match= The content is matched against the last part of the name.'
-          r,←⊂'        For example, if you want to get a list with all APL objects  starting'
-          r,←⊂'        their names with "Test_":'
-          r,←⊂'        ]latest Test_'
-          r,←⊂'        Note that you cannot specify an additional level (dot). That means that'
-          r,←⊂'        only the last level is used for the comparison. In other words the above'
-          r,←⊂'        example matches C:/Foo/Test_ but not C:/Test_/Foo'
-          r,←⊂'-stats  If this flag is specified you get a matrix with two columns, the first'
-          r,←⊂'        one with all unique dates and the second one with the number of changes'
-          r,←⊂'        on that date. The number of rows is defined by the number of unique dates.'
-          r,←⊂'        If -stats is specified -match will be ignored as well as any integer'
-          r,←⊂'        provided as argument.'
+          r,←⊂'Options:'
+          r,←⊂'-match=  The content is matched against the last part of the name.'
+          r,←⊂'         For example, if you want to get a list with all APL objects starting'
+          r,←⊂'         their names with "Test_":'
+          r,←⊂'         ]latest Test_'
+          r,←⊂'         Note that you cannot specify an additional level (dot). That means that'
+          r,←⊂'         only the last level is used for the comparison. In other words the above'
+          r,←⊂'         example matches C:/Foo/Test_ but not C:/Test_/Foo'
+          r,←⊂'-stats   If this flag is specified you get a matrix with two columns, the first'
+          r,←⊂'         one with all unique dates and the second one with the number of changes'
+          r,←⊂'         on that date. The number of rows is defined by the number of unique dates.'
+          r,←⊂'         If -stats is specified -match will be ignored as well as any integer'
+          r,←⊂'         provided as argument.'
+      :Else
+          buff←⎕SE.UCMD'?Latest'
+          path←{⍵↑⍨¯1+⍵⍳⎕UCS 13}'Source:'{⍵↓⍨(≢⍺)+1⍳⍨⍺⍷⍵}buff
+          ⎕SE.⎕SHADOW'TEMP'
+          'TEMP'⎕SE.⎕NS''
+          body←1⊃⎕NGET path
+          body←{1↓¨((⎕UCS 10)=⍵)⊂⍵}(⎕UCS 10),body
+          ⎕SE.TEMP.⎕FIX body
+          ⎕SE.UCMD 'ADOC ⎕SE.TEMP.Latest -ref=0'
       :EndSelect
     ∇
 
