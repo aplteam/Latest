@@ -9,14 +9,14 @@
 
  R←T._Failed
 
- data←##.Latest.Run'' '' 0 ⍬
+ data←##.Latest.Run'' 1 0 0 ⍬
  →T.PassesIf∧/'#.Latest.'{⍺∘≡¨(≢⍺)↑¨⍵[;0]}data
 
  projectPath←(↑(⎕SE.acre.Projects'')[0;1]),'APLSource'
- data←##.Latest.Run projectPath'' 0 ⍬
+ data←##.Latest.Run projectPath 1 0 0 ⍬
  →T.PassesIf 0<≢data
- expected←'Latest\Version.aplf' 'TestCases\Test_150.aplf' 'Latest\Run.aplf'
- →T.PassesIf∧/expected∊data[;0]
+ expected←'Latest\Version.aplf' 'Latest\Run.aplf'
+ →T.PassesIf∧/expected∊{⍵/⍨0<≢¨0⊃¨⎕NPARTS¨⍵}data[;0]
 
  R←T._OK
 ⍝Done

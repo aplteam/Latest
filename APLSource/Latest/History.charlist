@@ -1,12 +1,12 @@
-* 3.1.0 from 2020-02-10
-  * Option -project= added to the user command/
-* 3.0.2 from 2019-01-19
-  * Default sequence was buggy.
-* 3.0.1 from 2019-01-07
-  * Bug fixes:
-    * Result was not ordered correctly under certain circumstances.
-    * If no acre project was open and the current directory did not have a sub-folder
-      `APLSource` an error was signalled. Should return an empty result instead.
-* 3.0.0 from 2019-01-06
-  * Can now handle accre projects as well as ordinary namespaces and
-    even whole workspaces.
+* 4.0.0 from 2020-02-12
+  * The -match option got removed.
+  * Any character vector passed as argument is now treated either as a namespace path (when it starts with
+    either a `#` character or a `⎕` character), otherwise it is treated as a path to be investigated.
+  * ]Latest is now capable of dealing with multiple open acre projects: in such a case the user is prompted.
+  * When there is no open acre project, acre is not required anymore for ]Latest to work.
+  * When there is no open acre project but the current directory points to an acre-managed project, you
+    might consider specifying `APLSource` as argument now.
+  * The option -all was added. By default only APL source file are considered by ]Latest. Such files are
+    identified by their extension. For which extensions are supported see
+    https://github.com/the-carlisle-group/Acre-Desktop/wiki/Item-types-and-File-types
+    If you want all files to be considered then you need to specify the -all flag.

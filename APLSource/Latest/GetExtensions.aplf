@@ -1,0 +1,2 @@
+ r←GetExtensions
+ r←'.apla' '.aplf' '.aplo' '.apln' '.aplc' '.apli' '.charlist' '.charmat' '.charstring'

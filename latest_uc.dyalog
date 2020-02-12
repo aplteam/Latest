@@ -1,43 +1,23 @@
-﻿:Class  Latest  ⍝V3.1.0
-⍝ ## Overview
-⍝ ]Latest is designed to list the latest changes.\\
-⍝ * It can act on objects in the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
-⍝ * It can act on a specific folders like C:\MyProjects\ThisProject\APLSource
-⍝ * It can act on opened acre projects (no argument required at all)
-⍝ If no argument is specified **and** acre does not live in `⎕SE` (read: you are not an acre user), then it falls back to the
-⍝ current directory.\\
-⍝ By default the user command reports all objects or files changed lately (read: last day with any changes).\\
-⍝ Note that this limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do
-⍝ not own a timestamp that could be used. When acting on the file system however, this information is available.\\
-⍝ ## The argument(s)
-⍝ When an argument is specified it must be one of:
-⍝ * An integer
-⍝   * A positive one defines the number of objects/files to be listed
-⍝   * A negative one defines the number of days with any changes
-⍝ * A character vector. If it starts with `#` or `⎕` the argument is treated as a namespace path\\
-⍝   Otherwise it is treated as a path to an acre project
-⍝ * A vector of length two with an integer and a character vector in no particular order, see above.\\
-⍝ In case no argument or only an integer is specified, `]latest` will establish which acre projects are currently open. If it is
-⍝ just one it will act on it. If there are multiple acre projects open, then the user will be prompted.
-
-⍝ 2020-02-11 ⋄ Kai: multiple open projects are handled now & acre is not required anymore
+﻿:Class  Latest  ⍝V4.0.0
+⍝ 2020 02 12 ⋄ Kai: Major changes to both arguments and options/flags; see detailed help (???) for more information
 
     ∇ r←List;⎕IO;⎕ML ⍝ this function usually returns 1 or more namespaces (here only 1)
       :Access Shared Public
       ⎕IO←⎕ML←1
       r←⎕NS''
       r.Name←'Latest'
-      r.Desc←'Prints some/all objects found in APLSource\ or the workspace sorted by "Changed" date'
+      r.Desc←'Prints some/all objects found in the workspace or files in a particular folder sorted by "Changed" date'
       r.Group←'FN'
      ⍝ Parsing rules for each:
-      r.Parse←' -match= -stats'
+      r.Parse←' -recursive∊0 1 -stats -all'
     ∇
 
-    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;match;path
+    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;all
       :Access Shared Public
       ⎕IO←⎕ML←1
-      match←''Args.Switch'match'    ⍝ default is empty
-      stats←Args.Switch'stats'      ⍝ default is empty
+      recursive←1 Args.Switch'recursive'    ⍝ default is 1
+      stats←Args.Switch'stats'              ⍝ default is empty
+      all←0 Args.Switch'all'                ⍝ default is 0
       :If 2=≢Args.Arguments
           'Invalid arguments'⎕SIGNAL 11/⍨~(⊂⊃∘⊃∘⎕VFI¨Args.Arguments)∊(0 1)(1 0)
           (flag value)←⎕VFI 1⊃Args.Arguments
@@ -68,11 +48,11 @@
           noOf←⍬
           path←''
       :EndIf
-      ref←CopyCode
-      r←ref.Latest.Run(path match stats noOf)
+      ref←CopyCode ⎕NS''
+      r←ref.Latest.Run(path recursive stats all noOf)
     ∇
 
-    ∇ r←l Help Cmd;⎕IO;⎕ML;sep;buff;path;body
+    ∇ r←l Help Cmd;⎕IO;⎕ML;sep;ref
       ⎕IO←⎕ML←1
       sep←⎕UCS 13
       :Access Shared Public
@@ -90,39 +70,25 @@
           r,←⊂'* both an integer and a character vector'
           r,←⊂''
           r,←⊂'Options:'
-          r,←⊂'-match=  The content is matched against the last part of the name.'
-          r,←⊂'         For example, if you want to get a list with all APL objects starting'
-          r,←⊂'         their names with "Test_":'
-          r,←⊂'         ]latest Test_'
-          r,←⊂'         Note that you cannot specify an additional level (dot). That means that'
-          r,←⊂'         only the last level is used for the comparison. In other words the above'
-          r,←⊂'         example matches C:/Foo/Test_ but not C:/Test_/Foo'
-          r,←⊂'-stats   If this flag is specified you get a matrix with two columns, the first'
-          r,←⊂'         one with all unique dates and the second one with the number of changes'
-          r,←⊂'         on that date. The number of rows is defined by the number of unique dates.'
-          r,←⊂'         If -stats is specified -match will be ignored as well as any integer'
-          r,←⊂'         provided as argument.'
+          r,←⊂'-recursive=0|1  Defaults to 1, meaning that the path is searched recursively'
+          r,←⊂'-all            By default only APL source files are considered'
+          r,←⊂'-stats          If this flag is specified you get a matrix with change statistics'
       :Else
-          buff←⎕SE.UCMD'?Latest'
-          path←{⍵↑⍨¯1+⍵⍳⎕UCS 13}'Source:'{⍵↓⍨(≢⍺)+1⍳⍨⍺⍷⍵}buff
           ⎕SE.⎕SHADOW'TEMP'
-          'TEMP'⎕SE.⎕NS''
-          body←1⊃⎕NGET path
-          body←{1↓¨((⎕UCS 10)=⍵)⊂⍵}(⎕UCS 10),body
-          ⎕SE.TEMP.⎕FIX body
-          ⎕SE.UCMD 'ADOC ⎕SE.TEMP.Latest -ref=0'
+          ref←⍎'TEMP'⎕SE.⎕NS''
+          CopyCode ref
+          {}⎕SE.UCMD'ADOC ⎕SE.TEMP.Latest -ref=0 -toc=0'
       :EndSelect
     ∇
 
-    ∇ ref←CopyCode;regKey;paths;success;thisPath;filename;regData
+    ∇ {ref}←CopyCode ref;regKey;paths;success;thisPath;filename;regData
       regKey←GetRegKey,'\SALT\CommandFolder'
       regData←ReadRegKey regKey
       ((regData∊'∘°')/regData)←';'
       paths←1↓¨{⍺←';' ⋄ (⍺=⍵)⊂⍵}regData
       success←0
       :For thisPath :In paths
-          filename←thisPath,'\Latest.DWS'
-          ref←⎕NS''
+          filename←thisPath,'/Latest/Latest.DWS'
           :Trap 0
               ref.⎕CY filename
               :If 0<1↑⍴ref.⎕NL⍳16
