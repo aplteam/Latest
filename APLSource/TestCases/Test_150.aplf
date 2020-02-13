@@ -3,6 +3,7 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
  :If 0=≢⎕SE.acre.Projects''
+ :OrIf 0=##.⎕NC'AcreConfig'
      →0,R←T._NotApplicable
  :EndIf
  ⍝ We assume here that the open project is "Latest"
@@ -12,8 +13,8 @@
  data←##.Latest.Run'' 1 0 0 ⍬
  →T.PassesIf∧/'#.Latest.'{⍺∘≡¨(≢⍺)↑¨⍵[;0]}data
 
- projectPath←(↑(⎕SE.acre.Projects'')[0;1]),'APLSource'
- data←##.Latest.Run projectPath 1 0 0 ⍬
+ projectPath←##.AcreConfig.ProjectFolder,'APLSource'
+ data←##.Latest.Run projectPath 1 0 0 999
  →T.PassesIf 0<≢data
  expected←'Latest\Version.aplf' 'Latest\Run.aplf'
  →T.PassesIf∧/expected∊{⍵/⍨0<≢¨0⊃¨⎕NPARTS¨⍵}data[;0]

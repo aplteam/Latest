@@ -1,4 +1,4 @@
- R←Test_170(stopFlag batchFlag);⎕TRAP;dataAll;data
+ R←Test_170(stopFlag batchFlag);⎕TRAP;dataAll;data;noOf
 ⍝ Use current direcory twice, once with -all and once without.
 ⍝ Without -all we shall found only files within APLSource/. With -all we must find those and more, from elsewhere.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
@@ -6,7 +6,8 @@
  R←T._Failed
 
  data←##.Latest.Run'./' 1 0 0 9999
- →T.PassesIf∧/'APLSource'{⍺∘≡¨(≢⍺)↑¨⍵}0⊃∘⎕NPARTS¨data[;0]
+ noOf←+/'APLSource'{⍺∘≡¨(≢⍺)↑¨⍵}0⊃∘⎕NPARTS¨data[;0]
+ →T.PassesIf∧/(noOf+1)=≢data   ⍝ The user command has an extension of .dyalog and lives above APLSource/
  →T.PassesIf∧/(∪2⊃∘⎕NPARTS¨data[;0])∊##.Latest.GetExtensions
 
  dataAll←##.Latest.Run'./' 1 0 1 9999
