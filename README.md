@@ -4,39 +4,63 @@
 
 The general idea of the `Latest` user command is to list the latest changes the user made to the APL code.
 
-By default all changes are listed made on the last day the code was changed.
+By default all changes made on the last day the code was changed are listed.
 
-Imagine you left a project half-baked because of a change of priorities. When you come back after a day or a week or a month you might or might not be able to continue where you left.
+Imagine you left a project half-baked because of a change of priorities. When you come back after a day or a week or a month you might or might not be able to continue where you left depending on your memory.
 
-If you execute `]Latest` you get a list with all changes you made on the last day you worked on the code. With `]Latest ¯3` you get a list with all changes made over the course of the last three days any changes to the code were made.
+## Overview
+
+* `]latest` can act on the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
+* `]latest` can act on a specific folder like C:\MyProjects\ThisProject\APLSource
+* `]latest` can act on opened acre projects (no argument required at all)
+
+If no argument is specified **and** acre does not live in `⎕SE` (read: you are not an acre user), then it falls 
+back to the current directory.
+
+By default the user command reports all objects or files changed lately (read: last day with any changes).
+
+This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do
+not own a timestamp that could be used. When acting on the file system however, this information is available.
+
+Note that by providing a path as an argument you can extend the meaning of ]`Latest` beyond APL source files, in
+particular together with the `-all` flag.
 
 ## The argument(s)
 
-The user may specify one or two arguments. A single argument might be either a character vector or an integer.
+When an argument is specified it must be one of:
 
-If it is a character vector then it must be one of:
+* An integer
+  * A positive one defines the number of objects/files to be listed.
+  * A negative one defines the number of days with any changes.
+* A character vector. If it starts with `#` or `⎕` the argument is treated as a namespace path.
 
-* A namespace name or `#` or `⎕SE`. Use this to investigate all objects in the given space.
+  Otherwise it is treated as a path to an acre project.
+* A vector of length two with an integer and a character vector in no particular order, see above.
 
-  Note that the power of `]Latest` is limited in this case because scripts do not own a timestamp, therefore `]Latest` cannot report on them in this case.
+In case no argument or only an integer is specified, `]Latest` will establish which acre projects are currently open.
+If it is just one it will act on it. If there are multiple acre projects open, then the user will be prompted.
 
-* A folder. By default all files with extension reserved for APL Source code are investigated.
+Note that if you provide a path pointing to an acre project you should include `APLSource\` if you are interested just in APL source files. 
 
-  Because files carry a date all kinds of APL objects can be processed.
+If on the other hand you want to see more than just APL source file then you might want to specify the `-all` flag,
+see there for details.
 
-If it is an integer it must be one of:
+## FLags (options)
 
-* Positive integer; treated as the number of objects to be listed
-* Negative integer; treated as the number of days to be considered
+`-recursive=0|1`
 
-Note that you can also specify both, a character vector **and** an integer in no particular order.
+: The default is 1, meaning that the path is searched recursively;
+  if you don't want this then specify a 0
+       
+`-all`
 
-If no argument is specified at all then what happens depends on whether there are any acre projects or not:
+: By default only files with extensions that are recognized as APL source files (`.aplf`, `.aplc` etc.) are
+  listed. You can force `]Latest` to consider all files by specifying this flag.
 
-* In case there are open acre projects, the command acts towards this/those.
+`-stats`
 
-  If just one project is open then `]Latest` will act on that project.
+: If this flag is specified you get a matrix with two columns, the first
+  one with all unique dates and the second one with the number of changes
+  on that date. The number of rows is defined by the number of unique dates.
 
-  If there is more than one project open then the user will be prompted.
-
-* In case there are no open acre projects --- or acre is not even available in `⎕se` --- the current directory is investigated.
+: If `-stats` is specified any integer provided as argument will be ignored.
