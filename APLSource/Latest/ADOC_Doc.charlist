@@ -22,9 +22,10 @@ particular together with the `-all` flag.
 When an argument is specified it must be one of:
 
 * An integer
-  * A positive one defines the number of objects/files to be listed
+  * A positive one smaller than 10000000 defines the number of objects/files to be listed
+  * A positive integer larger than 9999999 is treated as a specific date (YYYYMMDD)
   * A negative one defines the number of days with any changes
-* A character vector. If it starts with `#` or `⎕` the argument is treated as a namespace path.\\\\
+* A character vector; if it starts with `#` or `⎕` the argument is treated as a namespace path\\\\
 
   Otherwise it is treated as a path to an acre project
 * A vector of length two with an integer and a character vector in no particular order, see above.

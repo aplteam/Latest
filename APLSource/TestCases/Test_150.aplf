@@ -1,23 +1,39 @@
- R←Test_150(stopFlag batchFlag);⎕TRAP;data;projectPath;expected
+ R←Test_150(stopFlag batchFlag);⎕TRAP;data;expected;path;result;path2
 ⍝ List for an acre project
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
  :If 0=≢⎕SE.acre.Projects''
- :OrIf 0=##.⎕NC'AcreConfig'
      →0,R←T._NotApplicable
  :EndIf
- ⍝ We assume here that the open project is "Latest"
 
  R←T._Failed
 
- data←##.Latest.Run'' 1 0 0 ⍬
- →T.PassesIf∧/'#.Latest.'{⍺∘≡¨(≢⍺)↑¨⍵[;0]}data
+ #.⎕SHADOW'TEMP2'
 
- projectPath←##.AcreConfig.ProjectFolder,'APLSource'
- data←##.Latest.Run projectPath 1 0 0 999
- →T.PassesIf 0<≢data
- expected←'Latest\Version.aplf' 'Latest\Run.aplf'
- →T.PassesIf∧/expected∊{⍵/⍨0<≢¨0⊃¨⎕NPARTS¨⍵}data[;0]
+ path←##.FilesAndDirs.PWD,'/TestProject'
+ result←⎕SE.acre.OpenProject path'#.TEMP2'
+ →T.GoToTidyUp'#.TEMP2'≢result
+
+ path2←path,'/APLSource/'
+ data←##.Latest.Run path2 1 0 0 ⍬
+ →T.GoToTidyUp 2≠≢data
+
+ data←##.Latest.Run path2 1 0 0 3
+ →T.GoToTidyUp 3≠≢data
+
+ data←##.Latest.Run path2 1 0 0 ¯2
+ →T.GoToTidyUp 3≠≢data
+
+ data←##.Latest.Run path2 1 0 0 999
+ →T.GoToTidyUp 8≠≢data
+
+ data←##.Latest.Run path2 1 0 0 20190302
+ →T.GoToTidyUp 2≠≢data
+ expected←('Sub1\'∘,¨'Hello'∘,¨'45'),¨⊂'.aplf'
+ →T.GoToTidyUp expected≢data[;0]
 
  R←T._OK
+
+∆TidyUp:
+ ⎕SE.acre.CloseProject'#.TEMP2'
 ⍝Done

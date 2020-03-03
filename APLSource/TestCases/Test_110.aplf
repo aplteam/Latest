@@ -14,6 +14,13 @@
  expected←'3000-01-03 14:00:00' '3000-02-01 17:00:00'
  →T.PassesIf expected≡data[;1]
 
+ data←##.Latest.Run'#.TEMP' 1 0 0 30000102
+ →T.PassesIf 2=≢data
+ expected←'#.TEMP.Sub2.Hello6' '#.TEMP.Hello2'
+ →T.PassesIf expected≡data[;0]
+ expected←'3000-01-02 12:00:00' '3000-01-02 13:00:00'
+ →T.PassesIf expected≡data[;1]
+
  data←##.Latest.Run'#.TEMP' 1 0 0 ¯999             ⍝ All
  →T.PassesIf(≢data)=⌈/{↑↑(//)⎕VFI ¯1↑⍵}¨data[;0]    ⍝ Works because the functions are numbered
 

@@ -1,5 +1,6 @@
  r←{lookInto}List y;noOfDays;noOfLines;⎕ML;⎕IO;all;type
-⍝ If y is a positiv integer then y objects are returned.
+⍝ If y is a positiv integer smaller than 10000000 then y objects are returned.
+⍝ If y is a positiv integer larger than   9999999 then y is treated as a date (YYYYMMDD).
 ⍝ If is a negative integer then all objects changed on the last y days are returned.
 ⍝ If y is an empty vector all objects are returned.
 ⍝ If y is zero an error is thrown.
@@ -23,7 +24,11 @@
      r←r[⍋⊃r[;4];1 4 5]
      :If ~(⊂type)∊''⍬
          :If 1=×type
-             r←(-noOfLines⌊1⊃⍴r)↑[1]r
+             :If noOf>9999999
+                 r←(noOf={↑↑(//)⎕VFI ⍵[1 2 3 4 6 7 9 10]}¨r[;2])⌿r
+             :Else
+                 r←(-noOfLines⌊1⊃⍴r)↑[1]r
+             :EndIf
          :ElseIf ¯1=×type
              r←({⍵∊(noOfDays⌊⍴,⍵)↑∪⍵}10↑¨r[;2])⌿r
          :EndIf

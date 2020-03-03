@@ -1,5 +1,6 @@
 ﻿:Class  Latest  ⍝V4.0.0
-⍝ 2020 02 12 ⋄ Kai: Major changes to both arguments and options/flags; see detailed help (???) for more information
+⍝ ⍝ 2020 02 12 ⋄ Kai: Major changes to both arguments and options/flags; see detailed help (???) for more information
+⍝ ⍝ 2020 02 23 ⋄ Kai: The argument will now be recognized as a date when it's provided as an iteger (yyyymmdd).
 
     ∇ r←List;⎕IO;⎕ML ⍝ this function usually returns 1 or more namespaces (here only 1)
       :Access Shared Public
@@ -68,6 +69,10 @@
           r,←⊂'* an integer'
           r,←⊂'* a character vector'
           r,←⊂'* both an integer and a character vector'
+          r,←⊂''
+          r,←⊂'* An integer smaller than 100000000 is treated as number of items'
+          r,←⊂'* An integer greater than 99999999 is treated as a specific date (YYYYMMDD)'
+          r,←⊂'* A negative integer is treated as number of days'
           r,←⊂''
           r,←⊂'Options:'
           r,←⊂'-recursive=0|1  Defaults to 1, meaning that the path is searched recursively'

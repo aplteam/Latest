@@ -33,6 +33,7 @@
      acreFlag←0
  :EndIf
  :If acreFlag∨pathFlag
+     path←'expand'F.NormalizePath path,F.CurrentSep
      :If F.IsDir path
          r←⍉⊃('recursive'recursive)('type'(0 1 3))F.Dir path
          r←(r[;1]=2)⌿r                 ⍝ Only regular files
@@ -56,6 +57,8 @@
                  :If ¯1=×noOf
                      buff←10↑¨r[;1]  ⍝ YYYY-MM-DD
                      r←(buff∊noOf{(⍺⌊≢⍵)↑⍵}⌽∪⌽buff)⌿r
+                 :ElseIf 8=≢⍕noOf ⍝ Is it a date (yyyymmdd)?
+                     r←(noOf={↑↑(//)⎕VFI ⍵}¨↓(⊃r[;1])[;0 1 2 3 5 6 8 9])⌿r
                  :Else
                      r←(noOf⌊≢r)↑r
                  :EndIf

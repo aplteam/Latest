@@ -1,21 +1,24 @@
- R←Test_140(stopFlag batchFlag);⎕TRAP;data;expected;projectPath
+ R←Test_140(stopFlag batchFlag);⎕TRAP;data;expected;path;result;buff
 ⍝ "Stats" for an acre project
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
  :If 0=≢⎕SE.acre.Projects''
      →0,R←T._NotApplicable
  :EndIf
- ⍝ We assume here that the open project is "Latest"
 
  R←T._Failed
 
- data←##.Latest.Run'' 1 1 0 ⍬              ⍝ The default project
- →T.PassesIf 0<≢data
+ path←##.FilesAndDirs.PWD,'/TestProject'
+ result←⎕SE.acre.OpenProject path'#.TEMP2'
+ →T.GoToTidyUp'#.TEMP2'≢result
 
- projectPath←↑(⎕SE.acre.Projects'')[0;1]   ⍝ A specific project
- data←##.Latest.Run projectPath 1 1 0 ⍬
- →T.PassesIf 0<≢data
- →T.PassesIf 0<+/data[;1]
+ data←##.Latest.Run path 1 1 0 ⍬
+ →T.GoToTidyUp 5 2≢⍴data
+ buff←##.Latest.Run path 1 0 0 999
+ →T.GoToTidyUp(≢buff)≠+/data[;1]
 
  R←T._OK
+
+∆TidyUp:
+ ⎕SE.acre.CloseProject'#.TEMP2'
 ⍝Done

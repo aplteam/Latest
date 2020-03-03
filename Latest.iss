@@ -1,6 +1,6 @@
 ; This script is best executed by Latest's "Make" utility.
 
-#define MyAppVersion "4.0.0.70"
+#define MyAppVersion "4.1.0.74"
 #define MyAppName "Latest"
 #define MyAppExeName "Latest.dws"
 #define MyAppPublisher "APL Team Ltd"
@@ -31,6 +31,8 @@ PrivilegesRequired=Lowest
 AlwaysShowDirOnReadyPage=yes
 DisableWelcomePage=no
 DisableDirPage=no
+CreateUninstallRegKey=no
+
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"; LicenseFile: "License";
