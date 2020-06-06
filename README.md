@@ -15,7 +15,7 @@ Imagine you left a project half-baked because of a change of priorities. When yo
 * `]latest` can act on opened acre projects (no argument required at all)
 
 If no argument is specified **and** acre does not live in `⎕SE` (read: you are not an acre user), then it falls 
-back to the current directory.
+back to the current directory but will check if there is a direcotry `APLSource/` and if so, process the contents of that folder.
 
 By default the user command reports all objects or files changed lately (read: last day with any changes).
 
