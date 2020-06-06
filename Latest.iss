@@ -1,6 +1,6 @@
 ; This script is best executed by Latest's "Make" utility.
 
-#define MyAppVersion "4.1.0.74"
+#define MyAppVersion "4.2.0.77-beta"
 #define MyAppName "Latest"
 #define MyAppExeName "Latest.dws"
 #define MyAppPublisher "APL Team Ltd"

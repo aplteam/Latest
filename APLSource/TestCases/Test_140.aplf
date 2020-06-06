@@ -13,7 +13,7 @@
  →T.GoToTidyUp'#.TEMP2'≢result
 
  data←##.Latest.Run path 1 1 0 ⍬
- →T.GoToTidyUp 5 2≢⍴data
+ →T.GoToTidyUp(,2)≢⍴⍴data
  buff←##.Latest.Run path 1 0 0 999
  →T.GoToTidyUp(≢buff)≠+/data[;1]
 
