@@ -1,15 +1,10 @@
- R←Test_100(stopFlag batchFlag);⎕TRAP;qdmx
-⍝ Specify something that does not exist - should throw an error.
+ R←Test_100(stopFlag batchFlag);⎕TRAP;res
+⍝ Specify something that does not exist and check result
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  R←T._Failed
 
- :Trap 6
-     ##.Latest.Run'#.DoesNotExist' '' 0 0 0
-     →T.FailsIf 1
- :Else
-     qdmx←⎕DMX
-     →T.PassesIf'Not Found'≡0⊃qdmx.DM
- :EndTrap
+ res←##.Latest.Run'#.DoesNotExist' '' 0 0 0
+ →T.PassesIf'Nothing found'≡res
 
  R←T._OK
 ⍝Done

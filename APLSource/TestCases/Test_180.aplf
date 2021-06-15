@@ -5,18 +5,18 @@
  R←T._Failed
 
  tempDir←##.FilesAndDirs.GetTempSubDir↑⎕SI
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.apla')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.aplf')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.aplo')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.apln')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.aplc')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.apli')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.charlist')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.charmat')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.charstring')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.dyalog')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.dyapp')'123'
- ##.APLTreeUtils.WriteUtf8File(tempDir,'/foo.txt')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.apla')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.aplf')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.aplo')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.apln')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.aplc')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.apli')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.charlist')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.charmat')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.charstring')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.dyalog')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.dyapp')'123'
+ {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.txt')'123'
  list←##.Latest.Run tempDir 0 0 0 9999
  →T.GoToTidyUp(≢##.Latest.GetExtensions)≠≢list
 

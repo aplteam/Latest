@@ -3,7 +3,7 @@
 ⍝ * Investigate the workspace (simple namespace or #)
 ⍝ * Investigate (currently tracked/opened) acre projects
 ⍝ * Investigate an acre project that is not currently tracked (open)
- A←##.APLTreeUtils ⋄ F←##.FilesAndDirs
+ A←APLTreeUtils2 ⋄ F←FilesAndDirs
  r←''
  pathFlag←acreFlag←0
  path←path_
@@ -63,7 +63,7 @@
                  :ElseIf 8=≢⍕noOf ⍝ Is it a date (yyyymmdd)?
                      r←(noOf={↑↑(//)⎕VFI ⍵}¨↓(⊃r[;1])[;0 1 2 3 5 6 8 9])⌿r
                  :Else
-                     r←(noOf⌊≢r)↑r
+                     r←(-noOf⌊≢r)↑r
                  :EndIf
              :EndIf
              :If 0=+/≢¨r[;0]
@@ -84,7 +84,7 @@
      :Else
          r←0 0⍴''
      :EndIf
- :ElseIf ((,'#')≡,path)∨(('⎕SE')≡##.APLTreeUtils.Uppercase,path)∨9=⎕NC path
+ :ElseIf ((,'#')≡,path)∨(('⎕SE')≡1 ⎕C,path)∨9=⎕NC path
      :If 0=≢noOf
      :AndIf 0=stats
          noOf←¯1
@@ -100,5 +100,5 @@
          r←(~'.'∊¨(1+≢path)↓¨r[;0])⌿r
      :EndIf
  :Else
-     'Not Found'⎕SIGNAL 6
+     r←'Nothing found'
  :EndIf

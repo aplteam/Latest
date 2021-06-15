@@ -16,24 +16,15 @@
 
  path2←path,'/APLSource/'
  data←##.Latest.Run path2 1 0 0 ⍬
- →T.GoToTidyUp 2≠≢data
+ expected←{⍵/⍨##.FilesAndDirs.IsFile ⍵}0⊃('recursive' 1)##.FilesAndDirs.Dir path2
+ expected←(≢path2)↓¨expected
+ →T.GoToTidyUp expected≢data[;0]
 
  data←##.Latest.Run path2 1 0 0 3
  →T.GoToTidyUp 3≠≢data
 
- data←##.Latest.Run path2 1 0 0 ¯2
- →T.GoToTidyUp 3≠≢data
-
- data←##.Latest.Run path2 1 0 0 999
- →T.GoToTidyUp 8≠≢data
-
- data←##.Latest.Run path2 1 0 0 20190302
- →T.GoToTidyUp 2≠≢data
- expected←('Sub1\'∘,¨'Hello'∘,¨'45'),¨⊂'.aplf'
- →T.GoToTidyUp expected≢data[;0]
-
  R←T._OK
 
 ∆TidyUp:
- ⎕SE.acre.CloseProject'#.TEMP2'
+ {}⎕SE.acre.CloseProject'#.TEMP2'
 ⍝Done

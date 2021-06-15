@@ -1,5 +1,9 @@
+* 4.3.1 from 2021-09-15
+  * In case of an empty WS no VALUE ERROR is signalled but a message returned
+* 4.3.0 from 2020-09-15
+  * `]Latests` now runs under Linux and Mac OS as well.
+  * Message corrected when the WS is empty (for example): instead of "Not Found" it now states
+    "Latest: nothing found"
 * 4.2.0 from 2020-06-06
   * Now acts on APLSource/ if no acre project is open and the folder exists in the current directory.
-* 4.1.0 from 2020-03-03
-  * The argument, which was so far treated as either number of items or number of days (when negative), can
-    now also be a date. A date must be in the format yyyymmdd (like 20200223) for being recognized as such.
+  * Bug fix: ]Latest n delievered, when n was a positiv integer, wrong result.

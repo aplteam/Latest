@@ -1,6 +1,6 @@
 ; This script is best executed by Latest's "Make" utility.
 
-#define MyAppVersion "4.2.0.77-beta"
+#define MyAppVersion "4.3.1+83"
 #define MyAppName "Latest"
 #define MyAppExeName "Latest.dws"
 #define MyAppPublisher "APL Team Ltd"
@@ -22,7 +22,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={userdocs}\\MyUCMDs\\{#MyAppName}
 DefaultGroupName={#MyAppPublisher}\{#MyAppName}
 AllowNoIcons=yes
-OutputDir={#TargetDir}
+OutputDir=C:/Users/kai/AppData/Local/Temp/InnoTempDir
 OutputBaseFilename="SetUp_{#MyAppName}_{#MyAppVersion}"
 Compression=lzma
 SolidCompression=yes

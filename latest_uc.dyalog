@@ -1,13 +1,13 @@
-﻿:Class  Latest  ⍝V4.0.0
-⍝ ⍝ 2020 02 12 ⋄ Kai: Major changes to both arguments and options/flags; see detailed help (???) for more information
-⍝ ⍝ 2020 02 23 ⋄ Kai: The argument will now be recognized as a date when it's provided as an iteger (yyyymmdd).
-
+﻿:Class  Latest
+⍝ ⍝ 2020 02 12 ⋄ Major changes to both arguments and options/flags; see detailed help (???) for more information
+⍝ ⍝ 2020 02 23 ⋄ The argument will now be recognized as a date when it's provided as an integer (yyyymmdd).
+⍝ ⍝ 2021 05 15 ⋄ On an ampty WS "nothing found" is reported (rather than throwing an error) and stuff got simplified
     ∇ r←List;⎕IO;⎕ML ⍝ this function usually returns 1 or more namespaces (here only 1)
       :Access Shared Public
       ⎕IO←⎕ML←1
       r←⎕NS''
       r.Name←'Latest'
-      r.Desc←'Prints some/all objects found in the workspace or files in a particular folder sorted by "Changed" date'
+      r.Desc←'Prints some/all objects found in either the workspace or files in a folder sorted by their "Changed" date'
       r.Group←'FN'
      ⍝ Parsing rules for each:
       r.Parse←' -recursive∊0 1 -stats -all'
@@ -53,37 +53,24 @@
       r←ref.Latest.Run(path recursive stats all noOf)
     ∇
 
-    ∇ r←l Help Cmd;⎕IO;⎕ML;sep;ref
+    ∇ r←Help Cmd;⎕IO;⎕ML
       ⎕IO←⎕ML←1
-      sep←⎕UCS 13
       :Access Shared Public
       r←''
-      :Select l
-      :Case 0
-          r,←⊂List.Desc
-          r,←⊂'Lists the latest changes either in the workspace or a specific folder.'
-      :Case 1
-          r←''
-          r,←⊂'May be called with:'
-          r,←⊂'* no argument at all'
-          r,←⊂'* an integer'
-          r,←⊂'* a character vector'
-          r,←⊂'* both an integer and a character vector'
-          r,←⊂''
-          r,←⊂'* An integer smaller than 100000000 is treated as number of items'
-          r,←⊂'* An integer greater than 99999999 is treated as a specific date (YYYYMMDD)'
-          r,←⊂'* A negative integer is treated as number of days'
-          r,←⊂''
-          r,←⊂'Options:'
-          r,←⊂'-recursive=0|1  Defaults to 1, meaning that the path is searched recursively'
-          r,←⊂'-all            By default only APL source files are considered'
-          r,←⊂'-stats          If this flag is specified you get a matrix with change statistics'
-      :Else
-          ⎕SE.⎕SHADOW'TEMP'
-          ref←⍎'TEMP'⎕SE.⎕NS''
-          CopyCode ref
-          {}⎕SE.UCMD'ADOC ⎕SE.TEMP.Latest -ref=0 -toc=0'
-      :EndSelect
+      r,←⊂'May be called with:'
+      r,←⊂'* no argument at all'
+      r,←⊂'* an integer'
+      r,←⊂'* a character vector'
+      r,←⊂'* both an integer and a character vector'
+      r,←⊂''
+      r,←⊂'* An integer smaller than 1E7 is treated as number of items'
+      r,←⊂'* An integer greater than 1E7 is treated as a specific date (YYYYMMDD)'
+      r,←⊂'* A negative integer is treated as number of days'
+      r,←⊂''
+      r,←⊂'Options:'
+      r,←⊂'-recursive=0|1  Defaults to 1, meaning that the path is searched recursively'
+      r,←⊂'-all            By default only APL source files are considered'
+      r,←⊂'-stats          If this flag is specified you get a matrix with change statistics'
     ∇
 
     ∇ {ref}←CopyCode ref;regKey;paths;success;thisPath;filename;regData

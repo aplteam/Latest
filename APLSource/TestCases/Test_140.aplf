@@ -20,5 +20,5 @@
  R←T._OK
 
 ∆TidyUp:
- ⎕SE.acre.CloseProject'#.TEMP2'
+ {}⎕SE.acre.CloseProject'#.TEMP2'
 ⍝Done

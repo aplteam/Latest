@@ -26,7 +26,6 @@ When an argument is specified it must be one of:
   * A positive integer larger than 9999999 is treated as a specific date (YYYYMMDD)
   * A negative one defines the number of days with any changes
 * A character vector; if it starts with `#` or `⎕` the argument is treated as a namespace path\\\\
-
   Otherwise it is treated as a path to an acre project
 * A vector of length two with an integer and a character vector in no particular order, see above.
 
@@ -44,7 +43,7 @@ see there for details.
 `-recursive=0|1`
 
 : The default is 1, meaning that the path is searched recursively;
-  if you don't want this then specify a 0
+  if you don't want this then specify a 0.
        
 `-all`
 
@@ -54,7 +53,7 @@ see there for details.
 `-stats`
 
 : If this flag is specified you get a matrix with two columns, the first
-  one with all unique dates and the second one with the number of changes
-  on that date. The number of rows is defined by the number of unique dates.
+  one with all unique dates and the second one with the number of objects changed 
+  on that day. The number of rows is defined by the number of unique dates.
 
 : If `-stats` is specified any integer provided as argument will be ignored.

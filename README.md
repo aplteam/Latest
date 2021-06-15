@@ -22,7 +22,7 @@ By default the user command reports all objects or files changed lately (read: l
 This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do
 not own a timestamp that could be used. When acting on the file system however, this information is available.
 
-Note that by providing a path as an argument you can extend the meaning of ]`Latest` beyond APL source files, in
+Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in
 particular together with the `-all` flag.
 
 ## The argument(s)
@@ -42,7 +42,7 @@ If it is just one it will act on it. If there are multiple acre projects open, t
 
 Note that if you provide a path pointing to an acre project you should include `APLSource\` if you are interested just in APL source files. 
 
-If on the other hand you want to see more than just APL source file then you might want to specify the `-all` flag,
+If on the other hand you want to see more than just APL source files then you might want to specify the `-all` flag,
 see there for details.
 
 ## FLags (options)
@@ -50,7 +50,7 @@ see there for details.
 `-recursive=0|1`
 
 : The default is 1, meaning that the path is searched recursively;
-  if you don't want this then specify a 0
+  if you don't want this then specify a 0.
        
 `-all`
 
