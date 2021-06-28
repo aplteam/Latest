@@ -6,12 +6,12 @@
  ⎕IO←1 ⋄ ⎕ML←3
  Buff←''
  noScripts←{0=⎕NC ⍵:'' ⋄ ⍎⍵}'noScripts'
- noScripts←##.APLTreeUtils2.Lowercase∊noScripts
+ noScripts←⎕C∊noScripts
  msg←'Invalid left argument: must be either an empty vector or the string "noScripts"'
  msg ⎕SIGNAL 11/⍨~(⊂noScripts)∊'' 'noscripts'
  :If 0≠≢list←∪{⍵,List_NS ⍵}⍎lookInto
      :If noScripts≡'noscripts'
-     :AndIf 0=≢list←(~##.APLTreeUtils2.IsScripted¨list)/list   ⍝ Exclude all scripts
+     :AndIf 0=≢list←(~IsScripted¨list)/list   ⍝ Exclude all scripts
          :Return
      :EndIf
      list2←↑,/{(⊂(⍕⍵),'.'),¨⍵.⎕NL-3 4}¨list
@@ -24,6 +24,5 @@
          Buff[;4 5]←({0::'' ⋄ 2=⍴⍴⍵:⍵ ⋄ (¯2↑1 1,⍴⍵)⍴⍵}⊃⎕AT¨list2)[;2 4]
          Buff⌿⍨←{0<↑⍴⎕VR ⍵}¨Buff[;3],¨'.',¨Buff[;1]
          Buff[;4]←⊂[2]'ZI4,<->,ZI2,<->,ZI2,< >,ZI2,<:>,ZI2,<:>,ZI2'⎕FMT 6↑[2]⊃Buff[;4]
-         Buff[{⍵/⍳⍴⍵}1=≢¨Buff[;3];3]←⊂''
      :EndIf
  :EndIf

@@ -8,7 +8,7 @@
 
  R←T._Failed
 
- path←##.FilesAndDirs.PWD,'/TestProject'
+ path←FilesAndDirs.PWD,'/TestProject'
  result←⎕SE.acre.OpenProject path'#.TEMP2'
  →T.GoToTidyUp'#.TEMP2'≢result
 

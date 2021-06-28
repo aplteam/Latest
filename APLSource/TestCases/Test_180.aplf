@@ -4,7 +4,7 @@
 
  R←T._Failed
 
- tempDir←##.FilesAndDirs.GetTempSubDir↑⎕SI
+ tempDir←FilesAndDirs.GetTempSubDir↑⎕SI
  {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.apla')'123'
  {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.aplf')'123'
  {(⊂1⊃⍵)⎕NPUT 0⊃⍵}(tempDir,'/foo.aplo')'123'
@@ -23,5 +23,5 @@
  R←T._OK
 
 ∆TidyUp:
- ##.FilesAndDirs.RmDir tempDir
+ FilesAndDirs.RmDir tempDir
 ⍝Done

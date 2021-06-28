@@ -3,8 +3,8 @@
  r←⍬
  {}⎕SE.UCMD'cd ',AcreConfig.ProjectFolder
  ⎕WSID←AcreConfig.ProjectFolder,'project.dws'
- parent←⍕⎕THIS
+ parent←⍕⎕THIS.Latest
  {}⎕SE.Tatin.LoadDependencies'./packages/'parent
- parent,←'.TestCases'
+ parent←⍕⎕THIS.TestCases
  {}⎕SE.Tatin.LoadDependencies'./packages_dev/'parent
 ⍝Done

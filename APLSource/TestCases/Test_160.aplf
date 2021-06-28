@@ -7,7 +7,7 @@
  data←##.Latest.Run'./' 0 0 1 9999
  →T.PassesIf 0<≢data
  →T.FailsIf∨/∨/¨'/\'∘∊¨data[;0]
- →T.PassesIf=/≢¨data(##.FilesAndDirs.ListFiles'./')
+ →T.PassesIf=/≢¨data(FilesAndDirs.ListFiles'./')
 
  R←T._OK
 ⍝Done
