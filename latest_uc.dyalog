@@ -1,7 +1,8 @@
 ﻿:Class  Latest
-⍝ ⍝ 2020 02 12 ⋄ Major changes to both arguments and options/flags; see detailed help (???) for more information
-⍝ ⍝ 2020 02 23 ⋄ The argument will now be recognized as a date when it's provided as an integer (yyyymmdd).
-⍝ ⍝ 2021 05 15 ⋄ On an ampty WS "nothing found" is reported (rather than throwing an error) and stuff got simplified
+⍝ 2020 02 12 ⋄ Major changes to both arguments and options/flags; see detailed help (???) for more information
+⍝ 2020 02 23 ⋄ The argument will now be recognized as a date when it's provided as an integer (yyyymmdd).
+⍝ 2021 05 15 ⋄ On an ampty WS "nothing found" is reported (rather than throwing an error) and stuff got simplified
+⍝ Project lives on https://github.com/aplteam/Latest
     ∇ r←List;⎕IO;⎕ML ⍝ this function usually returns 1 or more namespaces (here only 1)
       :Access Shared Public
       ⎕IO←⎕ML←1

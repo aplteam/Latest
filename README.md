@@ -8,6 +8,14 @@ By default all changes made on the last day the code was changed are listed.
 
 Imagine you left a project half-baked because of a change of priorities. When you come back after a day or a week or a month you might or might not be able to continue where you left depending on your memory.
 
+## Installation
+
+The contents of the ZIP files needs to go in any of the folders that Dyalog APL scans for user commands.
+
+For example, under Windows a folder `MyUCMDs` will be created in `%USERPROFILE%\Documents` when Dyalog is installed, and that is a good place for putting the `Latest\` folder and the related file `latest_uc.dyalog`.
+
+However, note that under Linux and Mac-OS no such folder will be created, although it will be scanned for user commands in case it exists.
+
 ## Overview
 
 * `]latest` can act on the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
@@ -30,12 +38,15 @@ particular together with the `-all` flag.
 When an argument is specified it must be one of:
 
 * An integer
-  * A positive one defines the number of objects/files to be listed.
-  * A negative one defines the number of days with any changes.
-* A character vector. If it starts with `#` or `⎕` the argument is treated as a namespace path.
+  * A positive one defines...
+    * the number of objects/files to be listed if the integer is smaller than `1E7` 
+    * the date from which changes should be listed if the integer is greate than `1E7` 
+  * A negative one defines the number of days with any changes
 
-  Otherwise it is treated as a path to an acre project.
-* A vector of length two with an integer and a character vector in no particular order, see above.
+* A character vector. 
+  * If it starts with `#` or `⎕` the argument is treated as a namespace path
+  * If it does not start with `#` or `⎕` the argument is treated as a path to an acre project
+* A vector of length two with an integer and a character vector in no particular order, see above
 
 In case no argument or only an integer is specified, `]Latest` will establish which acre projects are currently open.
 If it is just one it will act on it. If there are multiple acre projects open, then the user will be prompted.
@@ -54,7 +65,7 @@ see there for details.
        
 `-all`
 
-: By default only files with extensions that are recognized as APL source files (`.aplf`, `.aplc` etc.) are
+: By default only files with extensions that are recognized as APL source files (`.aplf`, `.aplc`, `.dyalog` etc.) are
   listed. You can force `]Latest` to consider all files by specifying this flag.
 
 `-stats`
