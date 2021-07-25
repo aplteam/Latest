@@ -1,4 +1,6 @@
-* 4.3.3 from 2021-09-26
+* 4.3.4 from 2021-07-25
+  * Bug fix: In SelectProject APLTreeUtils2 was wrongly addressed, resulting in a VALUE ERROR
+* 4.3.3 from 2021-06-26
   * When # was passed as argument the # was missing in the output
 * 4.3.2 from 2021-09-21
   ]Latest # caused a VALUE ERROR

@@ -7,7 +7,7 @@
      ⎕←'   Which project? (q=quit)'
      answer←⍞
      →((answer~' ')∊'qQ')/0
-     ind←##.APLTreeUtils2.ToNum answer
+     ind←A.ToNum answer
      :If 1=≢ind
          :If ind∊1+⍳≢projects
              path←1⊃projects[↑ind-1;]
