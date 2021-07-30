@@ -1,3 +1,5 @@
+* 4.5.0 from 2021-07-30
+  * Can now handle Proma-projects as well
 * 4.3.4 from 2021-07-25
   * Bug fix: In SelectProject APLTreeUtils2 was wrongly addressed, resulting in a VALUE ERROR
 * 4.3.3 from 2021-06-26

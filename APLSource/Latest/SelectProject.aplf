@@ -1,17 +1,17 @@
- path←SelectProject projects;flag;answer;ind
+ ind←SelectProject projects;flag;answer
  flag←0
- path←''
+ ind←¯1
  :Repeat
-     ⎕←'There is more than one acre project open:'
+     ⎕←'There is more than one project open:'
      ⎕←{⊃(⍕¨1+⍳≢⍵),¨'.',¨↓⍵}projects
      ⎕←'   Which project? (q=quit)'
      answer←⍞
      →((answer~' ')∊'qQ')/0
-     ind←A.ToNum answer
+     ind←↑A.ToNum answer
      :If 1=≢ind
          :If ind∊1+⍳≢projects
-             path←1⊃projects[↑ind-1;]
              flag←1
+             ind-←1
          :EndIf
      :EndIf
  :Until flag
