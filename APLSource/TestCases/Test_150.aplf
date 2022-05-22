@@ -10,9 +10,9 @@
 
  #.⎕SHADOW'TEMP2'
 
- path←FilesAndDirs.PWD,'/TestProject'
+ path←##.CiderConfig.HOME,'/TestProject'
  result←⎕SE.acre.OpenProject path'#.TEMP2'
- →T.GoToTidyUp'#.TEMP2'≢result
+Assert'#.TEMP2'≡result
 
  path2←path,'/APLSource/'
  data←##.Latest.Run path2 1 0 0 ⍬

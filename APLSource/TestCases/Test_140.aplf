@@ -8,9 +8,9 @@
 
  R←T._Failed
 
- path←FilesAndDirs.PWD,'/TestProject'
+ path←##.CiderConfig.HOME,'/TestProject'
  result←⎕SE.acre.OpenProject path'#.TEMP2'
- →T.GoToTidyUp'#.TEMP2'≢result
+ Assert '#.TEMP2'≡result
 
  data←##.Latest.Run path 1 1 0 ⍬
  →T.GoToTidyUp(,2)≢⍴⍴data

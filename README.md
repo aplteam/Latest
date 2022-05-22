@@ -20,18 +20,15 @@ However, note that under Linux and Mac-OS no such folder will be created, althou
 
 * `]latest` can act on the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
 * `]latest` can act on a specific folder like C:\MyProjects\ThisProject\APLSource
-* `]latest` can act on opened acre projects (no argument required at all)
+* `]latest` can act on open Cider projects (no argument required)
 
-If no argument is specified **and** acre does not live in `⎕SE` (read: you are not an acre user), then it falls 
-back to the current directory but will check if there is a direcotry `APLSource/` and if so, process the contents of that folder.
+If no argument is specified **and** nor Cider lives in `⎕SE` (read: you are not using Cider), then it falls back to the current directory but will check if there is a direcotry `APLSource/` and if so, process the contents of that folder.
 
 By default the user command reports all objects or files changed lately (read: last day with any changes).
 
-This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do
-not own a timestamp that could be used. When acting on the file system however, this information is available.
+This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do not own a timestamp that could be used. When acting on the file system however, this information is available.
 
-Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in
-particular together with the `-all` flag.
+Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in particular together with the `-all` flag.
 
 ## The argument(s)
 
@@ -40,18 +37,19 @@ When an argument is specified it must be one of:
 * An integer
   * A positive one defines...
     * the number of objects/files to be listed if the integer is smaller than `1E7` 
-    * the date from which changes should be listed if the integer is greate than `1E7` 
+    * the date from which changes should be listed if the integer is greater than `1E7` 
   * A negative one defines the number of days with any changes
 
 * A character vector. 
   * If it starts with `#` or `⎕` the argument is treated as a namespace path
-  * If it does not start with `#` or `⎕` the argument is treated as a path to an acre project
+  * If it does not start with `#` or `⎕` the argument is treated as a path to a project managed either by acre or by Proma
 * A vector of length two with an integer and a character vector in no particular order, see above
 
-In case no argument or only an integer is specified, `]Latest` will establish which acre projects are currently open.
-If it is just one it will act on it. If there are multiple acre projects open, then the user will be prompted.
+In case no argument or only an integer is specified, `]Latest` will establish which Cider projects are currently opened.
 
-Note that if you provide a path pointing to an acre project you should include `APLSource\` if you are interested just in APL source files. 
+If it is just one it will act on it. If there are multiple projects open, then the user will be prompted.
+
+Note that if you provide a path pointing to an open Cider  project you should include `APLSource\` if you are interested just in APL source files. 
 
 If on the other hand you want to see more than just APL source files then you might want to specify the `-all` flag,
 see there for details.

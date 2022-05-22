@@ -1,55 +1,74 @@
- r←Run(path_ recursive stats all noOf);acreFlag;F;A;bool;projects;buff;pathFlag;path;projects1;promaFlag;projects2;ind;ref
+ r←Run(path_ recursive stats all noOf);hasOpenAcreProjects;F;A;bool;projects;buff;pathFlag;path;projects1;hasOpenCiderProjects;projects2;ind;ref;name;isAcreProject;isCiderProject
 ⍝ Handles the following cases:
 ⍝ * Investigate the workspace (simple namespace or #)
 ⍝ * Investigate (currently tracked/opened) acre projects
-⍝ * Investigate (currently tracked/opened) ProMa projects
-⍝ * Investigate an acre project that is not currently tracked (not open)
- A←APLTreeUtils2 ⋄ F←FilesAndDirs
+⍝ * Investigate (currently tracked/opened) Cider projects
+⍝ * Investigate a folder
+ A←##.APLTreeUtils2 ⋄ F←##.FilesAndDirs
  r←''
- pathFlag←acreFlag←0
+ pathFlag←hasOpenAcreProjects←hasOpenCiderProjects←0
  path←path_
+ isAcreProject←isCiderProject←0
  :If 0=≢path                            ⍝ Only true if we deal with a project
+     projects1←projects2←0 2⍴''
      :If 9=⎕SE.⎕NC'acre'
          projects1←⎕SE.acre.Projects ⍬
-         acreFlag←0<≢projects1
+         hasOpenAcreProjects←0<≢projects1
      :EndIf
-     :If 0=⎕SE.⎕NC'ProMa'
-         {}⎕SE.UCMD'ProMa.Version'
+     :If 9=⎕SE.⎕NC'Cider'
+         {}⎕SE.UCMD'Cider.Version'
+         hasOpenCiderProjects←0<≢projects2←⎕SE.Cider.ListOpenProjects 0
      :EndIf
-     projects2←⎕SE.ProMa.ListProjects 0
-     :If promaFlag←0<≢projects2
-         projects2←(⍪projects2),{⍵.PromaConfig.HOME}∘⍎¨projects2
-     :Else
-         projects2←0 2⍴⍬
-     :EndIf
-     :If 0<+/≢¨projects1,projects2
-         projects←(projects1,1)⍪(projects2,2)
-     :Else
+     projects←(projects1,1)⍪(projects2,2)
+     :If 0=≢projects
          path←'expand'F.NormalizePath F.PWD,F.CurrentSep  ⍝ Current dir is the best we can do here
          pathFlag←1
      :EndIf
  :ElseIf ~(1⍴path)∊'#⎕'                 ⍝ True if it's a folder path
      path←('expand'F.NormalizePath path),F.CurrentSep
+     ('Is not a folder: ',path)⎕SIGNAL 6/⍨~F.IsDir path
      pathFlag←1
  :EndIf
  :If 0=≢path
- :AndIf 0=acreFlag
-     path←F.PWD,F.CurrentSep
-     pathFlag←F.IsDir path,'APLSource'
+ :AndIf 0=hasOpenAcreProjects+hasOpenCiderProjects
+     path←F.PWD,F.CurrentSep,'APLSource'
+     pathFlag←F.IsDir path
  :EndIf
- :If acreFlag∨promaFlag
-     ind←SelectProject{⍵[;0 1],('acre project' 'ProMa project')[⍵[;2]-1]}projects
-     →(¯1=ind)/0
-     path←1⊃projects[ind;]
-     projects1[;1]←{'/'@(⍸'\'=⍵)⊣⍵}¨projects1[;1]
-     projects2[;1]←{'/'@(⍸'\'=⍵)⊣⍵}¨projects2[;1]
+ :If hasOpenAcreProjects∨hasOpenCiderProjects
+     :If 1=≢projects
+         name←↑projects
+         :If 1=≢projects1
+             path←↑projects1[;1]
+             path←(~all){⍵.AcreConfig.ProjectFolder,⍺/'APLSource/'}⍎name  ⍝ Fixed in acre
+             isAcreProject←1
+         :Else
+             path←(~all){⍵.HOME,'/',⍺/⍵.CIDER.source}⍎(↑projects2),'.CiderConfig'
+             isCiderProject←1
+         :EndIf
+     :Else
+         ind←SelectProject{⍵[;0 1],('acre project' 'Cider project')[⍵[;2]-1]}projects
+         →(¯1=ind)/0
+         name←↑projects[ind;]
+         isAcreProject←∨/name∘≡¨projects1[;0]
+         isCiderProject←∨/name∘≡¨projects2[;0]
+         :If isCiderProject
+             path←(~all){⍵.HOME,'/',⍺/⍵.CIDER.source}⍎name,'.CiderConfig'
+         :ElseIf isAcreProject
+             path←(~all){⍵.AcreConfig.ProjectFolder,⍺/'APLSource/'}⍎name  ⍝ Fixed in acre
+         :EndIf
+     :EndIf
+     projects1[;1]←F.NormalizePath projects1[;1]
+     projects2[;1]←F.NormalizePath projects2[;1]
  :EndIf
- :If acreFlag∨promaFlag∨pathFlag
+ :If isAcreProject∨isCiderProject∨pathFlag
      path←'expand'F.NormalizePath path,F.CurrentSep
-     :If F.IsDir path
+     :If 0<≢#.⎕NL⍳16
+     :AndIf F.IsDir path
          r←⍉⊃('recursive'recursive)('type'(0 1 3))F.Dir path
          r←(r[;1]=2)⌿r                 ⍝ Only regular files
-         :If 0=all
+         :If all
+             r←(~{≢'[/\\]\.git[/\\]'⎕S 0⊣⍵}¨r[;0])⌿r
+         :Else
              r←(({2⊃⎕NPARTS ⍵}¨r[;0])∊GetExtensions)⌿r
          :EndIf
          r[;2]←↓A.FormatDateTime⊃r[;2]
@@ -62,7 +81,7 @@
       ⍝ 0 in case text was provided as argument
       ⍝ An integer otherwise.
              :If ⍬≡noOf
-                 r←((10↑¨r[;1])≡¨⊂10↑1⊃r[¯1+≢r;])⌿r
+                 r←((10↑¨r[;1])≡¨⊂10↑1⊃r[¯1+≢r;])⌿r  ⍝ All from the day with the latest change
              :ElseIf 0≢noOf
                  :If ¯1=×noOf
                      buff←10↑¨r[;1]  ⍝ YYYY-MM-DD
@@ -83,12 +102,15 @@
                      :Else
                          r[;0]←(≢path)↓¨r[;0]
                      :EndIf
+                 :ElseIf all
+                     r[;0]←(≢path){∧/~'/\'∊⍵:⍵ ⋄ ⍺↓⍵}¨r[;0]
                  :Else
-                     :If (⊂{'/'@(⍸'\'=⍵)⊣⍵}path)∊AddSlash projects1[;1]
+                     :If ∨/name∘≡¨projects1[;0]
                          r[;0]←⎕SE.acre.Itemname r[;0]
-                     :ElseIf (⊂{'/'@(⍸'\'=⍵)⊣⍵}path)∊AddSlash projects2[;1]
-                         r[;0]←⎕SE.Link.GetItemName{'/'@(⍸'\'=⍵)⊣⍵}¨r[;0]
+                     :ElseIf ∨/name∘≡¨projects2[;0]
+                         r[;0]←⎕SE.Link.GetItemName¨F.EnforceSlash¨r[;0]
                      :EndIf
+                     r←(0<≢¨r[;0])⌿r
                  :EndIf
              :EndIf
          :EndIf

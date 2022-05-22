@@ -1,9 +1,0 @@
- {r}←Initialize;⎕TRAP;parent
- ⎕TRAP←0 'S'
- r←⍬
- ⎕WSID←AcreConfig.ProjectFolder,'project.dws'
- parent←⍕⎕THIS.Latest
- {}⎕SE.Tatin.LoadDependencies AcreConfig.ProjectFolder,'/packages/'parent
- parent←⍕⎕THIS.TestCases
- {}⎕SE.Tatin.LoadDependencies AcreConfig.ProjectFolder,'/packages_dev/'parent
-⍝Done
