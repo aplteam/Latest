@@ -6,70 +6,45 @@ The general idea of the `Latest` user command is to list the latest changes the 
 
 By default all changes made on the last day the code was changed are listed.
 
-Imagine you left a project half-baked because of a change of priorities. When you come back after a day or a week or a month you might or might not be able to continue where you left depending on your memory.
+Imagine you left a project half-baked because of a change of priorities. When you come back after a day or a week or a month you might or might not be able to continue where you left depending on your memory. `]Latest` to the recsue.
 
 ## Installation
 
 The contents of the ZIP files needs to go in any of the folders that Dyalog APL scans for user commands.
 
-For example, under Windows a folder `MyUCMDs` will be created in `%USERPROFILE%\Documents` when Dyalog is installed, and that is a good place for putting the `Latest\` folder and the related file `latest_uc.dyalog`.
+For example, under Windows a folder `MyUCMDs` will be created in `%USERPROFILE%\Documents` when Dyalog is installed, and that is a good place for putting the `Latest\` folder.
 
 However, note that under Linux and Mac-OS no such folder will be created, although it will be scanned for user commands in case it exists.
 
 ## Overview
 
-* `]latest` can act on the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
-* `]latest` can act on a specific folder like C:\MyProjects\ThisProject\APLSource
-* `]latest` can act on open Cider projects (no argument required)
+`]Latest` was mainly invented to work on opened projects, no matter whether they are managed by [Cider](https://github.com/aplteam/Cider) or by [acre](https://github.com/the-carlisle-group/Acre-Desktop).
 
-If no argument is specified **and** nor Cider lives in `⎕SE` (read: you are not using Cider), then it falls back to the current directory but will check if there is a direcotry `APLSource/` and if so, process the contents of that folder.
+If there is just one project open then `]Latest` will act on that one. If there are multiple projects opened the user will be asked which one shre want to focus on.
 
-By default the user command reports all objects or files changed lately (read: last day with any changes).
+But you can also provide an argument: this can be a path, either on the file system in the workspace (like `#.MyCode` or `⎕SE'`).
 
-This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do not own a timestamp that could be used. When acting on the file system however, this information is available.
+By default `]Latest` lists all changes from the day ther were any changes made at all, but instead you can ask for a specfic numbr of days, a specfic numbr of changes or all changaes made after a particular date.
 
-Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in particular together with the `-all` flag.
+By default `]Latest` looks for APL source files (defined by proper extensions), but you can also ask for all files with the `-all` flag.
 
-## The argument(s)
+## Eamples
 
-When an argument is specified it must be one of:
-
-* An integer
-  * A positive one defines...
-    * the number of objects/files to be listed if the integer is smaller than `1E7` 
-    * the date from which changes should be listed if the integer is greater than `1E7` 
-  * A negative one defines the number of days with any changes
-
-* A character vector. 
-  * If it starts with `#` or `⎕` the argument is treated as a namespace path
-  * If it does not start with `#` or `⎕` the argument is treated as a path to a project managed either by acre or by Proma
-* A vector of length two with an integer and a character vector in no particular order, see above
-
-In case no argument or only an integer is specified, `]Latest` will establish which Cider projects are currently opened.
-
-If it is just one it will act on it. If there are multiple projects open, then the user will be prompted.
-
-Note that if you provide a path pointing to an open Cider  project you should include `APLSource\` if you are interested just in APL source files. 
-
-If on the other hand you want to see more than just APL source files then you might want to specify the `-all` flag,
-see there for details.
-
-## FLags (options)
-
-`-recursive=0|1`
-
-: The default is 1, meaning that the path is searched recursively;
-  if you don't want this then specify a 0.
-       
-`-all`
-
-: By default only files with extensions that are recognized as APL source files (`.aplf`, `.aplc`, `.dyalog` etc.) are
-  listed. You can force `]Latest` to consider all files by specifying this flag.
-
-`-stats`
-
-: If this flag is specified you get a matrix with two columns, the first
-  one with all unique dates and the second one with the number of changes
-  on that date. The number of rows is defined by the number of unique dates.
-
-: If `-stats` is specified any integer provided as argument will be ignored.
+```
+      ]Latest
+ #.Latest.Latest.ADOC_Doc         2022-05-22 13:57:12 
+ #.Latest.Latest.AddSlash         2022-05-22 13:57:12 
+ #.Latest.Latest.EndIf            2022-05-22 13:57:12 
+ #.Latest.Latest.History          2022-05-22 13:57:12 
+ #.Latest.Latest.Run              2022-05-22 13:57:12 
+ #.Latest.Latest.SelectProject    2022-05-22 13:57:12 
+ #.Latest.Latest.Version          2022-05-22 13:57:12 
+ #.Latest.Latest_uc               2022-05-22 13:57:12 
+ #.Latest.TestCases.Assert        2022-05-22 13:57:12 
+ #.Latest.TestCases.Test_140      2022-05-22 13:57:12 
+ #.Latest.TestCases.Test_150      2022-05-22 13:57:12 
+ #.Latest.TestCases.Test_170      2022-05-22 13:57:12 
+ #.Latest.TestCases.Test_ZZZ_998  2022-05-22 13:57:12 
+      ]latest -v
+4.5.0+127 from 2022-05-22
+```
