@@ -1,0 +1,25 @@
+ R←Test_190(stopFlag batchFlag);⎕TRAP;data;path;parms
+⍝ Check whether a non-default "Source" is taken into account
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ R←T._Failed
+
+ #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
+ path←##.CiderConfig.HOME,'/TestProject2'
+ parms←⎕SE.Cider.CreateOpenParms ⍬
+ parms.folder←path
+ parms.parent←'#'
+ parms.projectSpace←'TEMP'
+ parms.quietFlag←1
+ Assert ⎕SE.Cider.OpenProject parms
+
+ data←##.Latest.Run'' 1 0 0 9999
+ →T.GoToTidyUp~0<≢data
+ →T.GoToTidyUp∨/∨/¨'/\'∘∊¨data[;0]
+ →T.GoToTidyUp~=/≢¨data(FilesAndDirs.ListFiles'./')
+
+ R←T._OK
+
+∆TidyUp:
+ {}⎕SE.Cider.CloseProject'#.TEMP'
+⍝Done

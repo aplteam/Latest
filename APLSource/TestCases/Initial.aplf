@@ -1,4 +1,14 @@
- Initial;buff
+ success←Initial parms;buff
+⍝ The test cases requires that no Cider project is open, therefore we check
+ success←1
+ :If 0<≢⎕SE.Cider.ListOpenProjects 0
+     :If 1 ∆YesOrNo 'The test suite required that no Cider projects are open. Close all?'
+         {}⎕SE.Cider.CloseProject''
+     :Else
+         ⎕←'Cancelled by user: there are open Cider projects'
+         success←0
+     :EndIf
+ :EndIf
  'TEMP'#.⎕NS''
  #.TEMP.⎕FX'r←Hello1' 'r←''You'''
  #.TEMP.⎕FX'r←Hello2' 'r←''Earth'''
@@ -10,7 +20,7 @@
  #.TEMP.Sub2.⎕FX'r←Hello6' 'r←''Universe'''
  #.TEMP.Sub2.⎕FX'r←Hello7' 'r←''Multiverse'''
  buff←⎕AT'#.TEMP.Hello1'
- ⍝ Far into the future in order to avoid clashes
+     ⍝ Far into the future in order to avoid clashes
  buff[1]←⊂2100 1 1 12 0 0 0
  buff(1159⌶)'#.TEMP.Hello1'
  buff[1]←⊂2100 1 2 13 0 0 0
