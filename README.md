@@ -6,15 +6,41 @@ The general idea of the `Latest` user command is to list the latest changes the 
 
 By default all changes made on the last day the code was changed are listed.
 
-Imagine you left a project half-baked because of a change of priorities or whatever. When you come back after a day or a week or a month you might or might not be able to continue where you left depending on your memory.
+Imagine you left a project half-baked because of a change of priorities or whatever. When you come back after a day or a week or a month you might or might not be able to continue where you left depending on your memory. `]Latest` to the rescue.
 
 There is a Dyalog user command that does something similar. However, it takes timestamps into account, meaning that it is helpless when it comes to scripts as they do not have a timestamp.
+
+
+## Overview
+
+`]Latest` was mainly invented to work on opened projects, no matter whether they are managed by [Cider](https://github.com/aplteam/Cider) or by [acre](https://github.com/the-carlisle-group/Acre-Desktop).
+
+If there is just one project open then `]Latest` will act on that one. If there are multiple projects open the user will be asked which one she want to work on.
+
+But you can also provide an argument: this can be a path, either on the file system or in the workspace (like `#.MyCode` or `⎕SE`).
+
+By default `]Latest` lists all changes from the last day when any changes were made at all, but instead you can ask for a specific number of days, a specific number of changes or all changes made after a particular date.
+
+By default `]Latest` looks for APL source files (defined by proper extensions), but you can also ask for all files with the `-all` flag.
+
+## Examples
+
+```
+      ]Latest
+ #.Latest.Latest.ADOC_Doc         2022-05-22 13:57:12 
+ #.Latest.Latest.AddSlash         2022-05-22 13:57:12 
+ #.Latest.Latest.EndIf            2022-05-22 13:57:12 
+ #.Latest.Latest.History          2022-05-22 13:57:12 
+ #.Latest.Latest.Run              2022-05-22 13:57:12 
+      ]latest -v
+4.5.0+127 from 2022-05-22
+```
 
 ## Installation
 
 The contents of the ZIP files needs to go into any of the folders that Dyalog APL scans for user commands.
 
-For example, under Windows a folder `MyUCMDs` will be created in `%USERPROFILE%\Documents` when Dyalog is installed, and that is a good place for putting the `Latest\` folder and the related file `latest_uc.dyalog`.
+For example, under Windows a folder `MyUCMDs` will be created in `%USERPROFILE%\Documents` when Dyalog is installed, and that is a good place for putting the `Latest\` folder.
 
 However, note that under Linux and Mac-OS no such folder will be created, although it will be scanned for user commands in case it exists. It needs to go into your home folder.
 
@@ -28,7 +54,7 @@ If no argument is specified **and** Cider does **not** live in `⎕SE` (read: yo
 
 By default the user command reports all objects or files changed lately (read: last day with any changes).
 
-This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do not own a timestamp that could be used. When acting on the file system however, this information is available.
+This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do not own a timestamp that could be used. When acting on the file system this information is available.
 
 Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in particular together with the `-all` flag.
 
