@@ -6,15 +6,17 @@ The general idea of the `Latest` user command is to list the latest changes the 
 
 By default all changes made on the last day the code was changed are listed.
 
-Imagine you left a project half-baked because of a change of priorities. When you come back after a day or a week or a month you might or might not be able to continue where you left depending on your memory.
+Imagine you left a project half-baked because of a change of priorities or whatever. When you come back after a day or a week or a month you might or might not be able to continue where you left depending on your memory.
+
+There is a Dyalog user command that does something similar. However, it takes timestamps into account, meaning that it is helpless when it comes to scripts as they do not have a timestamp.
 
 ## Installation
 
-The contents of the ZIP files needs to go in any of the folders that Dyalog APL scans for user commands.
+The contents of the ZIP files needs to go into any of the folders that Dyalog APL scans for user commands.
 
 For example, under Windows a folder `MyUCMDs` will be created in `%USERPROFILE%\Documents` when Dyalog is installed, and that is a good place for putting the `Latest\` folder and the related file `latest_uc.dyalog`.
 
-However, note that under Linux and Mac-OS no such folder will be created, although it will be scanned for user commands in case it exists.
+However, note that under Linux and Mac-OS no such folder will be created, although it will be scanned for user commands in case it exists. It needs to go into your home folder.
 
 ## Overview
 
@@ -22,7 +24,7 @@ However, note that under Linux and Mac-OS no such folder will be created, althou
 * `]latest` can act on a specific folder like C:\MyProjects\ThisProject\APLSource
 * `]latest` can act on open Cider projects (no argument required)
 
-If no argument is specified **and** nor Cider lives in `⎕SE` (read: you are not using Cider), then it falls back to the current directory but will check if there is a direcotry `APLSource/` and if so, process the contents of that folder.
+If no argument is specified **and** Cider does **not** live in `⎕SE` (read: you are not using Cider), then it falls back to the current directory but will ask the user for confirmation.
 
 By default the user command reports all objects or files changed lately (read: last day with any changes).
 
@@ -42,14 +44,14 @@ When an argument is specified it must be one of:
 
 * A character vector. 
   * If it starts with `#` or `⎕` the argument is treated as a namespace path
-  * If it does not start with `#` or `⎕` the argument is treated as a path to a project managed either by acre or by Proma
+  * If it does not start with `#` or `⎕` the argument is treated as a path to a project managed either by Cider or by acre
 * A vector of length two with an integer and a character vector in no particular order, see above
 
 In case no argument or only an integer is specified, `]Latest` will establish which Cider projects are currently opened.
 
 If it is just one it will act on it. If there are multiple projects open, then the user will be prompted.
 
-Note that if you provide a path pointing to an open Cider  project you should include `APLSource\` if you are interested just in APL source files. 
+Note that if you provide a path pointing to an open Cider  project you should include the folder that holds APL source files. 
 
 If on the other hand you want to see more than just APL source files then you might want to specify the `-all` flag,
 see there for details.

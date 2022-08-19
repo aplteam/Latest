@@ -1,4 +1,7 @@
 (
+ '* 5.1.0 from 2022-08-19'
+ '  * When latest falls back to the current directory the user is now asked for confirmation'
+ '  * README.md polished'
  '* 5.0.0 from 2022-06-06'
  '  * Does not use a workspace anymore but text files and Tatin packages'
  '    Note that this means ]Latest requires Tatin to be available at runtime'

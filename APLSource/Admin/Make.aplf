@@ -1,0 +1,27 @@
+ Make;M;myUCMDsFolder;targetPath;name;H;F
+ M←⎕SE.MakeHelpers
+ :If M.YesOrNo'Sure you want to create a new version of ]Latest ?'
+     H←##.CiderConfig.HOME
+     F←M.##.F
+     ⎕IO←1 ⋄ ⎕ML←1
+     myUCMDsFolder←M.GetMyUCMDsFolder''
+     targetPath←H,'/Dist'
+     name←'Latest'
+     ⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝
+     M.RecreateFolder targetPath
+     F.MkDir targetPath,'/Latest'
+     F.DeleteFile myUCMDsFolder,'/latest_uc.dyalog'          ⍝ Because we moved Latest_uc.dyalog...
+     :If ⎕NEXISTS myUCMDsFolder,'/Latest/Latest_uc.dyalog'   ⍝ ...into Latest/ only recently
+         M.CopyBetter(myUCMDsFolder,'/Latest/Latest_uc.dyalog')(H,'/APLSource/Latest_uc.dyalog')
+     :EndIf
+     {}M.IncreaseBuildID'#.',name,'.',name,'.Version'
+     (H,'/APLSource/Latest')M.CopyTo targetPath,'/',name,'/'
+     (targetPath,'/Latest/APLSource')⎕NMOVE targetPath,'/',name,'/',name
+     (H,'/APLSource/latest_uc.dyalog')M.CopyTo targetPath,'/',name,'/'
+     (H,'/packages')M.CopyTo targetPath,'/',name,'/'
+     M.CreateZipFile name targetPath(2⊃##.Latest.Version)
+     :If 1 M.YesOrNo'Copy the user command to MyUCMDs?'
+         M.RecreateFolder myUCMDsFolder,'/',name
+         (targetPath,'/',name)M.CopyTo myUCMDsFolder,'/'
+     :EndIf
+ :EndIf
