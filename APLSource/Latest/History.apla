@@ -1,4 +1,6 @@
 (
+ '* 5.1.1 from 2022-11-13'
+ '  * INDEX ERROR fixed in case a directory is canned but it''s empty'
  '* 5.1.0 from 2022-08-19'
  '  * When latest falls back to the current directory the user is now asked for confirmation'
  '  * README.md polished'
