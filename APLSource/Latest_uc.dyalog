@@ -1,4 +1,4 @@
-:Class  Latest_uc                                                                                         
+﻿:Class  Latest_uc                                                                                         
 ⍝ 2022-06-03 ⋄ Not using a workspace anymore, just text files and Link's "Import" command & Tatin packages
 ⍝ 2022-05-21 ⋄ Now Linux compatible and managed by Cider
 ⍝ 2022-05-21 ⋄ Now Linux compatible and managed by Cider
@@ -7,6 +7,9 @@
 ⍝ 2021-05-15 ⋄ On an ampty WS "nothing found" is reported (rather than throwing an error) and stuff got simplified
 ⍝ 2021-08-02 ⋄ Can now identify not only acre projects but also Proma projects
 ⍝ Project lives on https://github.com/aplteam/Latest
+
+
+
 ⍝ Kai Jaeger
 
     ∇ r←List;⎕IO;⎕ML ⍝ this function usually returns 1 or more namespaces (here only 1)
