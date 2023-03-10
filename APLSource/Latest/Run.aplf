@@ -22,7 +22,7 @@
      projects←(projects1,1)⍪(projects2,2)
      :If 0=≢projects
          path←'expand'F.NormalizePath F.PWD,F.CurrentSep  ⍝ Current dir is the best we can do here
-         :If YesOrNo'Are you sure that you want to scan ',path,' ?'
+         :If ##.CommTools.YesOrNo'Are you sure that you want to scan ',path,' ?'
              pathFlag←1
          :Else
              :Return

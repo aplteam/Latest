@@ -1,16 +1,4 @@
-﻿:Class  Latest_uc                                                                                         
-⍝ 2022-06-03 ⋄ Not using a workspace anymore, just text files and Link's "Import" command & Tatin packages
-⍝ 2022-05-21 ⋄ Now Linux compatible and managed by Cider
-⍝ 2022-05-21 ⋄ Now Linux compatible and managed by Cider
-⍝ 2020-02-12 ⋄ Major changes to both arguments and options/flags; see detailed help (???) for more information
-⍝ 2020-02-23 ⋄ The argument will now be recognized as a date when it's provided as an integer (yyyymmdd)
-⍝ 2021-05-15 ⋄ On an ampty WS "nothing found" is reported (rather than throwing an error) and stuff got simplified
-⍝ 2021-08-02 ⋄ Can now identify not only acre projects but also Proma projects
-⍝ Project lives on https://github.com/aplteam/Latest
-
-
-
-⍝ Kai Jaeger
+﻿:Class  Latest_uc
 
     ∇ r←List;⎕IO;⎕ML ⍝ this function usually returns 1 or more namespaces (here only 1)
       :Access Shared Public
@@ -28,8 +16,7 @@
       ⎕IO←⎕ML←1
       version←0 Args.Switch'version'
       :If version
-          r←LoadVersionNumber ⍬
-          :Return
+          r←⎕SE.Latest.Version ⋄ →0
       :EndIf
       recursive←1 Args.Switch'recursive'    ⍝ default is 1
       stats←Args.Switch'stats'              ⍝ default is empty
@@ -66,7 +53,7 @@
       :EndIf
       ref←LoadCode ⍬
       ref.⎕IO←0 ⋄ ref.⎕ML←3
-      r←ref.Run(path recursive stats all noOf)
+      r←⎕SE.Latest.Run(path recursive stats all noOf)
     ∇
 
     ∇ r←level Help Cmd;⎕IO;⎕ML
@@ -101,24 +88,12 @@
       :EndSelect
     ∇
 
-    ∇ {r}←LoadCode dummy;home;name;res
-      name←'⎕SE.Latest',(⍕(?+/⎕TS)+?10),'.Core'
-      r←⍎name ⎕SE.⎕NS''
-      home←GetHomeFolder
-      res←⎕SE.Link.Import name(home,'/APLSource')
-      ⎕SE.Tatin.LoadDependencies(home,'packages')(name,'.##')
+    ∇ {r}←LoadCode dummy
+      r←⎕SE.Tatin.LoadDependencies⊂'[MyUCMDs]Latest'
     ∇
 
     ∇ r←GetHomeFolder
       r←1⊃⎕NPARTS ##.SourceFile
-    ∇
-
-    ∇ r←LoadVersionNumber dummy;home;ns;res;buff
-      home←GetHomeFolder
-      ns←⎕NS''
-      buff←⊃⎕NGET(home,'APLSource/Version.aplf')1
-      res←ns.⎕FX buff
-      r←⊃{⍺,' from ',⍵}/1↓ns.Version
     ∇
 
 :EndClass

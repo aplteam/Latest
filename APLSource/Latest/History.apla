@@ -1,4 +1,6 @@
 (
+ '* 6.0.0 from 2023-03-10'
+ '  Is now a Tatin package and can be installed as such in [MyUCMDs]'
  '* 5.1.1 from 2022-11-24'
  '  * INDEX ERROR fixed in case a directory is scanned but it''s empty'
  '* 5.1.0 from 2022-08-19'

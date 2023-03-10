@@ -1,27 +1,29 @@
- Make;M;myUCMDsFolder;targetPath;name;H;F
- M←⎕SE.MakeHelpers
- :If M.YesOrNo'Sure you want to create a new version of ]Latest ?'
-     H←##.CiderConfig.HOME
-     F←M.##.F
-     ⎕IO←1 ⋄ ⎕ML←1
-     myUCMDsFolder←M.GetMyUCMDsFolder''
-     targetPath←H,'/Dist'
-     name←'Latest'
-     ⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝
-     M.RecreateFolder targetPath
-     F.MkDir targetPath,'/Latest'
-     F.DeleteFile myUCMDsFolder,'/latest_uc.dyalog'          ⍝ Because we moved Latest_uc.dyalog...
-     :If ⎕NEXISTS myUCMDsFolder,'/Latest/Latest_uc.dyalog'   ⍝ ...into Latest/ only recently
-         M.CopyBetter(myUCMDsFolder,'/Latest/Latest_uc.dyalog')(H,'/APLSource/Latest_uc.dyalog')
-     :EndIf
-     {}M.IncreaseBuildID'#.',name,'.',name,'.Version'
-     (H,'/APLSource/Latest')M.CopyTo targetPath,'/',name,'/'
-     (targetPath,'/Latest/APLSource')⎕NMOVE targetPath,'/',name,'/',name
-     (H,'/APLSource/latest_uc.dyalog')M.CopyTo targetPath,'/',name,'/'
-     (H,'/packages')M.CopyTo targetPath,'/',name,'/'
-     M.CreateZipFile name targetPath(2⊃##.Latest.Version)
-     :If 1 M.YesOrNo'Copy the user command to MyUCMDs?'
-         M.RecreateFolder myUCMDsFolder,'/',name
-         (targetPath,'/',name)M.CopyTo myUCMDsFolder,'/'
-     :EndIf
+ {r}←Make batch;M;myUCMDsFolder;targetPath;H;F;C;sourceFolder;cfg;currentVersion;caption;options;choice;version;zipFilename;flag;question;res
+ r←0
+ ⎕IO←1 ⋄ ⎕ML←1
+ M←⎕SE.MakeHelpers ⋄ C←##.CiderConfig ⋄ F←##.FilesAndDirs
+ targetPath←C.HOME,'/Dist/'
+ sourceFolder←C.HOME,'/',C.CIDER.source
+ myUCMDsFolder←M.GetMyUCMDsFolder''
+ cfg←M.GetPackageCfg C.HOME
+ :If 0=⎕NC'version'
+     currentVersion←M.DropBuildNumber cfg.version
+     caption←'Bump version of ',cfg.name,' (currently on ',currentVersion,')'
+     options←'No action' 'Bump patch number' 'Bump minor number' 'Bump major number'
+     choice←caption 0 1 M.Select options
+     version←choice⊃'' '+0.0.1' '+0.1.0' '+1.0.0'
  :EndIf
+ :If ~batch
+     M.FetchLaterUserCommand'latest_uc.dyalog'cfg C('[MyUCMDs]latest')
+ :EndIf
+ M.RecreateFolder targetPath
+ zipFilename←⎕SE.Tatin.BuildPackage C.HOME targetPath''
+ ⎕←'*** New version build successfully:',(⎕UCS 13),'   ',zipFilename
+ :If ~batch
+     flag←⎕NEXISTS myUCMDsFolder,'/Latest'
+     question←((1+flag)⊃'Install' 'Update'),' the user command in MyUCMDs\?'
+ :AndIf 1 M.YesOrNo question
+     M.RecreateFolder myUCMDsFolder,'/Latest'
+     res←⎕SE.Tatin.InstallPackages zipFilename'[MyUCMDs]'
+ :EndIf
+⍝Done
