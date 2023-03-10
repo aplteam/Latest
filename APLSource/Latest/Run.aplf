@@ -1,10 +1,11 @@
- r←Run(path_ recursive stats all noOf);hasOpenAcreProjects;F;A;bool;projects;buff;pathFlag;path;projects1;hasOpenCiderProjects;projects2;ind;ref;name;isAcreProject;isCiderProject
+ r←Run(path_ recursive stats all noOf);hasOpenAcreProjects;F;A;bool;projects;buff;pathFlag;path;projects1;hasOpenCiderProjects;projects2;ind;ref;name;isAcreProject;isCiderProject;⎕ML;⎕IO
 ⍝ Handles the following cases:
 ⍝ * Investigate the workspace (simple namespace or #)
 ⍝ * Investigate (currently tracked/opened) acre projects
 ⍝ * Investigate (currently tracked/opened) Cider projects
 ⍝ * Investigate a folder
- A←##.APLTreeUtils2 ⋄ F←##.FilesAndDirs
+ ⎕IO←0 ⋄ ⎕ML←3
+ A←APLTreeUtils2 ⋄ F←FilesAndDirs
  r←''
  pathFlag←hasOpenAcreProjects←hasOpenCiderProjects←0
  path←path_
@@ -22,7 +23,7 @@
      projects←(projects1,1)⍪(projects2,2)
      :If 0=≢projects
          path←'expand'F.NormalizePath F.PWD,F.CurrentSep  ⍝ Current dir is the best we can do here
-         :If ##.CommTools.YesOrNo'Are you sure that you want to scan ',path,' ?'
+         :If CommTools.YesOrNo'Are you sure that you want to scan ',path,' ?'
              pathFlag←1
          :Else
              :Return

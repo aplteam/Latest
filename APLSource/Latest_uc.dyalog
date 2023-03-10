@@ -13,7 +13,7 @@
 
     ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;all;version
       :Access Shared Public
-      ⎕IO←⎕ML←1
+      ⎕IO←1 ⋄ ⎕ML←3
       version←0 Args.Switch'version'
       :If version
           r←⎕SE.Latest.Version ⋄ →0

@@ -1,4 +1,4 @@
- R←Test_190(stopFlag batchFlag);⎕TRAP;data;path;parms
+ R←Test_190(stopFlag batchFlag);⎕TRAP;data;path;parms;log;success
 ⍝ Check whether a non-default "Source" is taken into account
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
@@ -11,7 +11,8 @@
  parms.parent←'#'
  parms.projectSpace←'TEMP'
  parms.quietFlag←1
- Assert ⎕SE.Cider.OpenProject parms
+ (success log)←⎕SE.Cider.OpenProject parms
+ Assert success
 
  data←##.Latest.Run'' 1 0 0 9999
  →T.GoToTidyUp~0<≢data

@@ -1,7 +1,7 @@
  {r}←Make batch;M;myUCMDsFolder;targetPath;H;F;C;sourceFolder;cfg;currentVersion;caption;options;choice;version;zipFilename;flag;question;res
  r←0
  ⎕IO←1 ⋄ ⎕ML←1
- M←⎕SE.MakeHelpers ⋄ C←##.CiderConfig ⋄ F←##.FilesAndDirs
+ M←⎕SE.MakeHelpers ⋄ C←##.CiderConfig ⋄ F←##.Latest.FilesAndDirs
  targetPath←C.HOME,'/Dist/'
  sourceFolder←C.HOME,'/',C.CIDER.source
  myUCMDsFolder←M.GetMyUCMDsFolder''
