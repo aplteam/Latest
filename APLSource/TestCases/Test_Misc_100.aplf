@@ -1,4 +1,4 @@
- R←Test_100(stopFlag batchFlag);⎕TRAP;res
+ R←Test_Misc_100(stopFlag batchFlag);⎕TRAP;res
 ⍝ Specify something that does not exist and check result
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  R←T._Failed

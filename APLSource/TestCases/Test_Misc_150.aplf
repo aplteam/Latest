@@ -1,4 +1,4 @@
- R←Test_150(stopFlag batchFlag);⎕TRAP;data;expected;path;result;path2
+ R←Test_Misc_150(stopFlag batchFlag);⎕TRAP;data;expected;path;result;path2
 ⍝ List for an acre project
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
@@ -12,13 +12,13 @@
 
  path←##.CiderConfig.HOME,'/TestProject'
  result←⎕SE.acre.OpenProject path'#.TEMP2'
-Assert'#.TEMP2'≡result
+ Assert'#.TEMP2'≡result
 
  path2←path,'/APLSource/'
  data←##.Latest.Run path2 1 0 0 ⍬
- expected←{⍵/⍨FilesAndDirs.IsFile ⍵}0⊃('recursive' 1)FilesAndDirs.Dir path2
+ expected←{⍵/⍨FilesAndDirs.IsFile ⍵}1⊃('recursive' 1)FilesAndDirs.Dir path2
  expected←(≢path2)↓¨expected
- →T.GoToTidyUp expected≢data[;0]
+ →T.GoToTidyUp expected≢data[;1]
 
  data←##.Latest.Run path2 1 0 0 3
  →T.GoToTidyUp 3≠≢data

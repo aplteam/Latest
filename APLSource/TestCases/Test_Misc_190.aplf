@@ -1,4 +1,4 @@
- R←Test_190(stopFlag batchFlag);⎕TRAP;data;path;parms;log;success
+ R←Test_Misc_190(stopFlag batchFlag);⎕TRAP;data;path;parms;log;success
 ⍝ Check whether a non-default "Source" is taken into account
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
@@ -16,7 +16,7 @@
 
  data←##.Latest.Run'' 1 0 0 9999
  →T.GoToTidyUp~0<≢data
- →T.GoToTidyUp∨/∨/¨'/\'∘∊¨data[;0]
+ →T.GoToTidyUp∨/∨/¨'/\'∘∊¨data[;1]
  →T.GoToTidyUp~=/≢¨data('recursive'FilesAndDirs.ListFiles #.TEMP.CiderConfig.HOME,'/',#.TEMP.CiderConfig.CIDER.source,'/')
 
  R←T._OK

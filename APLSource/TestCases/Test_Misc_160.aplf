@@ -1,4 +1,4 @@
- R←Test_160(stopFlag batchFlag);⎕TRAP;data
+ R←Test_Misc_160(stopFlag batchFlag);⎕TRAP;data
 ⍝ Use recursive←0 and ./ as path with -all
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
@@ -6,7 +6,7 @@
 
  data←##.Latest.Run'./' 0 0 1 9999
  →T.PassesIf 0<≢data
- →T.FailsIf∨/∨/¨'/\'∘∊¨data[;0]
+ →T.FailsIf∨/∨/¨'/\'∘∊¨data[;1]
  →T.PassesIf=/≢¨data(FilesAndDirs.ListFiles'./')
 
  R←T._OK

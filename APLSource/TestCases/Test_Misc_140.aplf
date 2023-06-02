@@ -1,10 +1,10 @@
- R←Test_140(stopFlag batchFlag);⎕TRAP;data;expected;path;result;buff
+ R←Test_Misc_140(stopFlag batchFlag);⎕TRAP;data;expected;path;result;buff
 ⍝ "Stats" for an acre project
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
  :If 0=⎕SE.⎕NC'acre'
      :Trap 0
-         ⎕SE.UCMD'acre.Version'
+         {}⎕SE.UCMD'acre.Version'
      :Else
          R←T._NotApplicable ⋄ →0
      :EndTrap
@@ -22,7 +22,7 @@
  data←##.Latest.Run path 1 1 0 ⍬
  →T.GoToTidyUp(,2)≢⍴⍴data
  buff←##.Latest.Run path 1 0 0 999
- →T.GoToTidyUp(≢buff)≠+/data[;1]
+ →T.GoToTidyUp(≢buff)≠+/data[;2]
 
  R←T._OK
 
