@@ -1,0 +1,16 @@
+ r←Test_Load_083(stopFlag batchFlag);⎕TRAP
+⍝ Load a package by specifying just group, name and major number; should NOT load a beta version
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕EX TC.GetTatinRootSpace'#'
+ #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''    ⍝ Used to load stuff into
+
+ {}1 TC.LoadPackages'[localhost]example-JustOneBeta-0' '#.TEMP'
+ →T.GoToTidyUp 0<≢#.TEMP.⎕nl⍳16
+
+ r←T._OK
+
+∆TidyUp:
+ #.⎕EX TC.GetTatinRootSpace'#'
+⍝Done

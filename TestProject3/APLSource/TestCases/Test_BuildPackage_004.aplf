@@ -1,0 +1,37 @@
+ r←Test_BuildPackage_004(stopFlag batchFlag);⎕TRAP;rc;msg;parms
+ ;dir;src;dist;cfg;zipfile;ns;list;expected
+⍝ Build a package with multiple files spreaded over several levels into special source folder
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕EX TC.GetTatinRootSpace'#'
+ dir←∆GetTempDir ⍬
+ (src dist)←(⊂dir,'/'),¨'src' 'dist'
+ src,←'/v0.1.0'
+ F.MkDir(src,'/APLSource/SubDir')dist
+
+ ('foo1←{1}')F.NPUT src,'/APLSource/foo1.apln'
+ ('foo2←{2}')F.NPUT src,'/APLSource/SubDir/foo2.apln'
+ cfg←TC.InitPackageConfig ⍬
+ cfg.group←'Example'
+ cfg.name←'Package_B'
+ cfg.version←'0.1.0'
+ cfg.source←'APLSource'
+ cfg.os_win←1
+ TC.WritePackageConfigFile src cfg
+
+ parms←TC.CreateBuildParms src
+ parms.targetPath←dist
+ zipfile←TC.BuildPackage parms
+ →T.GoToTidyUp 0≥≢zipfile
+ list←∆GetFileListFromZipArchive zipfile
+ expected←'apl-package.json' 'APLSource/foo1.apln' 'APLSource/SubDir/foo2.apln'
+ →T.GoToTidyUp~expected ∆LazyMatchPaths list
+
+ r←T._OK
+
+∆TidyUp:
+ (rc msg)←F.RmDirByForce dir
+ msg Assert rc=0
+ #.⎕EX TC.GetTatinRootSpace'#'
+⍝Done

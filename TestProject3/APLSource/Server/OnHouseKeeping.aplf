@@ -1,0 +1,44 @@
+ {r}←OnHouseKeeping msg;savedAt;rideable;rideableOld;rideActive
+⍝ Used for these purposes:
+⍝ * Check ∆SHUTDOWN; if this is 1 shut the server down
+⍝ * Check whether the WS has been updated since it was loaded. If so reload.
+⍝ * Check the INI file; if it has been changed re-instantiate the INI file
+⍝ * Check whether the file "year" in the log folder is identical to ⊃⎕TS; if it
+⍝   is not then take action.
+ r←0
+ ReportNumberOfThreads G.INI
+ :If 1=∆SHUTDOWN
+     ∆SHUTDOWN←¯1  ⍝ In case this function runs again before it comes to an end
+     {}⎕NQ'#'GetQuitDQEvent
+     P.WindowsEventLog'Shutting down'
+     P.G.Server Log'Tatin Server is shutting down'
+     :If ~A.IsDevelopment                 ⍝ Will ⎕OFF in runtime
+         ⎕TRAP←0 'S'
+         ∘∘∘ ⍝ Intentional
+     :EndIf
+ :ElseIf ¯1≠∆SHUTDOWN
+     :If 0<⎕NC'∆WS_HASH'
+         ReloadThisWorkspaceIfChanged G.INI
+     :EndIf
+     :If G.CredentialsTimestamp≢Reg.Timestamp2Float⊃⊃('type' 3)F.Dir G.RegistryPath,'/Credentials.txt'
+         G←ProcessCredentials G         ⍝  It has changed, so we read it again
+     :EndIf
+     savedAt←Reg.Timestamp2Float⊃⊃('type' 3)F.Dir G.INI.IniFilename
+     :If G.INI.EstablishedAt<savedAt
+         rideActive←0 G.INI.Get'RIDE:active'
+         P.G(P.ProcessIniFile)←G.INI.IniFilename  ⍝ ... we initialize from scratch
+         Log'INI file re-instantiated because it was changed on disk'
+         rideable←P.CheckForRide P.G.INI
+         :If rideActive≠rideable
+             :If rideable
+                 msg←'Ride is now enabled'
+             :Else
+                 msg←'Ride is now disabled'
+             :EndIf
+         :EndIf
+         Log msg
+     :EndIf
+     Logs.CheckLogFile∊P.LogFolder
+     ExecuteMaintenanceCode G
+ :EndIf
+⍝Done

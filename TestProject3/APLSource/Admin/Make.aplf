@@ -1,0 +1,98 @@
+ {r}←{noQLX}Make batchFlag;P;parms;P_;list;F;C;CFG;path;file1;file2;ts1;ts2;versionOfAPL
+⍝ This function will start two APL sessions in succession in order to open the Tatin
+⍝ project and then execute first `MakeClient` (which bumps the build number) and then,
+⍝ in the second session, `MakeServer`, which does not bump the version number.
+⍝ It also re-compiles the documentation (=creates HTML files from Markdown)
+⍝ It cannot be done in one go, and it cannot be done in batch mode from the current session.
+⍝ The right argument is expected to be a Boolean that tells whether this runs in batch
+⍝ mode or not. In batch mode no messages are printed, and no interaction with a user is
+⍝ attempted. Also, Tatin is not updated in the MyUCMDs folder then.
+ r←⍬
+ Assert(⊂batchFlag)∊0 1
+ versionOfAPL←'18.0'
+ 'Currently we build on Windows only, sorry'Assert'Win'≡##.APLTreeUtils2.GetOperatingSystem ⍬
+ F←##.FilesAndDirs ⋄ C←##.Client ⋄ CFG←##.CiderConfig ⋄ F.APLTreeUtils2←##.APLTreeUtils2
+ {}F.Cd CFG.HOME
+ 0 0⍴{⎕←⍵}⍣(~batchFlag)⊣'   Current dir is now: ',CFG.HOME
+ 'Check current directory'Assert{'Tatin'≡⊃¯1↑(~⍵∊'/\')⊆⍵}1⊃1 ⎕NPARTS''
+ noQLX←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'noQLX'
+
+ :If 0 ⍝ I am afraid this must be done manually...
+     :If ~batchFlag
+         :If UpdatePackages ⍬
+         :AndIf ~0 C.YesOrNo'   At least one Tatin package was updated. It is recommended to reload the project and run "Make" from scratch. Continue anyway?'
+             :Return
+         :EndIf
+     :EndIf
+ :EndIf
+
+ :If F.IsDir path←C.GetMyUCMDsFolder'Tatin'                 ⍝ Does a folder Tatin/  live in MyUCMDs/ ?
+ :AndIf F.IsFile path,'/Tatin.dyalog'                       ⍝ Does the Tatin user command script live in MyUCMDs/ ?
+     file1←path,'/Tatin.dyalog'
+     file2←##.CiderConfig.HOME,'/APLSource/Tatin.dyalog'
+ :AndIf ≢/{⊃⎕NGET ⍵ 0}¨file1 file2                          ⍝ Are the two not identical ?
+     (ts1 ts2)←{¯1 1 ⎕DT⊂⊃⊃('type' 3)F.Dir ⍵}¨file1 file2
+     :If ts2<ts1
+         :If 1 C.YesOrNo'The Tatin user command script in MyUCMDs/ appears to be newer than the one in the project - copy?'
+             file2 ⎕NCOPY⍠('IfExists' 'Replace')⊣file1
+         :EndIf
+     :Else
+         ⍝ We don't need to do anything because it will be copied over later on, if the user wishes so.
+     :EndIf
+ :EndIf
+ 'Create!'F.CheckPath'./Dist'
+ list←⊃F.Dir'./Dist/*.zip'
+ list←('.zip'∘≡¨3⊃¨⎕NPARTS¨list)/list
+ list←(∨/¨{∨/¨'Tatin-Client' 'Tatin-Server' 'Tatin-Documentation'⍷¨⊂⍵}¨list)/list
+ F.DeleteFile list
+ P←##.APLProcess
+ parms←P.CreateParms
+ parms.Exe←GetAPLVersion versionOfAPL
+ parms.CommandLineArgs,←'load="APLSource/Admin/Make_.aplc" '
+ parms.CommandLineArgs,←{0=≢v←2 ⎕NQ #'GetEnvironment'⍵:v ⋄ ⍵,'="',v,'"'}'DYALOGSTARTUPSE'
+ parms.CommandLineArgs,←' lx="1 #.Make_.Run 1"'
+ :If 0  ⍝ Only for analyzing problems:
+     parms.CommandLineArgs,←' -exec_setup=0 '
+     parms.CommandLineArgs,←' -stop_in_setup=1 '
+ :EndIf
+ :If noQLX
+     parms.CommandLineArgs,←' -x'
+ :EndIf
+ parms.SessionFile←1
+ parms.WindowsStyle←'Normal'
+ P_←⎕NEW P(,⊂parms)
+ 0 0⍴{⎕←⍵}⍣(~batchFlag)⊣'   Process started for "making" the Tatin Client...'
+ {⍵.HasExited:shy←0 ⋄ _←⎕DL 0.2 ⋄ ∇ ⍵}P_
+ 'The process exited with an error code'Assert 0=P_.Proc.ExitCode
+ 0 0⍴{⎕←⍵}⍣(~batchFlag)⊣'   Now compiling HTML from the markdown files (documentation)...'
+ CompileDocumentation ⍬
+ UpdateDocumentation ⍬
+ parms←P.CreateParms
+ parms.CommandLineArgs←'load="APLSource/Admin/Make_.aplc" '
+ parms.CommandLineArgs,←{0=≢v←2 ⎕NQ #'GetEnvironment'⍵:v ⋄ ⍵,'="',v,'"'}'DYALOGSTARTUPSE'
+ parms.CommandLineArgs,←' lx="0 #.Make_.Run 2"'
+ parms.Exe←GetAPLVersion versionOfAPL
+ :If 0          ⍝ Only for analyzing problems:
+     parms.CommandLineArgs,←' -exec_setup=0'
+     parms.CommandLineArgs,←' -stop_in_setup=1 '
+ :EndIf
+ :If noQLX      ⍝ Only for analyzing problems:
+     parms.CommandLineArgs,←' -x'
+ :EndIf
+ parms.SessionFile←1
+ parms.WindowsStyle←'Normal'
+ P_←⎕NEW P(,⊃parms)
+ 0 0⍴{⎕←⍵}⍣(~batchFlag)⊣'   Process started for "making" the Tatin Server...'
+ {⍵.HasExited:shy←0 ⋄ _←⎕DL 0.2 ⋄ ∇ ⍵}P_
+ 'The process exited with an error code'Assert 0=P_.Proc.ExitCode
+ UpdateTestServerAssets ⍬
+ {}⎕SE.Link.Refresh'#.Tatin'
+ :If CopyTatinClientToMyUCMDs batchFlag
+ :AndIf #.Tatin.Registry.Version≢⎕SE.Tatin.Version
+     ⎕SE.⎕EX¨'Tatin' '_Tatin'
+     Assert #.Tatin.Registry.Version≡⎕SE.UCMD'Tatin.Version'
+ :EndIf
+ path←(⎕SE._Tatin.Client.GetMyUCMDsFolder''),'/',⎕SE._Tatin.Client.UserSettings.cfg_name
+ #.Tatin.Registry ⎕SE.Link.Fix⊃⎕NGET(CFG.HOME,'/APLSource/Registry/Version.aplf')1  ⍝ Because building the Client changes the build number
+ 0 0⍴{⎕←⍵}⍣(~batchFlag)⊣'*** Done'
+⍝Done

@@ -1,0 +1,54 @@
+ response←request GetPackageList packageID;data;html;noOfVersions;IDs;parms;list5;mat;group;msg;buff
+⍝ Respond to a request for some or all packages, HTML or JSON
+ :If Reg.IsValidPackageName packageID
+     :If 0<≢group←EstablishGroup packageID
+         :If 1=≢group
+             packageID←(1⊃group),'-',packageID
+         :Else
+             response←request Respond 400
+             response.Content←'The package exists in multiple groups: ',⊃{⍺,',',⍵}/group
+             :Return
+         :EndIf
+     :Else
+         msg←'Package ',packageID,' not found'
+         :If IsJsonRequest request.Headers
+             response←msg Return404 request
+         :Else
+             response←request RespondWithHTML 404 msg
+         :EndIf
+         :Return
+     :EndIf
+ :EndIf
+ parms←⎕NS''
+ parms.group←request R.GetQueryParameter'group'
+ parms.tags←request R.GetQueryParameter'tags'
+ :If 0<≢parms.date←request R.GetQueryParameter'date'
+     parms.date←{⊃(//)⎕VFI ⍵}parms.date
+     parms.aggregate←0
+ :Else
+     parms.date←0
+     :If 0<≢buff←request R.GetQueryParameter'aggregate'
+         parms.aggregate←⊃A.ToNum buff
+     :EndIf
+ :EndIf
+ parms.project_url←{(⊂∊⍵)∊,¨'01':⍵ ⋄ 0}request R.GetQueryParameter'project_url'
+ parms.since←{0=≢⍵:0 ⋄ ⍵}request R.GetQueryParameter'since'
+ parms.(os_lin os_mac os_win)←1
+ buff←request∘R.GetQueryParameter¨'os_lin' 'os_mac' 'os_win'
+ :If 1∊≢¨buff
+     parms.(os_lin os_mac os_win)←{0=≢⍵:0 ⋄ ⊃A.ToNum ⍵}¨buff
+ :EndIf
+ parms.userCommand←(,'1')≡,request R.GetQueryParameter'userCommand'
+ parms←Reg.CheckParmsForListPackages parms
+ :If IsJsonRequest request.Headers
+     :If 0=≢data←Reg.ListPackages(G.RegistryPath,'/',packageID)parms
+         response←Return404 request
+     :Else
+         response←request ReturnJSON Reg.JSON data
+     :EndIf
+ :Else  ⍝ It's a request from a Browser
+     parms.tags←1
+     mat←packageID GetPackageList_ parms
+     html←packageID PrepareHtmlPageForPackageList mat
+     response←request ReturnHTML html
+ :EndIf

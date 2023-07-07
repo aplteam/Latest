@@ -1,0 +1,92 @@
+  r←{noBetas}InstallPackages(identifiers targetFolder);identifier_;cfg;qdmx;targetFolder_;isUCMD;ucScriptName
+ ;buildList;level;requestedBy;packageID2;installFolder;tempDir;zipFilename;id;identifier;packageID;alias
+⍝ Install package(s) `identifiers` in `targetFolder`.\\
+⍝ `identifiers` must be a simple char vector holding the package IDs (possibly incomplete) for one or more packages.
+⍝ Multiple packages must be separated by commas.
+⍝ `targetFolder` must be one of:
+⍝ * Path to a folder
+⍝ * [MyUCMDs] (case independent)\\
+⍝   In this case you may of may not specify the name of a sub-folder after `[MyUCMDs`]`; if you don't then the name of the package rules.
+⍝ `identifierd` must be one (or more) of:
+⍝ * an HTTP request for a package
+⍝ * a ZIP file holding a package
+⍝ * a folder holding a package (like file://C:\Temp\group-name-version\\)
+⍝ * a path to a package in a registry (like [RegistryAlias]{group}-{name}-{major.minor.patch} or C:\MyReg\{group}-{name}-{major.minor.patch})
+⍝ * a package ID; Tatin will then attempt to find that package in the Registries defined in the Client's config file.\\
+⍝ * The internal alias [MyUCMDs] (case independent). This installs the package(s) into a folder MyUCMDs/packages
+⍝ You may omit minor+patch or even major+minor+patch in order to install the latest version.
+⍝ By default beta versions are considered in case the package ID is incomplete, but you can suppress them by passing 0 as ⍺.\\
+⍝ `←` Full name of principal packages finally loaded, including an alias if specified.
+ r←''
+ noBetas←{0<⎕NC ⍵:⍎⍵ ⋄ Reg.GetNoBetasDefault}'noBetas'
+ identifiers←','(≠⊆⊢)identifiers
+ EstablishEmptyPermanentConnections 0
+ isUCMD←'[myucmds]'{⍺≡⎕C(≢⍺)↑⍵}targetFolder
+ :If ~isUCMD
+     'Invalid target folder: must not contain "[]" (except for [MyUCMDs])'Assert~∨/'[]'∊targetFolder
+ :EndIf
+ :If isUCMD∧1<≢identifiers
+     'You must not specify a name after [MyUCMDs] when installing more than one package'Assert 0=≢(≢'[myucmds]')↓targetFolder
+ :EndIf
+ :Trap 998
+     :For identifier_ :In identifiers
+         (alias identifier_)←SplitAtAlias identifier_
+         identifier←ReplaceRegistryAlias identifier_
+         ('Unknown',(∧/'[]'∊identifier_)/' alias')Assert 0<≢identifier
+         identifier←noBetas CheckVersion identifier
+         :If isUCMD
+             :If 0=≢{⍵↓⍨⍵⍳']'}targetFolder
+                 :If IsHTTP identifier
+                     targetFolder_←GetMyUCMDsFolder{'-'∊⍵:⍵↓⍨⍵⍳'-' ⋄ ⍵}{'/'∊⍵:⍵↓⍨⍵⍳'/' ⋄ ⍵}RemoveHttpProtocol Reg.RemoveVersionNumber identifier
+                 :Else
+                     targetFolder_←GetMyUCMDsFolder{'-'∊⍵:⍵↓⍨⍵⍳'-' ⋄ ⍵}Reg.RemoveVersionNumber 2⊃⎕NPARTS identifier
+                 :EndIf
+             :Else
+                 targetFolder_←GetMyUCMDsFolder'/',{⍵↓⍨⍵⍳']'}targetFolder
+             :EndIf
+         :Else
+             targetFolder_←targetFolder
+         :EndIf
+         packageID←GetPackageIDFromFilename identifier
+         {}{'Unable to create target directory'Assert F.MkDir ⍵}⍣(~F.IsDir targetFolder_)⊢targetFolder_
+         :If 0=≢identifier    ⍝ Not found?
+             PrintToSession'Not found: ',identifier_
+             :Continue
+         :EndIf
+         PrintToSession'  Attempting to install ',identifier,'...'
+         :If ∧/~'\/'∊identifier
+         :AndIf '.zip'≢⎕C ¯4↑identifier
+             :If ~∨/'/\:'∊identifier
+                 identifier←(EstablishRegistry packageID),packageID
+                 :If 0=≢(-≢packageID)↓identifier
+                     :Continue
+                 :EndIf
+                 PrintToSession⊃{'Installing <',⍵,'> from Registry ',⍺,'...'}/{⍵{(⍵↓⍺)(⍵↑⍺)}1+-'/'⍳⍨⌽⍵}identifier
+             :EndIf
+         :EndIf
+         :If '.zip'≡⎕C ¯4↑identifier
+         :AndIf Reg.IsHTTP identifier
+             CloseConnections 1
+             'ZIP files cannot be installed via HTTP'Assert 0
+         :EndIf
+         PrintToSession'  Establish dependencies...'
+         r,←targetFolder_ InstallPackage_ alias identifier
+         packageID←GetPackageIDFromFilename identifier
+         cfg←ReadPackageConfigFile targetFolder_,'/',packageID,'/',CFG_Name
+         :If 0<≢cfg.userCommandScript
+             ucScriptName←⊃,/1↓⎕NPARTS cfg.userCommandScript
+             :If Reg.F.IsFile targetFolder_,'/',ucScriptName
+                 Reg.F.DeleteFile targetFolder_,'/',ucScriptName  ⍝ Probably a re-install
+             :EndIf
+             ⍝ Move the user command script to the root of the install folder (usually something like [MyUCMDs])
+             (targetFolder_,'/')(⎕NMOVE Reg.F.ExecNfunction)targetFolder_,'/',packageID,'/',ucScriptName
+         :EndIf
+     :EndFor
+     CloseConnections 0
+ :Else
+     qdmx←⎕DMX
+     CloseConnections 1
+     :Trap 0 ⋄ F.RmDir tempDir ⋄ :EndTrap
+     (⊃{0=≢⍺:⍵ ⋄ ⍺}/qdmx.(Message EM))⎕SIGNAL{⍺=0:⍵ ⋄ ⍺}/qdmx.(ENX EN)
+ :EndTrap
+⍝Done

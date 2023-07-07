@@ -1,0 +1,14 @@
+ {r}←UpdateDocumentation dummy;list;targetPath;sourcePath;targetPaths
+⍝ Update the Documentation in Assets/docs/ as well as the Server with what we've got in Dist/
+ r←⍬
+ targetPaths←'./Assets/docs/' './Dist/Server/Assets/docs/'
+ sourcePath←'./html/'
+
+ :For targetPath :In targetPaths
+     F.RmDir targetPath
+     ⎕DL 0.2
+     F.MkDir targetPath
+     list←F.Dir sourcePath,'*.html'
+     targetPath∘⎕NCOPY¨list
+ :EndFor
+⍝Done

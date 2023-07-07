@@ -1,6 +1,13 @@
 (
  'Test cases polished and pushed, but no new version created'
  ''
+ '* 6.0.1 from 2023-07-07'
+ '  * The -all flag was renamed to -allFiles (this does not break anything!)'
+ '  * The code was loaded whenever the user command was executed'
+ '  * The -all flag did not work'
+ '  * README fixed regarding installation'
+ '  * Documentation corrected and amended'
+ '  * Test cases added for Cider projects and -allFiles  '
  '* 6.0.0 from 2023-03-10'
  '  Is now a Tatin package and can be installed as such in [MyUCMDs]'
  '* 5.1.1 from 2022-11-24'

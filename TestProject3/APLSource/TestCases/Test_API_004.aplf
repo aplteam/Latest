@@ -1,0 +1,44 @@
+ r←Test_API_004(stopFlag batchFlag);⎕TRAP;dir;src;zip;serverPath;body;cfg;packageID;rc;msg;zipFilename;list2;list1
+⍝ Exercise ⎕SE.Tatin.DeletePackage on local Tatin server
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕EX TC.GetTatinRootSpace'#'
+ dir←∆GetTempDir ⍬
+ (src zip)←(⊂dir,'/'),¨'src' 'zip'
+ F.MkDir src zip
+ serverPath←'TestServer\Registry'
+
+ body←':Namespace Test' 'foo←{' '⍵' '}' ':EndNamespace'
+ (⊂body)F.NPUT src,'/Test.apln'
+ cfg←⎕NS''
+ cfg.group←'test'
+ cfg.name←'Package_A'
+ cfg.version←'0.1.0'
+ cfg.source←'Test.apln'
+ cfg.license←'MIT'
+ cfg.tags←'foo,boo'
+ cfg.os_mac←1
+
+ cfg←TC.WritePackageConfigFile src cfg
+
+ packageID←'test-Package_A-0.1.0'
+ (rc msg zipFilename)←TC.PublishPackage src'[localhost]'
+ →T.GoToTidyUp 200≠rc
+ →T.GoToTidyUp 0≠≢msg
+
+ list1←({⍵.aggregate←0 ⋄ ⍵.os_mac←1 ⋄ ⍵}⎕NS'')TC.ListPackages'[localhost]'
+ (rc msg)←⎕SE.Tatin.DeletePackage'[localhost]',packageID
+ Assert 200=rc
+ list2←({⍵.aggregate←0 ⋄ ⍵}⎕NS'')TC.ListPackages'[localhost]'
+ →T.GoToTidyUp'test-Package_A-0.1.0'≢∊list1[;1]~list2[;1]
+
+ r←T._OK
+
+∆TidyUp:
+ (rc msg)←F.RmDirByForce dir
+ msg Assert rc=0
+ (rc msg)←F.RmDirByForce serverPath,'/',packageID
+ msg Assert rc=0
+ Assert F.DeleteFile zipFilename
+⍝Done

@@ -1,0 +1,11 @@
+ {success}←{debugFlag}RunBatchTests flag;log;rc
+ success←0
+ :If flag
+     debugFlag←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'debugFlag'
+     PrepareForBatchTests ⍬
+     (rc log)←T.RunBatchTests debugFlag
+     success←0=rc
+     ##.TestCases.SaveBatchTestLog log
+     ##.TestCases.ExecQuadOff success'Tatin server batch'
+ :EndIf
+⍝Done

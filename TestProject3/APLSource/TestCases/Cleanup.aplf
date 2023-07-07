@@ -1,0 +1,20 @@
+ Cleanup;F;folder;configFolder;rc;msg;res
+ ##.Client.⎕EX'∆PrintToSession'
+ ##.Admin.⎕EX¨'∆DIRS' '∆FILES'
+ ⎕SE._Tatin.Client.⎕EX'∆PrintToSession'
+ F←##.FilesAndDirs
+ folder←(739⌶0),'/TatinTests/'
+ (rc msg)←F.RmDirByForce folder
+ Assert rc=0
+ ⎕DL 0.2
+ Assert~F.IsDir folder
+ (rc msg res)←∆UCMD'Init '
+ Assert 0=rc
+ {}TC.InitUserSettings''
+ ⎕EX'∆CongaFolder'
+ ⎕EX'∆__UserSettings'
+ :If 0<⎕NC'∆CACHE_PARMS'
+     ⎕SE.Tatin.MyUserSettings.caching←∆CACHE_PARMS
+ :EndIf
+ ⎕EX'∆TEST'
+⍝Done

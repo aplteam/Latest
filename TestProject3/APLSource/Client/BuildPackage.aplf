@@ -1,0 +1,89 @@
+ zipFilename←BuildPackage parms;cfg;fileList;zipObj;tempFilename;deps;errMsg;cfg_;dependencies;hasBuildNo;ciderCfg
+⍝ Build a new version of a Tatin package.\\
+⍝ The right argument must be a namespace with the required parameters, typically created by calling  `CreateBuildParms`.
+⍝ These are the parameters:\\
+⍝ * `projectPath` → folder to create the package from; mandatory. Must be specified as right argument of `CreateBuildParms`.
+⍝ * `targetPath` (optional); defines the folder where the resulting ZIP is saved.
+⍝    If this is not provided or empty it defaults to `projectPath`
+⍝ * `dependencyFolder` (optional); if not empty all packages in this folder are going to become dependencies.
+⍝   If this is empty `BuildPackage` will check the root of the project for a folder packages/ and take that by convention.
+⍝ * `version` can be one of:
+⍝    * An empty character vector\\
+⍝      The version info from the package config file rules, and the build number (if any) is bumped
+⍝    * A pattern starting with a plus (+) like +0.0.1 or +0.1.0 or +1.0.0\\
+⍝      This leads to a bumped patch number or a bumbed minor number or a bumped major number and a bumped build number
+⍝    * A string representing a version number like "1.2.3" or "10.2.43+123"\\
+⍝      If no build number is specified the original build number is taken and bumped.
+⍝      Otherwise the given version and build number rule (the build number is not bumped).
+⍝   The package config file is updated as a side effect.
+ parms.projectPath←RemoveFileProtocol parms.projectPath
+ parms.projectPath←⊃1 ⎕NPARTS ##.FilesAndDirs.AddTrailingSep parms.projectPath
+ cfg_←ReadPackageConfigFile parms.projectPath
+ cfg←InitPackageConfig cfg_
+ ValidateConfig cfg parms.projectPath
+ :If 0=≢parms.targetPath
+     parms.targetPath←Reg.AddSlash parms.projectPath
+ :Else
+     parms.targetPath←Reg.AddSlash RemoveFileProtocol parms.targetPath
+ :EndIf
+ :If ~':'∊parms.targetPath
+ :AndIf '/'≠1⍴parms.targetPath
+     parms.targetPath←(Reg.AddSlash parms.projectPath),parms.targetPath
+ :EndIf
+ hasBuildNo←0
+ :If 0<≢parms.version
+     :If '+'=1↑parms.version
+         cfg.version←parms.version AddToVersion cfg.version
+     :Else
+         hasBuildNo←'+'∊parms.version
+         cfg.version←parms.version{'+'∊⍺:⍺ ⋄ ⍺,{⍵↓⍨¯1+⍵⍳'+'}⍵}cfg.version ⍝ Assign `version` but preserves build number if not specified
+     :EndIf
+ :EndIf
+ cfg.version←IncreaseBuildNumber⍣(⊃~hasBuildNo)⊣cfg.version
+ :If 0<≢cfg.assets
+     cfg.assets←{1=≢⍵:⊃⍵ ⋄ 1↓⊃,/',',¨⍵}ProcessAssetsProp parms.projectPath cfg.assets
+ :EndIf
+ ⍝ CreateAPIfromCFG cfg   ⍝TODO⍝ Should we implement this?!
+ :If ≢/{⎕JSON⍠('Dialect' 'JSON5')⊣⍵}¨cfg cfg_
+     WritePackageConfigFile parms.projectPath cfg
+ :EndIf
+ dependencies←parms.dependencyFolder EstablishPackageDependencies parms.projectPath
+ zipFilename←F.ExpandPath parms.targetPath,(GetPackageFilenameFromCfg cfg),'.zip'
+ :If 0=F.Exists parms.targetPath
+     F.MkDir parms.targetPath
+ :Else
+     F.DeleteFile zipFilename
+ :EndIf
+ zipObj←⎕NEW ZipArchive(,⊂zipFilename)
+ fileList←parms.projectPath GetAllFiles cfg
+ 'No source code?!'Assert 0<≢fileList
+ parms.projectPath zipObj.Add fileList
+ parms.projectPath zipObj.Add CFG_Name
+ :If 0<≢cfg.assets
+     parms.projectPath∘{⍺ zipObj.Add ⍵}¨','(≠⊆⊢)cfg.assets
+ :EndIf
+ :If 0<cfg.⎕NC'userCommandScript'
+ :AndIf 0<≢cfg.userCommandScript
+     :If F.IsFile parms.projectPath,cfg.userCommandScript
+         (parms.projectPath,⊃⎕NPARTS cfg.userCommandScript)zipObj.Add⊃,/1↓⎕NPARTS cfg.userCommandScript
+         zipObj.Delete cfg.userCommandScript
+     :Else
+         zipObj.Dispose
+         ⎕DL 0.2
+         3 ⎕NDELETE zipFilename
+         ('Not found: ',cfg.userCommandScript)Assert 0
+     :EndIf
+ :EndIf
+ :If F.IsFile parms.projectPath,'LICENSE'    ⍝ By convention...
+     parms.projectPath zipObj.Add'LICENSE'   ⍝ ... we add a file "LICENSE" if there is one
+ :EndIf
+ :If 0<cfg.⎕NC'files'
+ :AndIf 0<≢cfg.files
+     parms.projectPath∘{(p f e)←⎕NPARTS ⍵ ⋄ 0=≢p:⍺ zipObj.Add ⍵ ⋄ (⍺,p,'/')zipObj.Add f,e}¨','(≠⊆⊢)cfg.files
+ :EndIf
+ :If 0<≢dependencies
+     (parms.projectPath,{⍵↑⍨¯1+⍵⍳'='}dependencies)zipObj.Add'/apl-dependencies.txt'
+ :ElseIf F.IsFile parms.projectPath,'apl-dependencies.txt'
+     parms.projectPath zipObj.Add'apl-dependencies.txt'
+ :EndIf
+ zipObj.Dispose

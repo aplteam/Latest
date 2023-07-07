@@ -1,0 +1,18 @@
+ html←PrepareHtmlPageForDependencies deps
+ html←HtmlHeader GetDataTableStuff ⍬
+ html,←⊂'<h2>Dependencies of "',packageID,'"</h2>'
+ html,←AddSpecialMessage ⍬
+ html,←⊂H.OpenTable 2+⌈/≢¨deps
+ html,←⊂'<thead>'
+ html,←⊂'<tr class="my-first-th">'
+ html,←{'<th>',⍵,'</th>'}¨⊆'Dependencies'
+ html,←⊂'</thead>'
+ html,←⊂'<tbody>'
+ deps←MakeLinkToPackage¨deps
+ html,←{'<tr><td><code>',⍵,'</code></td></tr>'}¨deps
+ html,←⊂'</tbody>'
+ html,←⊂'</table>'
+ html,←⊆GetFooter
+ html,←⊂'</body>'
+ html,←⊂'</html>'
+⍝Done

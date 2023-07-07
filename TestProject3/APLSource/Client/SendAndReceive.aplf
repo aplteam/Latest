@@ -1,0 +1,34 @@
+ r←SendAndReceive(uri request);client;uri_;port;⎕TRAP;msg;errorCounter
+⍝ Whether there is a (semi-)global ∆PermanentConnections or not makes a difference here:
+⍝ * If it exists it's supposed to hold clients for all HTTP registries with a priority>0.
+⍝   This can improve performance dramatically because the same connection can be used again.
+⍝ * If ∆PermanentConnections does not exist, a new client is created & the connection is closed when done.
+ 'Invalid request parameter: RequestTarget'Assert(≡request.RequestTarget)∊0 1
+ request.Headers,←⊂Reg.TatinVersionAsHttpHeader
+ request←AddTestFlag request
+ msg←uri,' did not respond'
+ ⎕TRAP←(345 'C'('''',uri,''' SignalNoConnection ''',msg,''''))(347 'N')(348 'C' '→∆Go,errorCounter←errorCounter+1')(0 'S')
+ errorCounter←0
+ :If 9=⎕NC'∆PermanentConnections'
+     uri_←1 CompileNameFromUrl uri
+     EstablishRumbaClients ⍬
+ :AndIf 9=∆PermanentConnections.⎕NC uri_
+     client←∆PermanentConnections.⍎uri_
+     msg←uri,' did not respond'
+     {}client R.Send¨request      ⍝ Pipeline requests
+     r←client R.Receive¨request   ⍝ Wait for all
+ :Else
+
+∆Go: ⍝ Also jumped to in case the server closed the connection.
+     ⍝ Yes, this DOES happen for no apparent reason every now and then.
+
+     :If errorCounter>5
+         'No connection'⎕SIGNAL 347
+     :Else
+         ⍝⎕←'Trying again for the ',(⍕errorCounter),' time...'
+         ⎕DL 0.1×errorCounter
+         client←NewClient uri
+         r←client R.SendAndReceive request
+     :EndIf
+ :EndIf
+⍝Done

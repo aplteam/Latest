@@ -1,0 +1,25 @@
+ Initialize_Server;this
+⍝ Copies dependencies, sets the working dir and establishes references for the Tatin Server.\\
+⍝ This function is intended to be called in development only.\\
+⍝ It does not prepare for tests; for that call `#.Tatin.TestCasesServer.Prepare`, which will call this function along the way.\\
+ ##.FilesAndDirs.APLTreeUtils2←##.APLTreeUtils2
+ ##.FilesAndDirs.OS←##.OS
+ :If 'CLEAR WS'≡⎕WSID
+     :If 2=##.⎕NC'CiderConfig.HOME'                 ⍝ Managed by LINK/Cider?!
+         {}##.FilesAndDirs.Cd ##.CiderConfig.HOME
+     :Else
+         {}##.FilesAndDirs.Cd'APLSource'{⍵↑⍨¯2+1⍳⍨⍺⍷⍵}2 ⎕NQ #'GetEnvironment' 'load'
+     :EndIf
+ :Else
+     ##.FilesAndDirs.PolishCurrentDir
+ :EndIf
+ :If 0=##.⎕NC'Plodder.Run'  ⍝ Will exist in production but not otherwise
+     :If 0=##.⎕NC'CiderConfig'
+         'RumbaLean' 'Plodder'##.⎕CY'Assets/Runtime/Plodder/Plodder.dws'
+     :Else
+         'RumbaLean' 'Plodder'##.⎕CY ##.CiderConfig.HOME,'/Assets/Runtime/Plodder/Plodder.dws'
+     :EndIf
+ :EndIf
+ ##.RumbaLean.⎕EX'DRC'      ⍝ Paranoia; presence of DRC prevents Conga from being initialised.
+ ##.Server.CreateAllRefs
+⍝Done

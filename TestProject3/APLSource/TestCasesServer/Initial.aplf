@@ -1,0 +1,9 @@
+ Initial;testFilename;ignore
+ :If 0=##.⎕NC'Plodder'
+     #.Tatin.Admin.Initialize_Server
+ :EndIf
+ ∆DeleteTempDir 1
+ testFilename←##.Admin.GetCoverageFile
+ T.codeCoverage←⎕NEW ##.CodeCoverage(,⊂'#.Tatin.Registry,#.Tatin.Server')
+ T.codeCoverage.filename←testFilename
+⍝Done

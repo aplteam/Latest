@@ -1,0 +1,23 @@
+ Prepare;ignore;testFilename;ask;answer
+⍝ Use this to run the test server as a test case.
+ 'This WS appears to be prepared for functioning as a Tatin Client'⎕SIGNAL 11/⍨0<##.Client.⎕NC'MyUserSettings'
+ :If 0=##.⎕NC'Plodder'
+     #.Tatin.Admin.Initialize_Server
+ :EndIf
+ T←⎕NEW ##.Tester2 ⎕THIS
+
+⍝ CodeCoverage: we always add, assuming that this test is running in parallel to the Client test
+ testFilename←##.Admin.GetCoverageFile
+ T.codeCoverage←⎕NEW ##.CodeCoverage(,⊂'#.Tatin.Registry,#.Tatin.Server')
+ T.codeCoverage.filename←testFilename
+ ignore←''
+ ignore,←⊂'#.Tatin.Server.CopyDependencies'
+ ignore,←⊂'#.Tatin.Server.GetPackageConfigFilename'
+ ignore,←⊂'#.Tatin.Registry.Create_UUID'
+ ignore,←⊂'#.Tatin.Server.PROJECT_HOME'
+ ignore,←⊂'#.Tatin.Server.GetQuitDQEvent'
+ ignore,←⊂'#.Tatin.Server.Run'
+ :If 0<≢ignore
+     T.codeCoverage.ignore←⊃{⍺,',',⍵}/ignore
+ :EndIf
+⍝Done

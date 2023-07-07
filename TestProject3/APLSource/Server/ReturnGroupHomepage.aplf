@@ -1,0 +1,58 @@
+ response←ReturnGroupHomepage(groupName request);html;htmlFilename;folder;p;parms;email;caption;data;col1;col2;colTitles;col3;col4
+ response←R.NewResponse request
+ p←{'<p>',⍵,'</p>'}
+ folder←G.HTDOCS,'../Groups/'
+ 'Create!'F.CheckPath folder
+ htmlFilename←folder,groupName,'.htm'
+ html←HtmlHeader GetDataTableStuff ⍬
+ html,←⊂'<h2>Home page of group "',groupName,'"</h2>'
+ html,←AddSpecialMessage ⍬
+ :If F.IsFile htmlFilename
+     html,←⊂⊃⎕NGET htmlFilename
+     html,←⊂'<br>'
+     html,←⊂'email'H.Label'Email address:'
+     html,←⊂H.BR
+     email←'email'Reg.GetGroupData G.RegistryPath groupName
+     parms←⎕NS''
+     parms.(id name type value)←'email' 'email' 'email'email
+     html,←⊂'required disabled'H.Input parms
+     html,←⊂H.BR
+     html,←⊂'<br>'
+     html,←⊂'<form action="',(GetVersion_REST'group-homepage-edit'),'">'
+     caption←'Edit'
+ :Else
+     html,←⊂p'There is no home page yet for the group "',groupName,'"'
+     html,←⊂'<br>'
+     html,←⊂'<form action="',(GetVersion_REST'group-homepage-create'),'">'
+     caption←'Create'
+ :EndIf
+ parms←⎕NS''
+ parms.(name method type value class)←'name' 'post' 'submit'groupName'button'
+ parms.title←'You may ',(⎕C caption),' the home page if you can provide a valid password (API-key)'
+ html,←⊂parms H.Button caption
+ html,←⊂'</form>'
+ data←GetPackagesOfGroup groupName
+ :If 0<≢data
+     html,←⊂'<h3 style="padding-top:1em;">Packages owned by "',groupName,'"</h3>'
+     colTitles←'Package name' 'Description' 'OS' 'Tags'
+     html,←⊂H.OpenTable colTitles CalcTableWidth data
+     html,←⊂'<thead>'
+     html,←⊂'<tr>'
+     html,←{'<th>',⍵,'</th>'}¨colTitles
+     html,←⊂'</tr>'
+     html,←⊂'</thead>'
+     html,←⊂'<tbody>'
+     col1←{'<td><code>',({'<a href="',Reg.VersionOf_REST,'/packages/major_versions/',⍵,'" title="List major versions">',⍵,'</a>'}⍵),'</code></td>'}¨data[;1]
+     col2←{'<td>',⍵,'</td>'}¨data[;3]
+     col3←{'<td>',⍵,'</td>'}¨data[;5]
+     col4←{'<td>',⍵,'</td>'}¨data[;6]
+     html,←⊃,/{(⊂'<tr>'),⍵,(⊂'</tr>')}¨↓⍉↑col1 col2 col3 col4
+     html,←⊂'</tr>'
+     html,←⊂'</tbody>'
+     html,←⊂'</table>'
+ :EndIf
+ html,←⊆GetFooter
+ html,←⊂'</body>'
+ html,←⊂'</html>'
+ response←request ReturnHTML html
+⍝Done

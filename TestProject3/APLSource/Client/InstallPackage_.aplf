@@ -1,0 +1,57 @@
+ r←targetFolder InstallPackage_(alias packageID);buildList;principal;packageID2;installFolder;msg;path2cache;url;bool;tempDir;cacheFlag;success;qdmx
+⍝ Fetches a package and unzips it into a temp folder.
+⍝ When caching is on, the temp folder is created within the top-level of the cache folder.
+⍝ Otherwise a folder is created inside the temp directory of the given OS.
+⍝ ← is a vector of names with the principle packages, including any alias(es).
+ r←''
+ :If 0<≢buildList←GetDependencyTree alias,packageID
+     PrintToSession'  ',(⍕≢buildList),' dependenc',((1+1=≢buildList)⊃'ies' 'y'),' identified'
+     CheckAliasOnInstall targetFolder alias(GetPackageIDFromFilename packageID)
+     :For principal packageID2 url :In ↓buildList
+         (alias packageID2)←SplitAtAlias packageID2
+         installFolder←(Reg.AddSlash targetFolder),packageID2
+         :If principal
+             ('Installation folder "',installFolder,'" is a file')Assert 0=F.IsFile installFolder
+         :EndIf
+         :If F.IsDir installFolder
+             F.RmDir installFolder
+         :AndIf F.IsDir installFolder
+             ⎕DL 0.02
+             msg←'Could not remove install folder (package was apparently already installed):',⎕UCS 13
+             msg,←installFolder
+             msg Assert 0
+         :EndIf
+         :If MyUserSettings.caching
+         :AndIf 0<≢path2cache←CompilePath2PackageInCache url packageID2
+         :AndIf 0=GetNoCachingFlag url
+         :AndIf 0<≢path2cache
+             PrintToSession'  Fetching from Tatin package cache...'
+             tempDir←GetPackageFromCache url packageID2 path2cache
+             cacheFlag←0
+         :Else
+             :Trap 998
+                 (success tempDir cacheFlag)←InstallPackage__ packageID2 url
+                 :If 0=success
+                     :Return
+                 :EndIf
+             :Else
+                 qdmx←⎕DMX
+                 qdmx.EM Assert 0
+             :EndTrap
+         :EndIf
+         :If IsHTTP url
+         :AndIf cacheFlag
+             installFolder(⎕NCOPY Reg.F.ExecNfunction)tempDir
+         :Else
+             installFolder(⎕NMOVE Reg.F.ExecNfunction)tempDir
+         :EndIf
+         :If principal
+             PrintToSession'  Add ',packageID2,' to dependency file...'
+             targetFolder Dependencies.Add alias,packageID2
+         :EndIf
+     :EndFor
+     buildList[;3]←ReplaceCachePathByURL¨buildList[;3]
+     PrintToSession'  Saving build list... '
+     SaveBuildList buildList targetFolder
+     r←buildList[1;2]
+ :EndIf

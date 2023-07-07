@@ -1,0 +1,13 @@
+ r←Test_API_022(stopFlag batchFlag);⎕TRAP;res1;parms
+⍝ Exercise ⎕SE.Tatin.ListPackages with "group" option
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ parms←⎕NS''
+ parms.group←'example'
+ res1←parms ⎕SE.Tatin.ListPackages'[local]'
+ →T.PassesIf 0<≢res1
+ →T.PassesIf 2=|≡res1
+ →T.PassesIf 2=⍴⍴res1
+
+ r←T._OK

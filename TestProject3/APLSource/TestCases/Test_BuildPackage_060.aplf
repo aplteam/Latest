@@ -1,0 +1,26 @@
+ r←Test_BuildPackage_060(stopFlag batchFlag);⎕TRAP;path;cfg;zipFileName;tempPath;msg;rc;res;parms
+⍝ Build package, install as a user command and load it as such into ⎕SE
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ tempPath←∆GetTempDir''
+ path←∆GetProjectPath,'/TestData/Build/UserCommand/'
+ cfg←TC.ReadPackageConfigFile path,'apl-package.json'
+ parms←TC.CreateBuildParms path
+ parms.targetPath←tempPath
+ zipFileName←TC.BuildPackage parms
+ res←TC.InstallPackages zipFileName'[myucmds]'
+ →T.GoToTidyUp~F.IsFile TC.GetMyUCMDsFolder'APLGit2ForTests/APLGit2ForTests_UC.dyalog'
+ res←TC.LoadDependencies'[myucmDS]/APLGit2ForTests' '⎕SE'
+ →T.GoToTidyUp 0=⎕SE.⎕NC'APLGit2ForTests'
+ →T.GoToTidyUp~⎕NEXISTS TC.GetMyUCMDsFolder'APLGit2ForTests/APLGit2ForTests_UC.dyalog'
+
+ r←T._OK
+
+∆TidyUp:
+ F.DeleteFile zipFileName
+ (rc msg)←F.RmDirByForce tempPath
+ msg Assert rc=0
+ (rc msg)←F.RmDirByForce TC.GetMyUCMDsFolder'APLGit2ForTests'
+ msg Assert rc=0
+⍝Done

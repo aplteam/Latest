@@ -1,0 +1,31 @@
+ r←Test_BuildPackage_052(stopFlag batchFlag);⎕TRAP;path;zipFileName;list;cfg2;oldBuildNo;newBuildNo;oldVersion;newVersion;cfg;deps;tempDir;parms
+⍝ Build a package that is a Cider project but we specify a different folder (takes precedence)
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ path←∆GetProjectPath,'/TestData/Build/Special/'
+ cfg←TC.ReadPackageConfigFile path,'apl-package.json'
+ parms←TC.CreateBuildParms path
+ parms.targetPath←path
+ parms.dependencyFolder←'dependencies'
+ zipFileName←TC.BuildPackage parms
+ list←TC.ZipArchive.ListZipContents zipFileName
+ →T.GoToTidyUp~(⊂F.EnforceSlash'apl-dependencies.txt')∊F.EnforceSlash¨list
+ tempDir←∆GetTempDir'-ZIP'
+ zipFileName TC.ZipArchive.UnzipTo tempDir
+ deps←⊃F.NGET(tempDir,'/apl-dependencies.txt')1
+ →T.GoToTidyUp(,⊂'aplteam-FilesAndDirs-5.2.1')≢deps
+ cfg2←TC.ReadPackageConfigFile path,'apl-package.json'
+ oldBuildNo←A.ToNum{⍵↓⍨⍵⍳'+'}cfg.version
+ newBuildNo←A.ToNum{⍵↓⍨⍵⍳'+'}cfg2.version
+ →T.GoToTidyUp newBuildNo≠1+oldBuildNo
+ (oldVersion newVersion)←{⍵↑⍨⌊/¯1+⍵⍳'+-'}¨cfg.version cfg2.version
+ ⍝ Here we check only for a change, increasing the version number has its own (exhaustive) test:
+ →T.GoToTidyUp oldVersion≢newVersion
+
+ r←T._OK
+
+∆TidyUp:
+ {}F.RmDirByForce tempDir
+ F.DeleteFile zipFileName
+⍝Done

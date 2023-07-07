@@ -8,10 +8,10 @@
       r.Desc←'Prints some/all objects found in either the workspace or files in a folder sorted by their "Changed" date'
       r.Group←'FN'
      ⍝ Parsing rules for each:
-      r.Parse←' -recursive∊0 1 -stats -all -version'
+      r.Parse←' -recursive∊0 1 -stats -allFiles -version'
     ∇
 
-    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;all;version
+    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version
       :Access Shared Public
       ⎕IO←1 ⋄ ⎕ML←3
       version←0 Args.Switch'version'
@@ -20,7 +20,7 @@
       :EndIf
       recursive←1 Args.Switch'recursive'    ⍝ default is 1
       stats←Args.Switch'stats'              ⍝ default is empty
-      all←0 Args.Switch'all'                ⍝ default is 0
+      allFiles←0 Args.Switch'allFiles'      ⍝ default is 0
       :If 2=≢Args.Arguments
           'Invalid arguments'⎕SIGNAL 11/⍨~(⊂⊃∘⊃∘⎕VFI¨Args.Arguments)∊(0 1)(1 0)
           (flag value)←⎕VFI 1⊃Args.Arguments
@@ -51,9 +51,11 @@
           noOf←⍬
           path←''
       :EndIf
-      ref←LoadCode ⍬
-      ref.⎕IO←0 ⋄ ref.⎕ML←3
-      r←⎕SE.Latest.Run(path recursive stats all noOf)
+      :If 0=⎕SE.⎕NC'Latest'
+          ref←LoadCode ⍬
+          ref.⎕IO←0 ⋄ ref.⎕ML←3
+      :EndIf
+      r←⎕SE.Latest.Run(path recursive stats allFiles noOf)
     ∇
 
     ∇ r←level Help Cmd;⎕IO;⎕ML
@@ -62,7 +64,7 @@
       r←''
       :Select level
       :Case 0
-          r,←⊂']Latest [<no arg>|<int>|<txt>|<int&txt] -recursive=1|0 -all -stats -version'
+          r,←⊂']Latest [<no arg>|<int>|<txt>|<int&txt] -recursive=1|0 -allFiles -stats -version'
       :Case 1
           r,←⊂'Lists the latests changes. Is mainly designed to act on Cider projects but'
           r,←⊂'can also deal with just the workspace or with any folder.'
@@ -81,7 +83,7 @@
           r,←⊂''
           r,←⊂'Options:'
           r,←⊂'-recursive=0|1  Defaults to 1, meaning that the path is searched recursively'
-          r,←⊂'-all            By default only APL source files are considered (by extension)'
+          r,←⊂'-allFiles       By default only APL source files are considered (by extension)'
           r,←⊂'-stats          If this flag is specified you get a matrix with change statistics'
           r,←⊂'-version        Prints the version number of the user command to the session'
           r,←⊂'                If this is specified any argument and all other flags are ignored.'

@@ -1,0 +1,40 @@
+ response←OnRequest request;logMsg
+⍝ Main handler for requests. Requests are first split by HTTP verb.
+ :If '/ping'≡request.Path
+     response←request R.Respond 200
+ :Else
+     :Hold 'App-Log'   ⍝ Used by `Logs.CheckLogFile` for blocking all requests when dealing with the APP log file (once a year)
+         :If 0=G.INI.Get'Trap:Policy'
+         :AndIf ~request.Connection.Server.Trap
+         ⍝ Invalidate Rumba's top level error trapping
+             ⎕SHADOW'⎕TRAP'
+             ⎕TRAP←0 'S'
+         :EndIf
+         :If 0<≢logMsg←CheckTatinVersion request
+         :AndIf 'v1/version'≢⎕C{('/'=⊃⍵)↓⍵}request.Path
+             response←request Respond 400 0
+             response.Content←logMsg
+         :Else
+             :Select request.Method
+             :CaseList 'GET' 'HEAD'
+                 response←Handle_GET request
+             :CaseList 'PUT' 'POST'
+                 response←Handle_PUT_And_POST request
+             :Case 'DELETE'
+                 response←Handle_Delete request
+             :Else
+                 response←ReturnNOT_IMPLEMENTED request
+             :EndSelect
+             logMsg←request.Method,' ',(⍕response.StatusCode),' ',request.RequestTarget
+             :If ∨/'test-request' 'yes'∘≡¨request.Headers
+                 logMsg,←' (test)'
+             :EndIf
+             :If 200≠response.StatusCode
+                 ⍝ Add potential error message in case something went wrong:
+                 logMsg,←(326≠⎕DR response.Content)/'; ',response.Content
+             :EndIf
+         :EndIf
+         P.AppLog logMsg
+     :EndHold
+ :EndIf
+⍝Done

@@ -1,0 +1,47 @@
+ response←CreateHomePage request;html;policy;add;regInfo
+⍝ Creates the index.html
+⍝ https://tatin.dev/Assets/docs/InstallingAndUpdatingTheTatinClient.html
+ add←''
+ html←HtmlHeader add
+ html,←⊂'<h2>Main page</h2>'
+ html,←AddSpecialMessage ⍬
+ html,←⊂'<p>This is the Tatin Registry. It holds packages designed to be used under Dyalog APL.</p>'
+ html,←⊂'<div class="install-info">'
+ html,←⊂'<h3>The Tatin Client</h3>'
+ html,←⊂'<hr>'
+ html,←⊂'<ul>'
+ html,←⊂'<li>How to <a href="https://tatin.dev/Assets/docs/InstallingAndUpdatingTheTatinClient.html" target=_blank>install</a></li>'
+ html,←⊂'<li>How to <a href="https://tatin.dev/Assets/docs/InstallingAndUpdatingTheTatinClient.html#Updating-Tatin" target=_blank>update</a></li>'
+ html,←⊂'</ul>'
+ html,←⊂'</div>'
+ html,←⊂'<nav>'
+ html,←⊂'<ol>'
+ regInfo←GetRegistryInfo G.INI
+ html,←⊂'<li><a href="',Reg.VersionOf_REST,'/packages">',regInfo,'Packages</a></li>'
+ html,←⊂'<li><a href="',Reg.VersionOf_REST,'/deprecated-pkgs">',regInfo,'Deprecated packages</a></li>'
+ html,←⊂'<li><a href="',Reg.VersionOf_REST,'/groups">',regInfo,'Groups</a></li>'
+ html,←⊂'<li><a href="',Reg.VersionOf_REST,'/tags">',regInfo,'Tags</a></li>'
+ html,←⊂'<li><a href="',Reg.VersionOf_REST,'/documentation">Documentation Center</a></li>'
+ html,←⊂'<li><a href="',Reg.VersionOf_REST,'/credential-report">',regInfo,'Credential report</a></li>'
+ html,←⊂'<li><a href="',Reg.VersionOf_REST,'/usage-data">',regInfo,'Usage data</a></li>'
+ :If G.INI.Exist'LICENSE:names'
+ :AndIf 0<≢⊃G.INI.Get'LICENSE:names'
+     html,←⊂'<li><a href="',Reg.VersionOf_REST,'/get-licenses">Licensing</a></li>'
+ :EndIf
+ html,←⊂'<li><a href="',Reg.VersionOf_REST,'/version-information">',regInfo,'Version information</a></li>'
+ html,←⊂'</ol>'
+ html,←⊂'</nav>'
+ :Select GetDeletePolicy
+ :Case 'Any'
+     policy←'This server operates a "delete any" policy: you may delete <b>any</b> package with fitting credentials.'
+ :Case 'None'
+     policy←'This server operates a "delete none" policy: once published, packages cannot be deleted.'
+ :Case 'JustBetas'
+     policy←'This server operates a "delete betas only" policy: you may delete <b>only</b> beta packages with fitting credentials.'
+ :EndSelect
+ html,←⊂'<p>',policy,'</p>'
+ html,←GetFooter
+ html,←⊂'</body>'
+ html,←⊂'</html>'
+ response←request ReturnHTML html
+⍝Done

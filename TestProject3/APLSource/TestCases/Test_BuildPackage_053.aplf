@@ -1,0 +1,32 @@
+ r←Test_BuildPackage_053(stopFlag batchFlag);⎕TRAP;path;zipFileName;list;cfg2;newBuildNo;cfg;tempDir;tempDir2;deps;parms
+⍝ Build a package and specify a specific version number with a build number
+⍝ In this case the build number is NOT bumped
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ tempDir←∆GetTempDir''
+ tempDir ⎕NCOPY ∆GetProjectPath,'/TestData/Build/Special'
+ path←tempDir,'/Special/'
+
+ cfg←TC.ReadPackageConfigFile path,'apl-package.json'
+ parms←TC.CreateBuildParms path
+ parms.targetPath←path
+ parms.dependencyFolder←'dependencies'
+ parms.version←'4.0.0+135'
+ zipFileName←TC.BuildPackage parms
+ list←TC.ZipArchive.ListZipContents zipFileName
+ →T.GoToTidyUp~(⊂F.EnforceSlash'apl-dependencies.txt')∊F.EnforceSlash¨list
+ tempDir2←∆GetTempDir'-ZIP'
+ zipFileName TC.ZipArchive.UnzipTo tempDir2
+ deps←⊃F.NGET(tempDir2,'/apl-dependencies.txt')1
+ →T.GoToTidyUp(,⊂'aplteam-FilesAndDirs-5.2.1')≢deps
+ cfg2←TC.ReadPackageConfigFile path,'apl-package.json'
+ newBuildNo←A.ToNum{⍵↓⍨⍵⍳'+'}cfg2.version
+ →T.GoToTidyUp newBuildNo≠135
+
+ r←T._OK
+
+∆TidyUp:
+ {}F.RmDirByForce tempDir
+ {}F.RmDirByForce tempDir2
+⍝Done

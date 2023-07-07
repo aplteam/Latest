@@ -1,0 +1,89 @@
+ {r}←{bumpBuild}MakeClient batchFlag;msg;F;targetPath;userCommandTargetFolder;ts1;ts2;path;reg;_userSettings;list;zipFilename;zipContent;fileList;b;rc;more;en;myZip;parms;dirList;success;log
+⍝ This functions creates a new Tatin Client. It can be called from a developer's session (⍵←0) or
+⍝ as part of an automated "Make" process with ⍵←1.\\
+⍝ In case of a problem an error is thrown in case ⍵ is 0, and ⎕OFF 123 is executed in case ⍵ is 1.\\
+⍝ You may call this function independently from `MakeServer`.\\
+⍝ `bumpBuild` must be a Boolean; 1 means that the build number will be bumped; that's the default.
+ r←⍬
+ F←##.FilesAndDirs
+ F.(APLTreeUtils2 OS)←##.(APLTreeUtils2 OS)
+ bumpBuild←{0<⎕NC ⍵:⍎⍵ ⋄ 1}'bumpBuild'
+ :If ~batchFlag
+     ⎕←(⎕PW-1)⍴'-'
+     msg←''
+     msg,←⊂'This function will close all Cider projects, delete everything that is not needed in order to'
+     msg,←⊂'use the Tatin client, re-arrange stuff and finally save the workspace together with'
+     msg,←⊂'everything that is needed by the client in Dist/Client/Client.dws'
+     msg,←⊂'The Tatin client will be copied from that WS into ⎕SE once a Tatin user command is invoked.'
+     msg,←⊂''
+     msg,←⊂'It also checks whether the user command script should be copied to the MyCMDs folder or vice'
+     msg,←⊂'versa, depending on where the last change was made.'
+     msg,←⊂''
+     msg,←⊂'Finally all that''s required is zipped into a file <Tatin-Client-{major}.{Minor}.{Patch}.zip'
+     msg,←⊂'That file is created within the Dist/ folder which is not managed by Git'
+     ⎕←⍪msg
+     ⎕←''
+ :EndIf
+ :If batchFlag
+ :OrIf 1 ##.Client.YesOrNo'Would you like to continue?'
+     UpdateVersionNumber bumpBuild
+     {}⎕SE.Cider.CloseProject''
+     parms←⎕SE.Cider.CreateOpenParms ⍬
+     parms.folder←#.Tatin.CiderConfig.HOME
+     parms.projectSpace←'_Tatin'
+     parms.quietFlag←1
+     (success log)←⎕SE.Cider.OpenProject parms
+     Assert success
+     {}⎕SE.Cider.CloseProject''
+     #._Tatin.⎕EX¨'Server' 'Todo' 'TestCases' 'Simu' 'TestCasesServer' 'Tester2' 'CodeCoverage'
+     #._Tatin.Admin.⎕EX¨'Initialize_Server' 'RunTestServer' 'CreateAllRefs_Server'
+     ⎕LX←''
+     #._Tatin.Admin.Initialize_Client
+     #._Tatin.Admin.⎕EX'Initialize_Client'
+     F.MkDir'Dist'
+     targetPath←'Dist/Client'
+     {}F.RmDirByForce targetPath
+     ⎕DL 0.1
+     F.MkDir targetPath
+     ⎕DL 0.1
+     ⎕WSID←targetPath,'/Tatin/Client'
+     Assert F.MkDir targetPath,'/Tatin'
+     Assert F.MkDir targetPath,'/Tatin/Maintenance'
+     ⎕DL 0.1
+     Assert F.IsDir targetPath,'/Tatin/Maintenance'
+     #.⎕EX¨(' '~¨⍨↓#.⎕NL⍳16)~⊂'_Tatin'
+     #.⎕EX'Make_'
+     0 ⎕SAVE ⎕WSID   ⍝ If this crashes, in particular with "Reference in ⎕SE points to #" or vise versa) execute ⎕OFF 123 and try again
+     userCommandTargetFolder←#._Tatin.Client.GetMyUCMDsFolder''
+     :If ~batchFlag
+     :AndIf F.IsFile userCommandTargetFolder,'/Tatin/Tatin.dyalog'
+     :AndIf (userCommandTargetFolder,'/Tatin/Tatin.dyalog')F.YoungerThan'./APLSource/Tatin.dyalog'
+     :AndIf ≢/{⊃⎕NGET ⍵}¨'./APLSource/Tatin.dyalog'(userCommandTargetFolder,'/Tatin/Tatin.dyalog')
+     :AndIf 1 ##.Client.YesOrNo'It appears that "Tatin.dyalog" in MyUCMDs/ is younger than the one in the project; copy over?'
+         './APLSource/Tatin.dyalog'(⎕NCOPY⍠('IfExists' 'Replace')F.ExecNfunction)userCommandTargetFolder,'/Tatin/Tatin.dyalog'
+     :EndIf
+     (targetPath,'/Tatin/Maintenance/')(⎕NCOPY⍠('Wildcard' 1)('IfExists' 'Replace')F.ExecNfunction)'./Maintenance/Client/*'
+     (targetPath,'/Tatin')(⎕NCOPY⍠('IfExists' 'Replace')F.ExecNfunction )'./APLSource/Tatin.dyalog'
+     'Create!'F.CheckPath targetPath,'/Tatin/Assets/Runtime'
+     (targetPath,'/Tatin/Assets/Runtime/')(⎕NCOPY⍠('IfExists' 'Replace')F.ExecNfunction)'./Assets/Runtime/Rumba'
+     'Create!'F.CheckPath targetPath,'/Tatin/Assets/docs'
+     (targetPath,'/Tatin/Assets/docs/')(⎕NCOPY⍠('IfExists' 'Replace')F.ExecNfunction)'./html/ReleaseNotes.html'
+     F.DeleteFile¨F.Dir'Dist/Tatin-Client-*.zip'
+     zipFilename←'Dist/Tatin-Client-',({{⍵/⍨∧\⍵∊'.',⎕D}⍵/⍨3>+\'.'=⍵}(2⊃##.Client.Version)),'.zip'
+     ⎕DL 0.1
+     fileList←'recursive'F.ListFiles targetPath,'/'
+     fileList←F.EnforceSlash¨(1+≢targetPath)↓¨fileList
+     myZip←⎕NEW ##.ZipArchive(,⊂zipFilename)
+     targetPath myZip.Add fileList
+    ⍝targetPath ##.ZipArchive.ZipFolder zipFilename   ⍝ This causes potentially trouble on Linux and Mac OS because of the "\"
+     ⎕DL 1
+     myZip.Dispose
+     zipContent←##.ZipArchive.ListZipContents zipFilename
+     'Something went wrong with the ZIP file'Assert fileList{(∧/⍺∊⍵)∧(∧/⍵∊⍺)}zipContent
+     3 ⎕NDELETE userCommandTargetFolder,'/Tatin.dyalog'  ⍝ Because until 0.61.0 the user command script was a sibling of the Tatin/ folder
+     :If batchFlag
+         ⎕OFF
+     :Else
+         ⎕←'*** Done;  note that the Tatin project has been closed'
+     :EndIf
+ :EndIf

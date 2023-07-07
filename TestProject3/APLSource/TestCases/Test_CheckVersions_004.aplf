@@ -1,0 +1,18 @@
+ r←Test_CheckVersions_004(stopFlag batchFlag);⎕TRAP;dir;versions;result;rc;msg
+⍝ Run CheckForLaterVersion on a package that has a later major version
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ dir←∆GetTempDir''
+ dir ⎕NCOPY⍠('Wildcard' 1)⊣'./TestData/Packages/Install-template/*'
+
+ versions←1 TC.CheckForLaterVersion dir
+ →T.PassesIf 1=≢versions
+ →T.GoToTidyUp'aplteam-MarkAPL-11.0.3'≢TC.GetPackageIDFromFilename⊃1 2⌷versions
+
+ r←T._OK
+
+∆TidyUp:
+ (rc msg)←F.RmDirByForce dir
+ msg Assert rc=0
+⍝Done

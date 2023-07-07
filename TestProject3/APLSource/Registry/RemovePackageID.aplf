@@ -1,0 +1,5 @@
+ RemovePackageID←{
+⍝ Removes the package ID from the URL
+     URL←⍵
+     (-⊥⍨~URL∊'\/')↓URL
+ }

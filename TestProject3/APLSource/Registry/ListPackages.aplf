@@ -1,0 +1,96 @@
+ r←{list}ListPackages(uri parms);packageID;registryPath;fuzzy;tags;noOfHyphens;noOfDots;uniqueIDs;list2;since;flag;bool;OSlist
+⍝ Documentation see ##.Client.ListPackages
+ 'No registry specified'Assert 0<≢uri
+ parms←CheckParmsForListPackages parms
+ r←(0,(1+parms.date))⍴⍬
+ (registryPath packageID)←SeparateUriAndPackageID uri
+ registryPath←F.ExpandPath registryPath
+ parms.date{⍺:⍺ ⋄ 0≢⊃⍵}←parms.since
+ :If flag←0=⎕NC'list'
+     list←(parms.date)GetAllPackages registryPath
+ :EndIf
+ :If 0<≢parms.tags
+ :AndIf ~(⊂parms.tags)∊0 1
+     tags←','(≠⊆⊢)⎕C parms.tags
+     (fuzzy list)←parms.aggregate FindTag registryPath tags list
+     list←⍪list
+     →(0∊≢list)/0
+ :EndIf
+ :If flag
+     list←registryPath RemoveDeprecatedPackages list
+ :EndIf
+ :If 0<≢parms.group
+     list←((⎕C parms.group)∘≡¨GetGroupFromPackageID¨list[;1])⌿list
+     →(0∊≢list)/0
+ :EndIf
+ :If parms.userCommand
+     list←list OnlyUserCommandPackages registryPath
+ :EndIf
+ :If 0∊bool←∊parms.(os_lin os_mac os_win)
+     OSlist←list GetOperatingsSystems registryPath
+     list←(∨/bool/OSlist[;2 3 4])⌿list
+     →(0∊≢list)/0
+ :EndIf
+ :If 0≢parms.project_url
+     list,←AddInfoURL list registryPath
+ :EndIf
+ :If 0=≢packageID~'*'
+     :If parms.aggregate
+     :AndIf parms.date=0
+         r←AggregatePackages list
+     :Else
+         r←list
+     :EndIf
+     :If 0≢⊃parms.since
+         since←parms.since
+         :If ' '=1↑0⍴since                             ⍝ International date format?
+             since←⊃A.ToNum since~'-'                  ⍝ Convert to a number
+         :EndIf
+         r←(since≤{⊃A.ToNum(10↑⍵)~'-'}¨r[;2])⌿r
+     :EndIf
+ :Else
+     noOfHyphens←'-'+.=packageID
+     :Select noOfHyphens
+     :Case 0                                           ⍝ Just the group
+         :If 0<≢list←((⎕C packageID,'-')∘≡¨{⎕C ⍵↑⍨⍵⍳'-'}¨list[;1])⌿list
+             :If parms.aggregate
+                 r←AggregatePackages list
+             :Else
+                 r←list,⊂⍬
+             :EndIf
+         :EndIf
+     :Case 1                                           ⍝ group and name
+         :If 0<≢list←((⎕C packageID,'-')∘≡¨(⎕C∘RemoveVersionNumber¨list[;1]),¨'-')⌿list
+             :If parms.aggregate
+                 r←AggregatePackages list
+             :Else
+                 r←list,⊂⍬
+             :EndIf
+         :EndIf
+     :Else                                             ⍝ group, name and version, but the version mgith carry additional hyphens!
+         noOfDots←'.'+.=packageID
+         :Select noOfDots
+         :Case 0                                       ⍝ Just major
+             :If 0<≢list←((⎕C packageID,'.')∘≡¨{⎕C ⍵↑⍨⍵⍳'.'}¨list[;1])⌿list
+                 :If parms.aggregate
+                     r←0 AggregatePackages list
+                 :Else
+                     r←list,⊂⍬
+                 :EndIf
+             :EndIf
+         :Case 1                                       ⍝ major and minor
+             :If 0<≢list←((⎕C packageID,'.')∘≡¨{⎕C'.',⍨⍵/⍨2>+\'.'=⍵}¨list[;1])⌿list
+                 :If parms.aggregate
+                     r←⍉⍪{(1⊃⍵)(≢⍵)}RemovePatch¨,list
+                 :Else
+                     r←list,⊂⍬
+                 :EndIf
+             :EndIf
+         :Else
+             :If (⊂⎕C packageID)∊⎕C,list               ⍝ verbatim
+                 r←1 2⍴packageID ⍬
+             :EndIf
+         :EndSelect
+     :EndSelect
+ :EndIf
+⍝Done

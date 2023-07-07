@@ -1,0 +1,69 @@
+ {r}←{overwriteFlag}LoadDependencies y;path;tree;dep2;saveIn;cfg;msg;packageID;saveIn2;ref;url;principalFlag;refs;alias;installFolder;targetSpace;overwriteFlag;packageID2;qdmx;isUC
+⍝ Requires at least one arguments but accepts up to two:
+⍝ * Folder with a build list (mandatory)
+⍝ * Name of the target namespace\\
+⍝ If no target namespace was specified then by default packages are loaded into `#` except when the folder
+⍝ is `[MyUCMDs]` in which case they are loaded into `⎕SE.
+⍝ You may specify an optional left argument: `overwriteFlag` defaults to 0.
+⍝ Use `overwriteFlag` in case all packages should be loaded even if they already exist in (#|⎕SE)._tatin\\
+⍝ Loads all packages and injects required references into `targetSpace`.
+⍝ Returns a vector with references to the loaded packages (no dependencies: principal packages only).
+ overwriteFlag←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'overwriteFlag'
+ 'Length error on right argument'Assert(≢y)∊1 2
+ (installFolder targetSpace)←2↑(⊆y),⊆''
+ :If isUC←'[myucmds]'{⍺≡⎕C(≢⍺)↑⍵}installFolder
+     installFolder←GetMyUCMDsFolder(≢'[myucmds]')↓installFolder
+ :EndIf
+ ('Folder does not exist:',⍕installFolder)Assert ⎕NEXISTS installFolder
+ :If 0=≢targetSpace
+     targetSpace←(1+isUC)⊃'#' '⎕SE'
+ :EndIf
+ r←refs←⍬
+ targetSpace←⍕targetSpace
+ :If 0=⎕NC targetSpace
+     targetSpace Reg.CreateNamespace ⎕THIS
+ :EndIf
+ :If 0=≢F.ListFiles installFolder
+     :Return
+ :EndIf
+ CheckBuildList installFolder
+ :If 0<≢tree←LoadBuildList installFolder
+     :For principalFlag packageID url :In ↓tree
+         (alias packageID)←{~'@'∊⍵:''⍵ ⋄ '@'(≠⊆⊢)⍵}packageID
+         path←installFolder,'/',packageID
+         ('Cannot find package "',path,'"')Assert F.Exists path
+         saveIn←GetTatinRootSpace 3⍴targetSpace
+         cfg←ReadPackageConfigFile path
+         packageID2←1 GetPackageIDFromFilename path
+         saveIn,←'.',packageID2
+         :If 0=⎕NC saveIn   ⍝ Might already exist
+         :OrIf overwriteFlag
+             :If overwriteFlag
+                 {(⍎⍺).⎕EX ⍵}/¯1 0↓¨'.'A.SplitPath saveIn
+             :EndIf
+             EstablishSystemVars saveIn cfg
+             Reg.ImportWithQuadFIX(path,'/',cfg.source)(saveIn)
+             ref←⍎saveIn
+         :Else
+             ref←⍎saveIn
+         :EndIf
+         EstablishStuffInTatinVars ref cfg path
+         refs,←ref
+         :If 1=principalFlag
+             r,←ref
+         :EndIf
+         :If 1=principalFlag
+             :Trap 998
+                 LinkTargetToPackage cfg saveIn targetSpace alias
+             :Else
+                 qdmx←⎕DMX
+                 ⎕DL 0.02
+                 F.RmDir path
+                 qdmx.EM ⎕SIGNAL qdmx.EN
+             :EndTrap
+         :EndIf
+     :EndFor
+     LinkDependencies refs
+     ExecutePackageLX installFolder targetSpace tree
+ :EndIf
+⍝Done

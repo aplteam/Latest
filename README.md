@@ -21,7 +21,7 @@ But you can also provide an argument: this can be a path, either on the file sys
 
 By default `]Latest` lists all changes from the last day when any changes were made at all, but instead you can ask for a specific number of days, a specific number of changes or all changes made after a particular date.
 
-By default `]Latest` looks for APL source files (defined by proper extensions), but you can also ask for all files with the `-all` flag.
+By default `]Latest` looks for APL source files (defined by proper extensions), but you can also ask for all files with the `-allFiles` flag.
 
 ## Examples
 
@@ -38,11 +38,16 @@ By default `]Latest` looks for APL source files (defined by proper extensions), 
 
 ## Installation
 
-The contents of the ZIP files needs to go into any of the folders that Dyalog APL scans for user commands.
+`Latest` can be installed as a Tatin package:
 
-For example, under Windows a folder `MyUCMDs` will be created in `%USERPROFILE%\Documents` when Dyalog is installed, and that is a good place for putting the `Latest\` folder.
+```
+]Tatin.InstallPackages [tatin]latest [MyUCMDs]
+```
 
-However, note that under Linux and Mac-OS no such folder will be created, although it will be scanned for user commands in case it exists. It needs to go into your home folder.
+This will make the user commands of `Latest` available, but it will not establish the API. However, executing any of its user commands will force `Latest` to load the API into `⎕SE`. For that, executing `]Latest.Version` will do.
+
+If you want the API to be available right from the start then please consult the article [Dyalog User Commands](https://aplwiki.com/wiki/Dyalog_User_Commands "Link to the APL wiki").
+
 
 ## Overview
 
@@ -56,7 +61,7 @@ By default the user command reports all objects or files changed lately (read: l
 
 This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do not own a timestamp that could be used. When acting on the file system this information is available.
 
-Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in particular together with the `-all` flag.
+Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in particular together with the `-allFiles` flag.
 
 ## The argument(s)
 
@@ -79,7 +84,7 @@ If it is just one it will act on it. If there are multiple projects open, then t
 
 Note that if you provide a path pointing to an open Cider  project you should include the folder that holds APL source files. 
 
-If on the other hand you want to see more than just APL source files then you might want to specify the `-all` flag,
+If on the other hand you want to see more than just APL source files then you might want to specify the `-allFiles` flag,
 see there for details.
 
 ## FLags (options)
@@ -89,7 +94,7 @@ see there for details.
 : The default is 1, meaning that the path is searched recursively;
   if you don't want this then specify a 0.
        
-`-all`
+`-allFiles`
 
 : By default only files with extensions that are recognized as APL source files (`.aplf`, `.aplc`, `.dyalog` etc.) are
   listed. You can force `]Latest` to consider all files by specifying this flag.

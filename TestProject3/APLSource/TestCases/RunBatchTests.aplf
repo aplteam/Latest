@@ -1,0 +1,13 @@
+ {success}←{debugFlag}RunBatchTests flag;rc;log
+ success←0
+ :If flag
+     debugFlag←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'debugFlag'
+     'Invalid left argument'Assert(⊂debugFlag)∊0 1
+     'Invalid right argument'Assert(⊂flag)∊0 1
+     PrepareForBatchTesting ⍬
+     (rc log)←T.RunBatchTests debugFlag
+     success←0=rc
+     SaveBatchTestLog log
+     ExecQuadOff success'Tatin client batch'
+ :EndIf
+⍝Done

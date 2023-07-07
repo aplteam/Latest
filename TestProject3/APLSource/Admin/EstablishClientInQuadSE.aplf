@@ -1,0 +1,53 @@
+ {r}←{pathToUserSettings}EstablishClientInQuadSE dummy;C;ref;reg;dyalog
+⍝ This function is called in order to establish the Tatin Client in ⎕SE._Tatin and
+⍝ to establish the API within ⎕SE.Tatin.
+⍝ By default the UserSettings class is instantiated with the default path as argument.
+⍝ Instead ⍺ might be provided: that must be the folder that hosts the user settings.
+ r←⍬
+ pathToUserSettings←{0<⎕NC ⍵:⍎⍵ ⋄ ##.Client.GetUserHomeFolder ⍬}'pathToUserSettings'
+ CreateAllRefs_Client
+ ⎕SE.⎕EX'Tatin'
+ ref←⍎'Tatin'⎕SE.⎕NS''
+ EstablishFunctionInAPI ref'BuildPackage'
+ EstablishFunctionInAPI ref'CreateBuildParms'
+ EstablishFunctionInAPI ref'CheckForLaterVersion'
+ EstablishFunctionInAPI ref'DeletePackage'
+ EstablishFunctionInAPI ref'DeprecatePackage'
+ EstablishFunctionInAPI ref'ClearCache'
+ EstablishFunctionInAPI ref'FindDependencies'
+ EstablishFunctionInAPI ref'GetDeletePolicy'
+ EstablishFunctionInAPI ref'GetDependencyTree'
+ EstablishFunctionInAPI ref'GetNoCachingFlag'
+ EstablishFunctionInAPI ref'GetPathToPackageCache'
+ EstablishFunctionInAPI ref'GetUserHomeFolder'
+ EstablishFunctionInAPI ref'GetMyUCMDsFolder'
+ EstablishFunctionInAPI ref'InitPackageConfig'
+ EstablishFunctionInAPI ref'InitialisePackage'
+ EstablishFunctionInAPI ref'InstallPackages'
+ EstablishFunctionInAPI ref'ListCache'
+ EstablishFunctionInAPI ref'ListDeprecated'
+ EstablishFunctionInAPI ref'ListLicenses'
+ EstablishFunctionInAPI ref'ListPackages'
+ EstablishFunctionInAPI ref'ListRegistries'
+ EstablishFunctionInAPI ref'ListTags'
+ EstablishFunctionInAPI ref'ListVersions'
+ EstablishFunctionInAPI ref'LoadDependencies'
+ EstablishFunctionInAPI ref'LoadPackages'
+ EstablishFunctionInAPI ref'Ping'
+ EstablishFunctionInAPI ref'PublishPackage'
+ EstablishFunctionInAPI ref'ReadPackageConfigFile'
+ EstablishFunctionInAPI ref'ReInstallDependencies'
+ EstablishFunctionInAPI ref'UnInstallPackages'
+ ⎕SE.Tatin.⎕FX↑'r←CreateReInstallParms' '⍝ Returns NS with parameters for ReInstall' 'r←⎕SE._Tatin.Client.CreateReInstallParms' ⍝ Niladic!
+ ⎕SE.Tatin.⎕FX↑'r←GetPathToPackageCache' 'r←⎕SE._Tatin.Client.GetPathToPackageCache'                                            ⍝ Niladic!
+ ⎕SE.Tatin.⎕FX↑'r←Version' '⍝ Returns "name", "version" and "date"' 'r←⎕SE._Tatin.Registry.Version'                             ⍝ Niladic!
+ ref.DefineRegistry←##.Client.DefineRegistry
+ ref.UserSettings←##.Client.UserSettings
+ C←##.Client
+ C.InitUserSettings pathToUserSettings
+ ⎕SE.Tatin.⎕FX'r←MyUserSettings' 'r←⎕SE._Tatin.Client.MyUserSettings' ⍝ Don't create a ref here because the user might assign ⎕NEW UserSettings to it, and that would NOT work!
+ ##.RumbaLean.⎕EX'DRC'          ⍝ Paranoia; with DRC around Conga won't be initialised
+ ##.RumbaLean.⎕EX'Conga'
+ 'Conga'##.RumbaLean.⎕CY(2 ⎕NQ'.' 'GetEnvironment' 'DYALOG'),'/ws/conga' ⍝ Copy Conga of the current APL version; MUST be lowercase because otherwise the WS won't be found on Linux/Mac-OS
+ InitConga ⍬
+⍝Done

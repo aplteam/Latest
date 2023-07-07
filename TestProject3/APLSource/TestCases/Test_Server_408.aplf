@@ -1,0 +1,44 @@
+ r←Test_Server_408(stopFlag batchFlag);⎕TRAP;result;request;res;target;uri
+⍝ Request package details
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ target←Reg.VersionOf_REST,'/packages/details/'
+ uri←TC.ReplaceRegistryAlias'[localhost]'
+
+ request←R.NewRequest 0
+ request.RequestTarget←target,'aplteam-APLProcess'
+ request.Headers,←⊂'Accept' 'application/json'
+ res←TC.SendAndReceive uri request
+ →T.PassesIf 200≡res.StatusCode
+ →T.PassesIf∨/'version: "1.0.0"'⍷res.Content
+
+ request←R.NewRequest 0
+ request.RequestTarget←target,'aplteam-APLProcess-0'
+ request.Headers,←⊂'Accept' 'application/json'
+ res←TC.SendAndReceive uri request
+ →T.PassesIf 200≡res.StatusCode
+ →T.PassesIf∨/'version: "0.5.1'⍷res.Content
+
+ request←R.NewRequest 0
+ request.RequestTarget←target,'aplteam-APLProcess-0.2'
+ request.Headers,←⊂'Accept' 'application/json'
+ res←TC.SendAndReceive uri request
+ →T.PassesIf 200≡res.StatusCode
+ →T.PassesIf∨/'version: "0.2.12"'⍷res.Content
+
+ request←R.NewRequest 0
+ request.RequestTarget←target,'aplteam-APLProcess-0.2.9'
+ request.Headers,←⊂'Accept' 'application/json'
+ res←TC.SendAndReceive uri request
+ →T.PassesIf 200≡res.StatusCode
+ →T.PassesIf∨/'version: "0.2.9"'⍷res.Content
+
+ request←R.NewRequest 0
+ request.RequestTarget←target,'aplteam-APLProcess-11.12.13'
+ request.Headers,←⊂'Accept' 'application/json'
+ res←TC.SendAndReceive uri request
+ →T.PassesIf 404≡res.StatusCode
+
+ r←T._OK
+⍝Done

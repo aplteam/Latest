@@ -1,0 +1,17 @@
+ r←FindDependencies_(pkgList url level);request;res;buff
+ request←R.NewRequest 0
+ request.RequestTarget←'/v1/dependencies'
+ request.RequestTarget,←'?level=',⍕level
+ request.RequestTarget,←'&packages=',⊃{⍺,',',⍵}/⊆pkgList
+ request.Headers,←⊂'Accept' 'application/json'
+ res←SendAndReceive url request
+ :If 200≠res.StatusCode
+     ('Server: ',res.Content)Assert 0=≢res.Content
+     ('Failed with status code ',⍕res.StatusCode)Assert 0
+ :ElseIf 0<≢res.Content
+     buff←(⎕JSON⍠('Dialect' 'JSON5')⊣res.Content)
+     r←buff
+ :Else
+     r←''
+ :EndIf
+⍝Done

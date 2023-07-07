@@ -1,0 +1,9 @@
+ ValidateAPI←{
+     api←,⍵.api
+     0=≢api:⍵
+     'Package property "api" is invalid (nested)'Assert 1=≡api:
+     'Package property "api" is invalid (name)'Assert 0=(⎕NS'').⎕NC api:
+     'Package property "api" is invalid (path)'Assert~∨/api∊'⎕#':
+     ⍝ Unfortunately we cannot check the API for existence at this point
+     ⍵
+ }

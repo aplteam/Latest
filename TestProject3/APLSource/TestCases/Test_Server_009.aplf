@@ -1,0 +1,28 @@
+ r←Test_Server_009(stopFlag batchFlag);⎕TRAP;request;response;folder;noOf;ini;m
+⍝ Send a request that makes the server crash and then check email and look for dump files
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ ini←⎕NEW ##.IniFiles(,⊂'./TestServer/Server/server.ini')
+ folder←⊃ini.Get'TRAP:Folder'
+ folder←'<TEMP>'⎕R(739⌶0)⊣folder
+ folder←¯1↓1⊃⎕NPARTS(¯1×(¯1↑folder)∊'/\')↓folder
+
+ 'Create!'F.CheckPath folder,'/Errors'
+ noOf←≢F.ListFiles folder,'/Errors'
+
+ request←TC.R.NewRequest 0
+ request.RequestTarget←'v1/crash'
+ response←TC.SendAndReceive (TC.ReplaceRegistryAlias'[localhost]')request
+
+ →T.PassesIf response.StatusCode≡500
+ →T.PassesIf(2+noOf)=≢F.ListFiles folder,'/Errors'   ⍝ The HTML file and the DCF file
+
+ :If ~batchFlag
+ :AndIf 'kai'≡⎕AN
+     m←'You should have received an email from the local test server reporting a crash, correct?'
+     →T.PassesIf TC.YesOrNo m
+ :EndIf
+
+ r←T._OK
+⍝Done

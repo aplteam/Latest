@@ -1,0 +1,21 @@
+  identifier←{noBetas}CheckVersion identifier;packageID;path;CR;msg;statusCode;errMsg
+ noBetas←{0<⎕NC ⍵:⍎⍵ ⋄ Reg.GetNoBetasDefault}'noBetas'
+ packageID←GetPackageIDFromFilename identifier
+ :If ~Reg.IsValidPackageID_Complete packageID
+ :AndIf '.zip'≢⎕C ¯4↑identifier
+     EstablishRumbaClients ⍬    ⍝ Now we know for certain that we need to access the web
+     :If 0=≢path←(-≢packageID)↓identifier
+         path←EstablishRegistry packageID
+         :If 0=≢path
+             identifier←''      ⍝ Means: not found
+             :Return
+         :EndIf
+     :EndIf
+     (statusCode errMsg identifier)←noBetas GetBestVersionNumber packageID path
+     :If 404=statusCode
+         identifier←''          ⍝ Means: not found
+     :Else
+         errMsg Assert 200=statusCode
+     :EndIf
+ :EndIf
+⍝Done

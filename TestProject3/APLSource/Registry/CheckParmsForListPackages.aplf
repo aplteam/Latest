@@ -1,0 +1,61 @@
+ parms←CheckParmsForListPackages parms;list;msg;flag
+⍝ Makes sure that `parms` will be a namespace that carries the required parameters.
+⍝ If `parms` is `⍬` or '' it is replaced by `⎕NS''` and then populated with defaults.
+⍝ `parms` is also checked for containing other stuff (not permitted) and converts
+⍝ `group` and `tags` to lowercase.
+ :If (⊂parms)∊''⍬
+     parms←⎕NS''
+ :EndIf
+ :If 0=parms.⎕NC'group'
+     parms.group←''
+ :EndIf
+ :If 0=parms.⎕NC'tags'
+     parms.tags←''
+ :EndIf
+ :If 0=parms.⎕NC'aggregate'
+     parms.aggregate←1
+ :EndIf
+ :If 0=parms.⎕NC'date'
+     parms.date←0
+ :EndIf
+ :If 0=parms.⎕NC'project_url'
+     parms.project_url←0
+ :EndIf
+ :If 0=parms.⎕NC'since'
+     parms.since←0
+ :EndIf
+ :If 0=parms.⎕NC'userCommand'
+     parms.userCommand←0
+ :EndIf
+⍝ If at least one is specified the others default to 0. If none is specified they all default to 1
+ flag←0∧.=parms.⎕NC↑'os_win' 'os_mac' 'os_lin'
+ :If 0=parms.⎕NC'os_win'
+     parms.os_win←flag
+ :EndIf
+ :If 0=parms.⎕NC'os_mac'
+     parms.os_mac←flag
+ :EndIf
+ :If 0=parms.⎕NC'os_lin'
+     parms.os_lin←flag
+ :EndIf
+ list←'group' 'tags' 'aggregate' 'date' 'project_url' 'since' 'os_win' 'os_mac' 'os_lin' 'userCommand'
+ msg←'Invalid left argument: only "group", "tags", "date", "project_url", "aggregate", "os_win", "os_mac" and "os_lin" are permitted'
+ msg Assert∧/(' '~¨⍨↓parms.⎕NL 2)∊list
+ '"aggregate" must be a Boolean'Assert parms.aggregate∊0 1
+ '"date" must be a Boolean'Assert parms.date∊0 1
+ '"os_win" must be a Boolean'Assert parms.os_win∊0 1
+ '"os_mac" must be a Boolean'Assert parms.os_mac∊0 1
+ '"os_lin" must be a Boolean'Assert parms.os_lin∊0 1
+ '"userCommand" must be a Boolean'Assert parms.userCommand∊0 1
+ parms.since←{0=1↑0⍴∊⍵:⍵ ⋄ (flag value)←⎕VFI ⍵ ⋄ flag:value ⋄ ⍵}parms.since
+ :If ' '=1↑0⍴parms.since
+     :Trap 0
+         '"since", when character, must be international date format: YYYY-MM-DD'Assert(∧/parms.since[1 2 3 4 6 7 9 10]∊⎕D)∧'-'∧.=parms.since[5 8]
+     :Else
+         '"since" is invalid'Assert 0
+     :EndTrap
+ :Else
+     '"since" must be an integer: YYYYMMDD'Assert(⎕DR parms.since)∊323 83 83
+ :EndIf
+ parms.tags←⎕C parms.tags
+⍝Done

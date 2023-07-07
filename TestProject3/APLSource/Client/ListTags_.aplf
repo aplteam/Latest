@@ -1,0 +1,29 @@
+ list←{parms}ListTags_ uri;request;res;host;packageID
+ :If 0=⎕NC'parms'
+     parms←⎕NS''
+     parms.tags←''
+     parms.(os_lin os_mac os_win)←1
+ :EndIf
+ (host packageID)←Reg.SeparateUriAndPackageID uri
+ request←R.NewRequest 0
+ request.RequestTarget←'/v1/tags/',{⍵↓⍨'/'=1⍴⍵}packageID
+ :If 0<≢parms.tags
+ :AndIf 0<≢⊃,/parms.tags
+     request.RequestTarget,←'?'
+     request.RequestTarget,←'tags=',parms.tags
+ :EndIf
+ :If 0∊parms.(os_lin os_mac os_win)
+     request.RequestTarget,←(1+'?'∊request.RequestTarget)⊃'?&'
+     request.RequestTarget,←'os=',⊃{⍺,',',⍵}/(⊂'')~⍨parms.(os_lin os_mac os_win)/¨'lin' 'mac' 'win'
+ :EndIf
+ request.Headers,←⊂'Accept' 'application/json'
+ res←SendAndReceive host request
+ :If 200≠res.StatusCode
+     :If 0<≢res.Content
+         ('Server: ',res.Content)Assert 0
+     :Else
+         ('Failed with status code ',⍕res.StatusCode)Assert 0
+     :EndIf
+ :EndIf
+ list←Reg.APLfromJSON res.Content
+⍝Done

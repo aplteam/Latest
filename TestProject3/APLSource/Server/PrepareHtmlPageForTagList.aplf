@@ -1,0 +1,22 @@
+ html←PrepareHtmlPageForTagList data;noOfCols;colTitles
+ html←HtmlHeader GetDataTableStuff ⍬
+ html,←⊂'<h2>List of all tags</h2>'
+ html,←AddSpecialMessage ⍬
+ colTitles←'Tag' 'Occurances'
+ data[;2]←⍕¨data[;2]
+ html,←⊂H.OpenTable colTitles CalcTableWidth data
+ html,←⊂'<thead>'
+ html,←⊂'<tr class="my-first-th">'
+ html,←{'<th>',⍵,'</th>'}¨colTitles
+ html,←⊂'</thead>'
+ html,←⊂'<tbody>'
+ :If 0<≢data
+     html,←AddJavaScript data
+     html,←⊃¨{'<tr><td>',⍺,'</td><td>',⍵,'</td></tr>'}/¨↓data
+ :EndIf
+ html,←⊂'</tbody>'
+ html,←⊂'</table>'
+ html,←⊆GetFooter
+ html,←⊂'</body>'
+ html,←⊂'</html>'
+ ⍝Done

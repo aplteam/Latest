@@ -1,0 +1,35 @@
+ {r}←{keepOpen}EstablishRumbaClients dummy;regs;errCounter;qdmx
+⍝ Establishes connections to all registries as Rumba clients for pipelined access,
+⍝ usually by InstallPackages (which is called by LoadPackages).
+⍝ We keep a record of all pre-pepared Rumba-Client on the global variable ∆PermanentConnections.
+⍝ This improves performance dramatically in case we have to communicate with a server several times.
+⍝ `keepOpen` can be used to tell CloseConnections to not close the connection unless the right argument says so.
+ r←0
+ keepOpen←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'keepOpen'
+ errCounter←0
+ :If 0=⎕NC'∆PermanentConnections'
+∆Try_Again:
+ :OrIf 0=≢∆PermanentConnections.⎕NL 9
+     :If 0=⎕NC'∆PermanentConnections'
+         ∆PermanentConnections←⎕NS''
+     :EndIf
+     regs←ListRegistries''
+     regs←(0<regs[;4])⌿regs
+     regs←(IsHTTP¨regs[;1])⌿regs
+     'No registries found'Assert 0<≢regs
+     :Trap 345
+         Connect2Client¨⊃¨CompileUrlPlusPort/¨↓regs[;1 3]
+     :Else
+         qdmx←⎕DMX
+         ⎕DL 0.2
+         errCounter+←1
+         →(2>errCounter)/∆Try_Again
+         'Unable to establish HTTP connections'⎕SIGNAL 998
+     :EndTrap
+     :If 0=∆PermanentConnections.⎕NC'keepOpen'
+     ⍝ If it already exists it will be 1 for sure because we did establish the namespace as empty but with keepOpen←1
+         ∆PermanentConnections.keepOpen←keepOpen
+     :EndIf
+     r←1
+ :EndIf
+⍝Done

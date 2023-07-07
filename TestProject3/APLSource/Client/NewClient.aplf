@@ -1,0 +1,33 @@
+ c←NewClient uri;reg;puri
+⍝ Create a Rumba client tailored for Tatin
+ c←R.NewClient 0
+ :Trap 997
+     reg←MyUserSettings.GetRegistry uri
+ :Else
+     reg←⍬  ⍝ We allow accessing a server that's not defined in MyUserSettings
+ :EndTrap
+ :If ⍬≡reg
+     puri←R.ParseURI uri
+     c.Host←puri.Host
+     c.Secure←puri.Scheme≡'https'
+     :If 0=c.Port←⊃A.ToNum puri.Port
+         c.Port←80 443[c.Secure+⎕IO]
+     :EndIf
+ :Else
+     puri←R.ParseURI reg.uri
+     c.Secure←puri.Scheme≡'https'
+     c.Host←puri.Host
+     :If 0=c.Port←reg.port
+     :AndIf 0=c.Port←⊃A.ToNum puri.Port
+         c.Port←80 443[c.Secure+⎕IO]
+     :EndIf
+     :If ~0∊⍴reg.proxy
+         puri←R.ParseURI reg.proxy
+         c.ProxySecure←puri.Scheme≡'https'
+         c.ProxyHost←puri.Host
+         :If 0=c.ProxyPort←⊃A.ToNum puri.Port
+             c.ProxyPort←80 443[c.Secure+⎕IO]
+         :EndIf
+     :EndIf
+ :EndIf
+⍝Done

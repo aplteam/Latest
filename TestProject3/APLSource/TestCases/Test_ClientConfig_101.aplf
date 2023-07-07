@@ -1,0 +1,20 @@
+ r←Test_ClientConfig_101(stopFlag batchFlag);⎕TRAP;tempDir;settings;rc;msg
+⍝ Create a new config file and check it
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ tempDir←∆GetTempDir''
+ F.DeleteFile tempDir,'/',TC.UserSettings.cfg_name                           ⍝ Precaution
+
+ settings←∆NewUserSettings(,⊂tempDir)
+ →T.GoToTidyUp~F.IsFile settings.path2config
+ →T.GoToTidyUp≢/F.ExpandPath¨settings.path2config(tempDir,'/',settings.cfg_name)
+ →T.GoToTidyUp 0≠≢settings.source
+ →T.GoToTidyUp 2≠≢settings.registries
+
+ r←T._OK
+
+∆TidyUp:
+ (rc msg)←F.RmDirByForce tempDir
+ msg Assert rc=0
+⍝Done

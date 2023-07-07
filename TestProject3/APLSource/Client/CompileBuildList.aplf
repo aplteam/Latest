@@ -1,0 +1,34 @@
+ {buildList}←{replace}CompileBuildList (folder deps);oldTree;newTree;deps2;deps;oldToc;newToc;bool;ind
+⍝ We distinguish here between principal packages and other packages (=dependencies).
+⍝ If the dependency file was modified after the build list was saved:
+⍝ * If a top-level package was removed from the dependency file the build list is re-created
+⍝ * If a dependency package is missing, re-installation is required and therefore an error is thrown\\
+ replace←{0<⎕NC ⍵:⍎⍵ ⋄ 0}'replace'
+ folder←Reg.AddSlash folder
+ oldTree←LoadBuildList folder
+ (Reg.DependenciesFilename,' is empty')Assert 0<≢deps
+ newTree←{0(GetDependencyTree NoPrintToSession)⍵}¨folder∘,¨deps
+ newTree←(0<≢¨newTree)⌿newTree
+ newTree←⊃⍪/newTree
+ newTree←newTree[⍒newTree[;1];]
+ newTree←({(⍳≢⍵)=⍵⍳⍵}↓newTree)⌿newTree
+ :If 0=≢⊃newTree[1;2]                                       ⍝ Is it not a package folder but just an install folder?
+     newTree←1↓newTree
+     newTree[;1]-←1
+ :EndIf
+
+ :If 0<≢newTree                                             ⍝ There might be no dependencies
+ :AndIf 0<≢deps2←(1<newTree[;1])⌿newTree
+     deps2←1 Reg.GetBestVersionNumber∘Reg.RemoveVersionNumber¨deps2[;3]
+     Assert 0∧.<≢¨deps2
+     ind←⍸newTree[;1]>1
+     newTree[ind;2]←GetPackageIDFromFilename¨deps2
+     newTree[ind;3]←deps2
+ :EndIf
+ oldToc←RemoveAlias¨Reg.RemoveMinorAndPatch¨oldTree[;2]
+ newToc←RemoveAlias¨Reg.RemoveMinorAndPatch¨newTree[;2]
+ bool←newToc∊oldToc
+ ind←⍸bool
+ newTree[ind;3]←oldTree[oldToc⍳bool/newToc;3]     ⍝ Preserve original URLs
+ buildList←(~replace)SaveBuildList newTree folder
+⍝Done

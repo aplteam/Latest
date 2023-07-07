@@ -1,0 +1,187 @@
+:Class DefineRegistry
+⍝ By instantiating this class you get a representation of a Registry that can be added to the user settings.\\
+⍝ The main purpose of this class is to check the data provided for describing a Registry like "uri", "alias" etc.\\
+⍝ A list of all variables is available as a shared field: `varsList`.
+⍝ An instance can be transformed into an ordinay namespace by calling the `Get` method with an empty right argument.
+⍝ Usually a new instance is created by providing a URI. However, an new instance can also be created from the
+⍝ ordinay namespace that is returned by the `Get` function.
+
+    :Field public Shared ReadOnly varsList←'uri' 'alias' 'port' 'api_key' 'priority' 'noCaching' 'id' 'proxy'  ⍝ List of all variables in an instance
+
+⍝ --------------- Constructors
+
+    ∇ make1(y);ns
+    ⍝ `y` must be one of:
+    ⍝ * A text vector representing a uri
+    ⍝ * A text vector representing an alias and a uri (syntax: [alias]domain.com)
+    ⍝ * A namespace holding at least `uri`. This is typically created by a call to the `Get` function, but
+    ⍝   it could have been created "manually".
+      :Implements Constructor
+      :Access Public
+      ⍝ define defaults
+      ns←⎕NS''
+      ns.port←0
+      ns.priority←⎕NULL
+      ns.api_key←''
+      ns.alias←''
+      ns.noCaching←0
+      ns.id←(⊃⊃⎕CLASS ⎕THIS).##.A.Create_UUID ⍝ Uset this to identify a registry in case you cannot use either uri and alias
+      ns.proxy←''
+      :If 326=⎕DR y
+      :AndIf 0=≡y
+          'ns'⎕NS y          ⍝ overwrite with provided properties
+      :ElseIf ∧/'[]'∊y
+          ns.(alias uri)←y{('[]'~⍨⍵↑⍺)(⍵↓⍺)}y⍳']'
+      :Else
+          ns.uri←y
+      :EndIf
+      'Invalid variables'Assert∧/(' '~¨⍨↓ns.⎕NL 2)∊varsList
+      ⍎¨ns.{'_',⍵,'←','ns.',⍵}¨'id' 'uri' 'priority'      ⍝ use private fields for reserved properties
+      ⍎¨ns.{⍵,'←','ns.',⍵}¨varsList~'id' 'uri' 'priority' ⍝ use property setters for validation on rest
+      '"uri": invalid depth'Assert 1=≡_uri
+      '"uri": invalid data type'Assert' '=1↑0⍴_uri
+      '"uri" must not carry []'Assert∧/~'[]'∊_uri
+      ((_uri='\')/_uri)←'/'
+      _uri,←('/'≠¯1↑_uri)/'/'
+    ∇
+
+⍝ ---------- Properties
+
+    :Property uri
+    ⍝ The URI of the given Tatin Registry. May be "localhost" for the current machine.
+    ⍝ Note that there might be a good reason to have several instances with the same uri: in case you need
+    ⍝ several different API keys.
+    :Access Public Instance
+        ∇ r←get
+          r←_uri
+        ∇
+    :EndProperty
+
+    :Property alias
+    ⍝ The alias one may use to specify the given Registry. Alternatively you may use "id" for this, see there.
+    :Access Public Instance
+        ∇ r←get
+          r←_alias
+        ∇
+        ∇ set value;buff
+          buff←,value.NewValue
+          '"alias": invalid depth'Assert 1=≡buff
+          '"alias": invalid data type'Assert' '=1↑0⍴buff
+          _alias←⎕C buff~' '
+        ∇
+    :EndProperty
+
+    :Property port
+    ⍝ Defaults to 0 which means that the protocol rules: 443 in case of https, 80 for http.
+    ⍝ This can by any integer between 1 and 65535 althoug it is wise to not use anything between 1 and 999 because
+    ⍝ many of those are reserved for partiuclar applications.
+    :Access Public Instance
+        ∇ r←get
+          r←_port
+        ∇
+        ∇ set value;buff
+          buff←value.NewValue
+          '"port": invalid depth'Assert 0=≡buff
+          '"port": invalid data type'Assert 0=1↑0⍴buff
+          '"port": invalid value'Assert(buff≥0)∧(buff<65535)
+          _port←buff
+        ∇
+    :EndProperty
+
+    :Property api_key
+    ⍝ A Registry might require authentication generally and certainly for publishing. This can be achieved by
+    ⍝ providing an API key. Note that an API key needs the same care and security measures as a password.
+    :Access Public Instance
+        ∇ r←get
+          r←_api_key
+        ∇
+        ∇ set value;buff
+          buff←value.NewValue
+          '"api_key": invalid depth'Assert 1=≡buff
+          '"api_key": invalid value'Assert' '=1↑0⍴buff
+          _api_key←buff
+        ∇
+    :EndProperty
+
+    :Property priority
+    ⍝ The `priority` is used to determine the order of the registries when scanning for a particular package.\\
+    ⍝ It must be an integer greater then 0. If it is 0 than it is replaced by the lowest number of any
+    ⍝ defined Registry minus 10 when the registry is added to the user settings class by calling the `AddRegistry`
+    ⍝ method. The highest number is scanned first and so on.
+    :Access Public Instance
+        ∇ r←get
+          r←_priority
+        ∇
+        ∇ set value;buff
+          buff←value.NewValue
+          '"priority": invalid depth'Assert 0=≡buff
+          '"priority": invalid length'Assert 1=≢buff
+          '"priority": invalid data type (not integer)'Assert 0=1↑0⍴buff
+          '"priority": invalid value'Assert buff≥0
+          '"priority": invalid value'Assert 163≥⎕DR buff    ⍝ 16 bit signed integer is max
+          _priority←buff
+        ∇
+    :EndProperty
+
+    :Property noCaching
+    ⍝ Boolean that defaults to 0.
+    ⍝ Setting this to 1 excludes this registry from caching.
+    :Access Public Instance
+        ∇ r←get
+          r←_noCaching
+        ∇
+        ∇ set value;buff
+          buff←value.NewValue
+          'Invalid: "noCaching"'Assert(⊂buff)∊0 1
+          _noCaching←buff
+        ∇
+    :EndProperty
+
+    :Property id
+    ⍝ A UUID that can be used to identify a registry instead of using uri and alias.
+    ⍝ This is eesential when you have multiple instances for the same uri (with different API keys and aliases)
+    ⍝ and you want so change the alias, say. There might be other applications.
+    :Access Public Instance
+        ∇ r←get
+          r←_id
+        ∇
+    :EndProperty
+
+    :Property proxy
+    ⍝ An optional proxy uri. If defined should ba a complete uri (http[s]://example.com[:port]/)
+    :Access Public Instance
+        ∇ r←get
+          r←_proxy
+        ∇
+        ∇ set value;buff
+          buff←,value.NewValue~' '
+          '"proxy": invalid depth'Assert 1=≡buff
+          '"proxy": invalid data type'Assert' '=1↑0⍴buff
+          _proxy←buff
+        ∇
+    :EndProperty
+
+    ∇ r←Get key;list;bool
+    ⍝ Returns the data as a namespace. "data" is defined as the variables listed by the `varsList` field in case `key`
+    ⍝ is empty. Otherwise `key` must be a valid variable name.
+      :Access Public Instance
+      :If '#'=1⍴⍕##
+          r←#.⎕NS''
+      :Else
+          r←⎕SE.⎕NS''
+      :EndIf
+      :If (⊂key)∊''⍬
+          r.(uri alias port api_key noCaching priority id proxy)←_uri _alias _port _api_key _noCaching _priority _id _proxy
+      :Else
+          'Invalid right argument (depth)'Assert 1=≡key
+          'Invalid right argument (data type)'Assert' '=1↑0⍴key
+          'Unknown'Assert(⊂key)∊varsList
+          r←⍎'_',varsList{⍺⊃⍨⍺⍳⊂⍵}key
+      :EndIf
+    ∇
+
+⍝ ------------ Private stuff
+
+    Assert←{⍺←⊢ ⋄ 0∊⍵:⍺ ⎕SIGNAL 998 ⋄ shy←0}
+
+:EndClass

@@ -1,0 +1,33 @@
+ r←Test_ListTags_004(stopFlag batchFlag);⎕TRAP;fuzzy;list1;list2;list3;list4;allPackages;parms
+⍝ List all packages with a tag "zip-tools"; tests the internal function `FindTag`
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ parms←⎕NS''
+ parms.aggregate←0
+ allPackages←0 Reg.GetAllPackages ∆GetServerRegistryFolder
+ (fuzzy list1)←1 Reg.FindTag ∆GetServerRegistryFolder'zip-tools'allPackages
+ →T.PassesIf 0=fuzzy
+ →T.PassesIf 4=≢list1
+ →T.PassesIf∧/⊃∨/∨/¨'-SevenZip-' '-Seven7Zip-' '-DotNetZip-'⍷¨⊂↑,list1
+
+ (fuzzy list1)←1 Reg.FindTag ∆GetServerRegistryFolder'zip-tool'allPackages
+ →T.PassesIf 1=fuzzy
+ →T.PassesIf 4=≢list1
+ →T.PassesIf∧/⊃∨/∨/¨'-SevenZip-' '-Seven7Zip-' '-DotNetZip-'⍷¨⊂↑,list1
+
+ (fuzzy list2)←1 Reg.FindTag ∆GetServerRegistryFolder'zip'allPackages
+ →T.PassesIf 1=fuzzy
+ →T.PassesIf 4=≢list2
+ →T.PassesIf∧/⊃∨/∨/¨'-SevenZip-' '-Seven7Zip-' '-DotNetZip-'⍷¨⊂↑,list2
+
+ (fuzzy list3)←1 Reg.FindTag ∆GetServerRegistryFolder'winndows-servized'allPackages
+ →T.PassesIf 2=fuzzy
+ →T.PassesIf 1=≢list3
+
+ (fuzzy list4)←1 Reg.FindTag ∆GetServerRegistryFolder'testd-fraemwork'allPackages
+ →T.PassesIf 2=fuzzy
+ →T.PassesIf 1=≢list4
+
+ r←T._OK
+⍝Done

@@ -1,0 +1,5 @@
+ CheckAssetsExist←{
+     path←⍺∘{(':'∊⍵)∨('./'≡2⍴⍵)∨((1⍴⍵)∊'/\'):⍵ ⋄ ⍺,⍵}⍵
+     F.Exists path:shy←⍬
+     ('The asset folder does not exist: ',⍵)Assert 0
+ }

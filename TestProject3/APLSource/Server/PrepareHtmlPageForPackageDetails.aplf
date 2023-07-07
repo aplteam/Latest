@@ -1,0 +1,30 @@
+ html←PrepareHtmlPageForPackageDetails(ID json url version);ID_;major;majorMinor
+ html←HtmlHeader''
+ :Select version
+ :Case 'full'
+     html,←⊂'<h2>Details of &lt;',ID,'&gt;</h2>'
+ :Case 'major'
+     (ID_ major)←{⍵{(⍵↓⍺)((1+⍵)↑⍺)}-'-'⍳⍨⌽⍵}ID
+     html,←⊂'<h2>Details of latest package for &lt;',ID_,'&gt; of major version ',(,major),'</h2>'
+ :Case 'major+minor'
+     (ID_ majorMinor)←{⍵{(⍵↓⍺)((1+⍵)↑⍺)}-'-'⍳⍨⌽⍵}ID
+     html,←⊂'<h2>Details of latest patch for &lt;',ID_,'&gt; for version ',(,majorMinor),'</h2>'
+ :Case 'none'
+     html,←⊂'<h2>Details of latest package for &lt;',ID,'&gt;</h2>'
+ :Else
+     ∘∘∘ ⍝ Paranioa: should not happen of course
+ :EndSelect
+ html,←AddSpecialMessage ⍬
+ json←EscapeSpecialChars json
+ html,←⊂'<pre><json>',1⊃json
+ json←MakeURLsLinks json
+ :If ⊃G.INI.Get'Config:GroupHomePages'
+     html,←MakeGroupHomepageLink json
+ :Else
+     html,←1↓json
+ :EndIf
+ html,←⊂'</json></pre>'
+ html,←⊆GetFooter
+ html,←⊂'</body>'
+ html,←⊂'</html>'
+⍝Done

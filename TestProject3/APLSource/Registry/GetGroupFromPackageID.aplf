@@ -1,0 +1,1 @@
+ GetGroupFromPackageID←{⎕C ⍵↑⍨¯1+⍵⍳'-'}

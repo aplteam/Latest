@@ -1,0 +1,17 @@
+ r←Test_Load_082(stopFlag batchFlag);⎕TRAP;expected
+⍝ Load a package by specifying just group, name and major number; should load a beta version
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕EX TC.GetTatinRootSpace'#'
+ #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''    ⍝ Used to load stuff into
+
+ {}TC.LoadPackages'[localhost]example-JustOneBeta-0' '#.TEMP'
+ expected←'JustOneBeta' '0.1.0-beta-1+18' '2020-01-10'
+ →T.GoToTidyUp expected≢#.TEMP.JustOneBeta.Version
+
+ r←T._OK
+
+∆TidyUp:
+ #.⎕EX TC.GetTatinRootSpace'#'
+⍝Done

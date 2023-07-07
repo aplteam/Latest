@@ -1,0 +1,17 @@
+ r←Test_API_063(stopFlag batchFlag);⎕TRAP;res1
+⍝ Exercise ⎕SE.Tatin.LoadPackages on a package that has just betas but with "noBetas←1"
+ ⎕TRAP←(999 'C' '. ⍝ Deliberate error')(0 'N')
+ r←T._Failed
+
+ #.⎕EX TC.GetTatinRootSpace'#'
+ #.⎕SHADOW'TEMP'
+
+ res1←1 ⎕SE.Tatin.LoadPackages'[local]Laguntza' '#.TEMP'
+ →T.GoToTidyUp res1≠0
+
+ r←T._OK
+
+∆TidyUp:
+ #.⎕EX TC.GetTatinRootSpace'#'
+ :Trap 0 ⋄ {}F.RmDirByForce res1 ⋄ :EndTrap
+⍝Done

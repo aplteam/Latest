@@ -85,16 +85,18 @@
       ⍝ ⍬ in case no argument was provided
       ⍝ 0 in case text was provided as argument
       ⍝ An integer otherwise.
-             :If ⍬≡noOf
-                 r←((10↑¨r[;1])≡¨⊂10↑1⊃r[¯1+≢r;])⌿r  ⍝ All from the day with the latest change
-             :ElseIf 0≢noOf
-                 :If ¯1=×noOf
-                     buff←10↑¨r[;1]  ⍝ YYYY-MM-DD
-                     r←(buff∊noOf{(⍺⌊≢⍵)↑⍵}⌽∪⌽buff)⌿r
-                 :ElseIf 8=≢⍕noOf ⍝ Is it a date (yyyymmdd)?
-                     r←(noOf={↑↑(//)⎕VFI ⍵}¨↓(⊃r[;1])[;0 1 2 3 5 6 8 9])⌿r
-                 :Else
-                     r←(-noOf⌊≢r)↑r
+             :If 0=all
+                 :If ⍬≡noOf
+                     r←((10↑¨r[;1])≡¨⊂10↑1⊃r[¯1+≢r;])⌿r  ⍝ All from the day with the latest change
+                 :ElseIf 0≢noOf
+                     :If ¯1=×noOf
+                         buff←10↑¨r[;1]  ⍝ YYYY-MM-DD
+                         r←(buff∊noOf{(⍺⌊≢⍵)↑⍵}⌽∪⌽buff)⌿r
+                     :ElseIf 8=≢⍕noOf ⍝ Is it a date (yyyymmdd)?
+                         r←(noOf={↑↑(//)⎕VFI ⍵}¨↓(⊃r[;1])[;0 1 2 3 5 6 8 9])⌿r
+                     :Else
+                         r←(-noOf⌊≢r)↑r
+                     :EndIf
                  :EndIf
              :EndIf
              :If 0=+/≢¨r[;0]

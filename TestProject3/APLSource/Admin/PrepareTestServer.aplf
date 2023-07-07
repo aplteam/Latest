@@ -1,0 +1,19 @@
+ r←PrepareTestServer G;targetPath;sourcePath;list
+ targetPath←⊃G.INI.Get'Logging:Folder'
+ :If 0<##.⎕NC'CiderConfig'
+     sourcePath←##.CiderConfig.HOME,'/TestData/App-Log/'
+ :Else
+     :If G.TestFlag
+         sourcePath←##.FilesAndDirs.PWD,'/TestData/App-Log/'
+     :Else
+         sourcePath←##.FilesAndDirs.PWD,'/'
+     :EndIf
+ :EndIf
+ ⍝ Copy over some pre-prepared log files so that we have some test data
+ :If 0<≢list←##.FilesAndDirs.ListFiles sourcePath,'*'
+     ⎕NUNTIE G.AppLogTie        ⍝ Because by now it is already tied as part of the bootstrapping
+     {}targetPath∘{⍺ ⎕NCOPY⍠('IfExists' 'Replace')⊣⍵}¨list
+     G←(⊃⎕RSI).OpenAppLog G     ⍝ Again
+ :EndIf
+ r←##.Server.TatinAmendments G
+⍝Done

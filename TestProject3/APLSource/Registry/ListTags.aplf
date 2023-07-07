@@ -1,0 +1,39 @@
+ data←ListTags(uri parms);registryPath;tagList;search;bool;fuzzy;bool_;IDs;search_;os;os2
+⍝ Returns either a data with all tags or, in case `parms.tags` is not empty,
+⍝ all tags of all packages that carry the tags specified in `parms`.
+ 'No registry specified'Assert 0<≢uri
+ data←0 2⍴''
+ registryPath←F.ExpandPath uri
+ 'Neither an alias nor a path?!'Assert F.IsDir registryPath
+ tagList←GetTags registryPath
+ :If 0<≢tagList
+     :If 2=parms.⎕NC'tags'
+     :AndIf 0<≢parms.tags
+         search←','(≠⊆⊢)parms.tags
+         (fuzzy bool)←↓⍉↑tagList[;2]∘{FindTag_ ⍺ ⍵}¨,search
+         IDs←⊃∩/bool⌿¨⊂tagList[;1]
+         search_←⊃∩/bool⌿¨⊂tagList[;2]
+         bool_←tagList[;1]∊IDs
+         tagList←bool_⌿tagList
+     :EndIf
+     :If 2=parms.⎕NC'os'
+     :AndIf 0<≢parms.os
+         os←⊃F.NGET(registryPath,'tatin_os.txt')1
+         os←↑{A.ToNum ⍵↓⍨⍵⍳' '}¨os[tagList[;1]]
+         os2←','(≠⊆⊢)parms.os
+         :If (⊂'lin')∊os2
+             (os tagList)←(os[;1])∘⌿¨os tagList
+         :EndIf
+         :If (⊂'mac')∊os2
+             (os tagList)←(os[;2])∘⌿¨os tagList
+         :EndIf
+         :If (⊂'win')∊os2
+             (os tagList)←(os[;3])∘⌿¨os tagList
+         :EndIf
+     :EndIf
+     :If 0<≢tagList
+         data←{⍺,≢⍵}⌸tagList[;2]
+         data←data[⍋data[;1];]
+     :EndIf
+ :EndIf
+⍝Done
