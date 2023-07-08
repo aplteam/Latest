@@ -13,15 +13,17 @@ There is a Dyalog user command that does something similar. However, it takes ti
 
 ## Overview
 
-`]Latest` was mainly invented to work on opened projects, no matter whether they are managed by [Cider](https://github.com/aplteam/Cider) or by [acre](https://github.com/the-carlisle-group/Acre-Desktop).
+* `]latest` can act on the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
+* `]latest` can act on a specific folder like C:\MyProjects\ThisProject\APLSource
+* `]latest` can act on open Cider projects (no argument required)
 
-If there is just one project open then `]Latest` will act on that one. If there are multiple projects open the user will be asked which one she want to work on.
+If no argument is specified **and** Cider does **not** live in `⎕SE` (read: you are not using Cider), then it falls back to the current directory but will ask the user for confirmation.
 
-But you can also provide an argument: this can be a path, either on the file system or in the workspace (like `#.MyCode` or `⎕SE`).
+By default the user command reports all objects or files changed lately (read: last day with any changes).
 
-By default `]Latest` lists all changes from the last day when any changes were made at all, but instead you can ask for a specific number of days, a specific number of changes or all changes made after a particular date.
+This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do not own a timestamp that could be used. When acting on the file system this information is available.
 
-By default `]Latest` looks for APL source files (defined by proper extensions), but you can also ask for all files with the `-allFiles` flag.
+Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in particular together with the `-allFiles` flag.
 
 ## Examples
 
@@ -49,21 +51,9 @@ This will make the user commands of `Latest` available, but it will not establis
 If you want the API to be available right from the start then please consult the article [Dyalog User Commands](https://aplwiki.com/wiki/Dyalog_User_Commands "Link to the APL wiki").
 
 
-## Overview
+## Syntax 
 
-* `]latest` can act on the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
-* `]latest` can act on a specific folder like C:\MyProjects\ThisProject\APLSource
-* `]latest` can act on open Cider projects (no argument required)
-
-If no argument is specified **and** Cider does **not** live in `⎕SE` (read: you are not using Cider), then it falls back to the current directory but will ask the user for confirmation.
-
-By default the user command reports all objects or files changed lately (read: last day with any changes).
-
-This limits `]Latest` powers within the workspace, because scripts (classes, interfaces, scripted namespaces) do not own a timestamp that could be used. When acting on the file system this information is available.
-
-Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in particular together with the `-allFiles` flag.
-
-## The argument(s)
+### The argument(s)
 
 When an argument is specified it must be one of:
 
@@ -78,16 +68,17 @@ When an argument is specified it must be one of:
   * If it does not start with `#` or `⎕` the argument is treated as a path to a project managed either by Cider or by acre
 * A vector of length two with an integer and a character vector in no particular order, see above
 
-In case no argument or only an integer is specified, `]Latest` will establish which Cider projects are currently opened.
+In case no argument or only an integer is specified, `]Latest` will establish which Cider or acre project(s) is/are currently opened.
 
 If it is just one it will act on it. If there are multiple projects open, then the user will be prompted.
 
-Note that if you provide a path pointing to an open Cider  project you should include the folder that holds APL source files. 
+Note that if you provide a path pointing to an open Cider  project, you should include the folder that holds APL source files. 
 
 If on the other hand you want to see more than just APL source files then you might want to specify the `-allFiles` flag,
 see there for details.
 
-## FLags (options)
+
+### FLags (options)
 
 `-recursive=0|1`
 
