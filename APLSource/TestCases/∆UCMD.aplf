@@ -1,0 +1,3 @@
+ r←∆UCMD args
+ r←⎕SE.UCMD'Latest ',args
+ ⍝Done

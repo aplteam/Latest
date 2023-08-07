@@ -1,0 +1,13 @@
+ R←Test_UC_120(stopFlag batchFlag);⎕TRAP;data;expected;noOf
+⍝ Specify the workspace (root, #)
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ R←T._Failed
+
+ noOf←≢data←∆UCMD'# ¯999'
+ →T.PassesIf 7<noOf
+
+ data←∆UCMD'# 21000101'
+ →T.PassesIf 3=≢data
+
+ R←T._OK
+⍝Done

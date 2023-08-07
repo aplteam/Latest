@@ -1,0 +1,12 @@
+ R←Test_UC_900(stopFlag batchFlag);⎕TRAP;ver1;ver2
+⍝ Check on the -version flag
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ R←T._Failed
+
+ ver1←∆UCMD'-version'
+ ver2←##.Latest.Version
+ →T.PassesIf ver1≡ver2
+
+ R←T._OK
+⍝Done

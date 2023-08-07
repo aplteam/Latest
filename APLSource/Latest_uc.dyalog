@@ -22,7 +22,6 @@
       stats←Args.Switch'stats'              ⍝ default is empty
       allFiles←0 Args.Switch'allFiles'      ⍝ default is 0
       :If 2=≢Args.Arguments
-          'Invalid arguments'⎕SIGNAL 11/⍨~(⊂⊃∘⊃∘⎕VFI¨Args.Arguments)∊(0 1)(1 0)
           (flag value)←⎕VFI 1⊃Args.Arguments
           :If flag
               noOf←value
@@ -67,7 +66,9 @@
           r,←⊂']Latest [<no arg>|<int>|<txt>|<int&txt] -recursive=1|0 -allFiles -stats -version'
       :Case 1
           r,←⊂'Lists the latests changes. Is mainly designed to act on Cider projects but'
-          r,←⊂'can also deal with just the workspace or with any folder.'
+          r,←⊂'can also deal with just the workspace or with any folder. However, when acting on'
+          r,←⊂'the workspace it reports only functions and operators not stemming from a script,'
+          r,←⊂'since only those carry a timestamp.'
           r,←⊂''
           r,←⊂'May be called with:'
           r,←⊂' * no argument at all'
@@ -78,7 +79,7 @@
           r,←⊂'A character vector may specify either a namespace or a folder on disk.'
           r,←⊂''
           r,←⊂' * An integer smaller than 1E7 is treated as number of items to be reported'
-          r,←⊂' * An integer greater than 1E7 is treated as a specific date (YYYYMMDD) (after)'
+          r,←⊂' * An integer greater than 1E7 is treated as a specific date (YYYYMMDD)'
           r,←⊂' * A negative integer is treated as number of days'
           r,←⊂''
           r,←⊂'Options:'

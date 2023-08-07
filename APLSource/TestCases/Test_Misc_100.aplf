@@ -1,10 +1,11 @@
- R←Test_Misc_100(stopFlag batchFlag);⎕TRAP;res
-⍝ Specify something that does not exist and check result
+ R←Test_Misc_100(stopFlag batchFlag);⎕TRAP;ver1;ver2
+⍝ Check whether ⎕SE.Latest and the project refer to the same version
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  R←T._Failed
 
- res←##.Latest.Run'#.DoesNotExist' '' 0 0 0
- →T.PassesIf'Nothing found'≡res
+ ver1←⎕SE.Latest.Version
+ ver2←##.Latest.Version
+ →T.PassesIf ver1≡ver2
 
  R←T._OK
 ⍝Done

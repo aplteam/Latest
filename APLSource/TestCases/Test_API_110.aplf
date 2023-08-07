@@ -1,4 +1,4 @@
- R←Test_Misc_110(stopFlag batchFlag);⎕TRAP;data;expected
+ R←Test_API_110(stopFlag batchFlag);⎕TRAP;data;expected
 ⍝ Specify a namespace path
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  R←T._Failed

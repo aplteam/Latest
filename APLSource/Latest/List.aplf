@@ -19,13 +19,13 @@
  :Else
      'What?!'⎕SIGNAL 11
  :EndIf
- :If 0≠≢r←(all/'noScripts')QNL34⍕lookInto
+ :If 0≠≢r←'noScripts'QNL34⍕lookInto
      r[;1]←↑¨{⍺,'.',⍵}/¨↓r[;3 1]
      r←r[⍋⊃r[;4];1 4 5]
      :If ~(⊂type)∊''⍬
          :If 1=×type
-             :If noOf>9999999
-                 r←(noOf={↑↑(//)⎕VFI ⍵[1 2 3 4 6 7 9 10]}¨r[;2])⌿r
+             :If noOfLines>9999999
+                 r←(noOfLines={↑↑(//)⎕VFI ⍵[1 2 3 4 6 7 9 10]}¨r[;2])⌿r
              :Else
                  r←(-noOfLines⌊1⊃⍴r)↑[1]r
              :EndIf

@@ -51,7 +51,7 @@
              isCiderProject←1
          :EndIf
      :Else
-         ind←SelectProject{⍵[;0 1],('acre project' 'Cider project')[⍵[;2]-1]}projects
+         ind←¯1+'Please select a project'CommTools.Select↓⎕FMT{⍵[;0 1],('acre project' 'Cider project')[⍵[;2]-1]}projects
          →(¯1=ind)/0
          name←↑projects[ind;]
          isAcreProject←∨/name∘≡¨projects1[;0]

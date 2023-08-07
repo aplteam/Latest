@@ -1,14 +1,6 @@
  success←Initial parms;buff;date
 ⍝ The test cases requires that no Cider project is open, therefore we check
  success←1
- :If 0<≢⎕SE.Cider.ListOpenProjects 0
-     :If 1 ##.Latest.CommTools.YesOrNo'The test suite requires that no Cider projects are open. Close all?'
-         {}⎕SE.Cider.CloseProject''
-     :Else
-         ⎕←'Cancelled by user: there are open Cider projects'
-         success←0
-     :EndIf
- :EndIf
  'TEMP'#.⎕NS''
  #.TEMP.⎕FX'r←Hello1' 'r←''You'''
  #.TEMP.⎕FX'r←Hello2' 'r←''Earth'''

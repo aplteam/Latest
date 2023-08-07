@@ -1,5 +1,5 @@
- R←Test_Misc_170(stopFlag batchFlag);⎕TRAP;dataAll;data;noOf
-⍝ Use current directory twice, once with -allFiles and once without.
+ R←Test_API_170(stopFlag batchFlag);⎕TRAP;dataAll;data;noOf
+⍝ Use current directory twice, once with -allFiles and once without
 ⍝ Without -allFiles we shall found only files within APLSource/. With -allFiles we must find those and more, from elsewhere.
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

@@ -120,19 +120,19 @@ ul li, ol li {margin: 8pt 3pt;}
 </head>
 <body>
 <h1 id="top">Coverage Report</h1>
-<p>Watched: 11 fns/opr within <code>#.Latest.Latest</code></p>
+<p>Watched: 10 fns/opr within <code>#.Latest.Latest</code></p>
 <p>The test suite was executed once:</p>
 <table>
 <thead>
 <tr><th>Executed at</th><th>APLVersion</th><th>Memory (MB)</th></tr>
 </thead>
 <tbody>
-<tr><td>2023-07-07 17:07:21</td><td>Windows-64 ⋄ 18.2.47418.0 ⋄ W ⋄ Development ⋄ Unicode</td><td>52</td></tr>
+<tr><td>2023-08-07 17:54:12</td><td>Windows-64 ⋄ 18.2.47418.0 ⋄ W ⋄ Development ⋄ Unicode</td><td>52</td></tr>
 </tbody>
 </table>
-<p>Overall 72% of the testable code is covered.</p>
+<p>Overall 81% of the testable code is covered.</p>
 <p>(Comment lines, empty lines, all <code>:End</code>* lines etc. are ignored)</p>
-<p>4 of the fns/opr are 100% covered.</p>
+<p>5 of the fns/opr are 100% covered.</p>
 <div id="partly-covered" class="keep-together">
 <table id="percent">
 <thead>
@@ -141,15 +141,14 @@ ul li, ol li {margin: 8pt 3pt;}
 <tbody>
 <tr class="uncovered"><td><a href="#listing_1" title="Link to listing">#.Latest.Latest.Public</a></td><td>1</td><td>0</td><td>1</td></tr>
 <tr class="uncovered"><td><a href="#listing_2" title="Link to listing">#.Latest.Latest.Reset</a></td><td>1</td><td>0</td><td>1</td></tr>
-<tr class="uncovered"><td><a href="#listing_3" title="Link to listing">#.Latest.Latest.SelectProject</a></td><td>14←≢1-13,16</td><td>0</td><td>14</td></tr>
-<tr class="uncovered"><td><a href="#listing_4" title="Link to listing">#.Latest.Latest.Version</a></td><td>2</td><td>0</td><td>1</td></tr>
-<tr><td><a href="#listing_5" title="Link to listing">#.Latest.Latest.Run</a></td><td>28←≢24-26,28,38-39,45-47,53-61,81,89,92-93,95,102,112,115,124,139</td><td>71</td><td>98</td></tr>
-<tr><td><a href="#listing_6" title="Link to listing">#.Latest.Latest.List</a></td><td>19</td><td>95</td><td>20</td></tr>
-<tr><td><a href="#listing_7" title="Link to listing">#.Latest.Latest.QNL34</a></td><td>14</td><td>95</td><td>20</td></tr>
-<tr class="fullyCovered"><td><a href="#listing_8" title="Link to listing">#.Latest.Latest.AddSlash</a></td><td></td><td>100</td><td>0</td></tr>
-<tr class="fullyCovered"><td><a href="#listing_9" title="Link to listing">#.Latest.Latest.GetExtensions</a></td><td></td><td>100</td><td>3</td></tr>
-<tr class="fullyCovered"><td><a href="#listing_10" title="Link to listing">#.Latest.Latest.IsScripted</a></td><td></td><td>100</td><td>2</td></tr>
-<tr class="fullyCovered"><td><a href="#listing_11" title="Link to listing">#.Latest.Latest.List_NS</a></td><td></td><td>100</td><td>5</td></tr>
+<tr><td><a href="#listing_3" title="Link to listing">#.Latest.Latest.Run</a></td><td>24←≢24-26,28,38-39,43-47,49-50,61,81,89,92-93,95,102,112,115,124,139</td><td>76</td><td>98</td></tr>
+<tr><td><a href="#listing_4" title="Link to listing">#.Latest.Latest.List</a></td><td>19</td><td>95</td><td>20</td></tr>
+<tr><td><a href="#listing_5" title="Link to listing">#.Latest.Latest.QNL34</a></td><td>14</td><td>95</td><td>20</td></tr>
+<tr class="fullyCovered"><td><a href="#listing_6" title="Link to listing">#.Latest.Latest.AddSlash</a></td><td></td><td>100</td><td>0</td></tr>
+<tr class="fullyCovered"><td><a href="#listing_7" title="Link to listing">#.Latest.Latest.GetExtensions</a></td><td></td><td>100</td><td>3</td></tr>
+<tr class="fullyCovered"><td><a href="#listing_8" title="Link to listing">#.Latest.Latest.IsScripted</a></td><td></td><td>100</td><td>2</td></tr>
+<tr class="fullyCovered"><td><a href="#listing_9" title="Link to listing">#.Latest.Latest.List_NS</a></td><td></td><td>100</td><td>5</td></tr>
+<tr class="fullyCovered"><td><a href="#listing_10" title="Link to listing">#.Latest.Latest.Version</a></td><td></td><td>100</td><td>1</td></tr>
 </tbody>
 </table>
 </div>
@@ -188,7 +187,7 @@ $(document).ready(function() {
             }
         },
         {
-            text: "Uncovered (4)",
+            text: "Uncovered (2)",
             titleAttr: "0%",
             className: "active",
             action: function ( e, dt, node, config ) {
@@ -202,7 +201,7 @@ $(document).ready(function() {
             }
         },
         {
-            text: "Fully covered (4)",
+            text: "Fully covered (5)",
             titleAttr: "100%",
             className: "active",
             action: function ( e, dt, node, config ) {
@@ -216,7 +215,7 @@ $(document).ready(function() {
             }
         },
         {
-            text: "All (11)",
+            text: "All (10)",
             titleAttr: "all",
             className: "active",
             action: function ( e, dt, node, config ) {
@@ -255,32 +254,7 @@ $(document).ready(function() {
 <div class="code-block"><code> Reset</code>
 <code class="emphasize">→[1]  TestCases.⎕EX'T'</code>
 </div>
-<code class="header" id="listing_3">#.Latest.Latest.SelectProject &mdash; 0%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
-<div class="code-block"><code>  ind←SelectProject projects</code>
-<code class="emphasize">→[1]   flag←0</code>
-<code class="emphasize">→[2]   ind←¯1</code>
-<code class="emphasize">→[3]   :Repeat</code>
-<code class="emphasize">→[4]       ⎕←'There is more than one project open:'</code>
-<code class="emphasize">→[5]       ⎕←{⊃(⍕¨1+⍳≢⍵),¨'.',¨↓⍵}projects</code>
-<code class="emphasize">→[6]       ⎕←'   Which project? (q=quit)'</code>
-<code class="emphasize">→[7]       answer←⍞</code>
-<code class="emphasize">→[8]       →((answer~' ')∊'qQ')/0</code>
-<code class="emphasize">→[9]       ind←↑A.ToNum answer</code>
-<code class="emphasize">→[10]      :If 1=≢ind</code>
-<code class="emphasize">→[11]          :If ind∊1+⍳≢projects</code>
-<code class="emphasize">→[12]              flag←1</code>
-<code class="emphasize">→[13]              ind-←1</code>
-<code> [14]          :EndIf</code>
-<code> [15]      :EndIf</code>
-<code class="emphasize">→[16]  :Until flag</code>
-<code> [17] ⍝Done</code>
-</div>
-<code class="header" id="listing_4">#.Latest.Latest.Version &mdash; 0%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
-<div class="code-block"><code> r←Version</code>
-<code> [1] ⍝ See also `History`</code>
-<code class="emphasize">→[2]  r←'Latest' '6.0.1+144' '2023-07-07'</code>
-</div>
-<code class="header" id="listing_5">#.Latest.Latest.Run &mdash; 71%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
+<code class="header" id="listing_3">#.Latest.Latest.Run &mdash; 76%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
 <div class="code-block"><code>   r←Run(path_ recursive stats all noOf)</code>
 <code> [1]   ⍝ Handles the following cases:</code>
 <code> [2]   ⍝ * Investigate the workspace (simple namespace or #)</code>
@@ -324,24 +298,24 @@ $(document).ready(function() {
 <code> [40]   :EndIf</code>
 <code> [41]   :If hasOpenAcreProjects∨hasOpenCiderProjects</code>
 <code> [42]       :If 1=≢projects</code>
-<code> [43]           name←↑projects</code>
-<code> [44]           :If 1=≢projects1</code>
+<code class="emphasize">→[43]           name←↑projects</code>
+<code class="emphasize">→[44]           :If 1=≢projects1</code>
 <code class="emphasize">→[45]               path←↑projects1[;1]</code>
 <code class="emphasize">→[46]               path←(~all){⍵.AcreConfig.ProjectFolder,⍺/'APLSource/'}⍎name  ⍝ Fixed in acre</code>
 <code class="emphasize">→[47]               isAcreProject←1</code>
 <code> [48]           :Else</code>
-<code> [49]               path←(~all){⍵.HOME,'/',⍺/⍵.CIDER.source}⍎(↑projects2),'.CiderConfig'</code>
-<code> [50]               isCiderProject←1</code>
+<code class="emphasize">→[49]               path←(~all){⍵.HOME,'/',⍺/⍵.CIDER.source}⍎(↑projects2),'.CiderConfig'</code>
+<code class="emphasize">→[50]               isCiderProject←1</code>
 <code> [51]           :EndIf</code>
 <code> [52]       :Else</code>
-<code class="emphasize">→[53]           ind←SelectProject{⍵[;0 1],('acre project' 'Cider project')[⍵[;2]-1]}projects</code>
-<code class="emphasize">→[54]           →(¯1=ind)/0</code>
-<code class="emphasize">→[55]           name←↑projects[ind;]</code>
-<code class="emphasize">→[56]           isAcreProject←∨/name∘≡¨projects1[;0]</code>
-<code class="emphasize">→[57]           isCiderProject←∨/name∘≡¨projects2[;0]</code>
-<code class="emphasize">→[58]           :If isCiderProject</code>
-<code class="emphasize">→[59]               path←(~all){⍵.HOME,'/',⍺/⍵.CIDER.source}⍎name,'.CiderConfig'</code>
-<code class="emphasize">→[60]           :ElseIf isAcreProject</code>
+<code> [53]           ind←¯1+'Please select a project'CommTools.Select↓⎕FMT{⍵[;0 1],('acre project' 'Cider project')[⍵[;2]-1]}projects</code>
+<code> [54]           →(¯1=ind)/0</code>
+<code> [55]           name←↑projects[ind;]</code>
+<code> [56]           isAcreProject←∨/name∘≡¨projects1[;0]</code>
+<code> [57]           isCiderProject←∨/name∘≡¨projects2[;0]</code>
+<code> [58]           :If isCiderProject</code>
+<code> [59]               path←(~all){⍵.HOME,'/',⍺/⍵.CIDER.source}⍎name,'.CiderConfig'</code>
+<code> [60]           :ElseIf isAcreProject</code>
 <code class="emphasize">→[61]               path←(~all){⍵.AcreConfig.ProjectFolder,⍺/'APLSource/'}⍎name  ⍝ Fixed in acre</code>
 <code> [62]           :EndIf</code>
 <code> [63]       :EndIf</code>
@@ -426,7 +400,7 @@ $(document).ready(function() {
 <code> [142]      r←'Nothing found'</code>
 <code> [143]  :EndIf</code>
 </div>
-<code class="header" id="listing_6">#.Latest.Latest.List &mdash; 95%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
+<code class="header" id="listing_4">#.Latest.Latest.List &mdash; 95%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
 <div class="code-block"><code>  r←{lookInto}List y</code>
 <code> [1]  ⍝ If y is a positiv integer smaller than 10000000 then y objects are returned.</code>
 <code> [2]  ⍝ If y is a positiv integer larger than   9999999 then y is treated as a date (YYYYMMDD).</code>
@@ -448,13 +422,13 @@ $(document).ready(function() {
 <code> [18]  :Else</code>
 <code class="emphasize">→[19]      'What?!'⎕SIGNAL 11</code>
 <code> [20]  :EndIf</code>
-<code> [21]  :If 0≠≢r←(all/'noScripts')QNL34⍕lookInto</code>
+<code> [21]  :If 0≠≢r←'noScripts'QNL34⍕lookInto</code>
 <code> [22]      r[;1]←↑¨{⍺,'.',⍵}/¨↓r[;3 1]</code>
 <code> [23]      r←r[⍋⊃r[;4];1 4 5]</code>
 <code> [24]      :If ~(⊂type)∊''⍬</code>
 <code> [25]          :If 1=×type</code>
-<code> [26]              :If noOf&gt;9999999</code>
-<code> [27]                  r←(noOf={↑↑(//)⎕VFI ⍵[1 2 3 4 6 7 9 10]}¨r[;2])⌿r</code>
+<code> [26]              :If noOfLines&gt;9999999</code>
+<code> [27]                  r←(noOfLines={↑↑(//)⎕VFI ⍵[1 2 3 4 6 7 9 10]}¨r[;2])⌿r</code>
 <code> [28]              :Else</code>
 <code> [29]                  r←(-noOfLines⌊1⊃⍴r)↑[1]r</code>
 <code> [30]              :EndIf</code>
@@ -464,7 +438,7 @@ $(document).ready(function() {
 <code> [34]      :EndIf</code>
 <code> [35]  :EndIf</code>
 </div>
-<code class="header" id="listing_7">#.Latest.Latest.QNL34 &mdash; 95%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
+<code class="header" id="listing_5">#.Latest.Latest.QNL34 &mdash; 95%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
 <div class="code-block"><code>  Buff←{noScripts}QNL34 lookInto</code>
 <code> [1]  ⍝ Returns all functions &amp; operators found in "lookInto" and its sub-folders.</code>
 <code> [2]  ⍝ "noScripts" may be empty (=default) or the string "noScripts".</code>
@@ -494,23 +468,23 @@ $(document).ready(function() {
 <code> [26]      :EndIf</code>
 <code> [27]  :EndIf</code>
 </div>
-<code class="header" id="listing_8">#.Latest.Latest.AddSlash &mdash; 100%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
+<code class="header" id="listing_6">#.Latest.Latest.AddSlash &mdash; 100%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
 <div class="code-block"><code> AddSlash←{(¯1↑⍵)∊'/\':⍵ ⋄ ⍵,'/'}</code>
 </div>
-<code class="header" id="listing_9">#.Latest.Latest.GetExtensions &mdash; 100%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
+<code class="header" id="listing_7">#.Latest.Latest.GetExtensions &mdash; 100%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
 <div class="code-block"><code> r←GetExtensions</code>
 <code> [1]  r←'.apla' '.aplf' '.aplo' '.apln' '.aplc' '.apli'      ⍝ Common standard</code>
 <code> [2]  r,←'.charlist' '.charmat' '.charstring'                ⍝ acre extensions</code>
 <code> [3]  r,←'.dyalog' '.dyapp'                                  ⍝ Now deprecated, but we still need to support them</code>
 </div>
-<code class="header" id="listing_10">#.Latest.Latest.IsScripted &mdash; 100%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
+<code class="header" id="listing_8">#.Latest.Latest.IsScripted &mdash; 100%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
 <div class="code-block"><code> IsScripted←{</code>
 <code> [1] ⍝ Returns a 1 for classes, interfaces and scripted namespaces and 0 otherwise.</code>
 <code> [2]      11 16::0</code>
 <code> [3]      1⊣⎕SRC ⍵</code>
 <code> [4]  }</code>
 </div>
-<code class="header" id="listing_11">#.Latest.Latest.List_NS &mdash; 100%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
+<code class="header" id="listing_9">#.Latest.Latest.List_NS &mdash; 100%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
 <div class="code-block"><code>  List_NS←{</code>
 <code> [1]       r←⍵{⊃∇/⍺.(⍺{(0,⍵)/⍨0,(⍺≠⍵)∧⍺=⍵.##}⍎⍕'⍺',⌽↓⎕NL 9.1 9.2),⊂⍵,⍺}⍬</code>
 <code> [2]       (0=≢r):''</code>
@@ -526,9 +500,14 @@ $(document).ready(function() {
 <code> [12] ⍝ Line 2 added for special purposes by Kai Jaeger</code>
 <code> [13]  }</code>
 </div>
+<code class="header" id="listing_10">#.Latest.Latest.Version &mdash; 100%<a class="float-right no-print no-underline top-links" href="#top" title="Go to the top of the document">&#8607;</a><a  class="float-right no-print no-underline top-links" href="#partly-covered" title="Go to the beginning of 'Partly-covered'">↑</a></code>
+<div class="code-block"><code> r←Version</code>
+<code> [1] ⍝ See also `History`</code>
+<code> [2]  r←'Latest' '6.0.2+144' '2023-08-07'</code>
+</div>
 <div id="footer">
 <hr>
-<p>Created by "CodeCoverage" version 0.10.2+52 from 2023-04-09</p>
+<p>Created by "CodeCoverage" version 0.10.3+52 from 2023-06-23</p>
 </div>
 
 </body>

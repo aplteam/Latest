@@ -1,6 +1,8 @@
 (
  'Test cases polished and pushed, but no new version created'
  ''
+ '* 6.0.2 from 2023-08-07'
+ '  * Specifying # with a number was wrongly rejected as an invalid argument'
  '* 6.0.1 from 2023-07-07'
  '  * The -all flag was renamed to -allFiles (this does not break anything!)'
  '  * The code was loaded whenever the user command was executed'

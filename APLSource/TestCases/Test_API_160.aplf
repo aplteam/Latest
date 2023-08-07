@@ -1,4 +1,4 @@
- R←Test_Misc_160(stopFlag batchFlag);⎕TRAP;data
+ R←Test_API_160(stopFlag batchFlag);⎕TRAP;data
 ⍝ Use recursive←0 and ./ as path with -allFiles
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 

@@ -1,4 +1,4 @@
- R←Test_Misc_180(stopFlag batchFlag);⎕TRAP;tempDir;list
+ R←Test_API_180(stopFlag batchFlag);⎕TRAP;tempDir;list
 ⍝ Test the extensions recognized
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
