@@ -1,0 +1,15 @@
+ R←Test_API_130(stopFlag batchFlag);⎕TRAP;data;expected
+⍝ "Stats" for a namespace path
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ R←T._Failed
+
+ data←##.Latest.Run'#.TEMP' 1 1 0 ⍬
+ →T.PassesIf 4=≢data
+ →T.PassesIf 7=+/data[;2]
+
+ data←##.Latest.Run'#' 1 1 0 ⍬
+ →T.PassesIf 4<≢data
+ →T.PassesIf 7<+/data[;2]
+
+ R←T._OK
+⍝Done

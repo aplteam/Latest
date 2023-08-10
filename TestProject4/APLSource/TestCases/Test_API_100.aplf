@@ -1,0 +1,10 @@
+ R←Test_API_100(stopFlag batchFlag);⎕TRAP;res
+⍝ Specify something that does not exist and check result
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ R←T._Failed
+
+ res←##.Latest.Run'#.DoesNotExist' '' 0 0 0
+ →T.PassesIf'Nothing found'≡res
+
+ R←T._OK
+⍝Done

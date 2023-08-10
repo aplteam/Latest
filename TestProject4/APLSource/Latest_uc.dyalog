@@ -49,12 +49,7 @@
       :ElseIf 1=≢Args.Arguments
           :If ∧/('-'~⍨↑Args.Arguments)∊⎕D
           :AndIf '-'∊↑Args.Arguments
-              'Invalid argument'⎕SIGNAL 11/⍨1≠'-'+.=↑Args.Arguments
-              (from to)←2↑'-'(≠⊆⊢)1⊃Args.Arguments
-              :If 0=≢to~' '
-                  to←↑,/4 2 2{(-⍺)↑'000',⍕⍵}¨3↑⎕TS
-              :EndIf
-              noOf←{2⊃⎕VFI ⍵}¨from to
+     
           :Else
               (flag value)←⎕VFI 1⊃Args.Arguments
               :If flag

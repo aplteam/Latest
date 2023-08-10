@@ -1,0 +1,35 @@
+ R←Test_UC_121(stopFlag batchFlag);⎕TRAP;data;expected;data3;data2;data4;path;parms;log;success
+⍝ Specify just number, date and date range
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+ R←T._Failed
+
+ #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
+ path←##.CiderConfig.HOME,'/TestProject2'
+ parms←⎕SE.Cider.CreateOpenParms ⍬
+ parms.folder←path
+ parms.parent←'#'
+ parms.projectSpace←'TEMP'
+ parms.quietFlag←1
+ parms.ignoreUserExec←1
+ (success log)←⎕SE.Cider.OpenProject parms
+ Assert success
+
+ ⎕SE.Latest.CommTools.Select_Choices←1 2⍴'Please select a project' '#.TEMP *'
+ data←∆UCMD'¯999'
+ →T.GoToTidyUp~7<≢data
+
+ data2←∆UCMD'21000101'
+ →T.GoToTidyUp~3=≢data2
+
+ data3←∆UCMD'20200101-'
+ →T.GoToTidyUp~(≢data3)=+/2100>⊃∘APLTreeUtils2.ToNum¨'-'~⍨¨4↑¨data[;2]
+
+ data4←∆UCMD'21000101-21000131'
+ →T.GoToTidyUp~6=≢data4
+
+ R←T._OK
+
+∆TidyUp:
+ ⎕SE.Latest.CommTools.Cleanup
+ {}⎕SE.Cider.CloseProject'#.TEMP'
+⍝Done

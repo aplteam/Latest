@@ -1,0 +1,43 @@
+ R←Test_API_200(stopFlag batchFlag);⎕TRAP;data;expected;path;path2;parms;log;success;all
+⍝ List for a Cider project with the "all" flag set
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ :If 0=⎕SE.⎕NC'Cider'
+     :Trap 0
+         {}⎕SE.UCMD'Cider.Version'
+     :Else
+         R←T._NotApplicable ⋄ →0
+     :EndTrap
+ :EndIf
+ :If 0=≢⎕SE.Cider.ListOpenProjects 0
+     R←T._NotApplicable ⋄ →0
+ :EndIf
+
+ R←T._Failed
+
+ #.⎕SHADOW'TEMP'
+
+ path←##.CiderConfig.HOME,'/TestProject3'
+ parms←⎕SE.Cider.CreateOpenParms ⍬
+ parms.folder←path
+ parms.projectSpace←'TEMP'
+ parms.importFlag←1
+ parms.quietFlag←1
+ parms.checkPackageVersions←0
+ parms.suppressInit←1
+ parms.ignoreUserExec←1
+ (success log)←⎕SE.Cider.OpenProject parms
+ 'Opening the Cider project failed'Assert success
+
+ path2←path,'/APLSource/'
+ all←1
+ data←##.Latest.Run path2 1 0 all ⍬
+ expected←{⍵/⍨FilesAndDirs.IsFile ⍵}1⊃('recursive' 1)FilesAndDirs.Dir path2
+ →T.GoToTidyUp≠/≢¨data expected
+
+ R←T._OK
+
+∆TidyUp:
+ #.⎕EX'TEMP'
+ {}⎕SE.Cider.CloseProject'#.TEMP'
+⍝Done

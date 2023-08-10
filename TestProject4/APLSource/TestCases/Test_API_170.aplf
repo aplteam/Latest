@@ -1,0 +1,17 @@
+ R←Test_API_170(stopFlag batchFlag);⎕TRAP;dataAll;data;noOf
+⍝ Use current directory twice, once with -allFiles and once without
+⍝ Without -allFiles we shall found only files within APLSource/. With -allFiles we must find those and more, from elsewhere.
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ R←T._Failed
+
+ data←##.Latest.Run ##.CiderConfig.HOME 1 0 0 9999
+ noOf←+/'APLSource'{⍺∘≡¨(≢⍺)↑¨⍵}1⊃∘⎕NPARTS¨data[;1]
+ →T.PassesIf noOf=+/FilesAndDirs.IsFile⊃('recursive' 1)FilesAndDirs.Dir ##.CiderConfig.HOME,'/APLSource/*'
+
+ dataAll←##.Latest.Run ##.CiderConfig.HOME 1 0 1 9999
+ →T.PassesIf</≢¨data dataAll
+ →T.PassesIf∧/0 1∊'APLSource'{⍺∘≡¨(≢⍺)↑¨⍵}1⊃∘⎕NPARTS¨dataAll[;1]
+
+ R←T._OK
+⍝Done

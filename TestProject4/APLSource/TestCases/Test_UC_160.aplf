@@ -1,0 +1,13 @@
+ R←Test_UC_160(stopFlag batchFlag);⎕TRAP;data
+⍝ Use -recursive=0 and ./ as path with -allFiles
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ R←T._Failed
+
+ data←∆UCMD'./  9999 -recursive=0 -allFiles'
+ →T.PassesIf 0<≢data
+ →T.FailsIf∨/∨/¨'/\'∘∊¨data[;1]
+ →T.PassesIf=/≢¨data(FilesAndDirs.ListFiles'./')
+
+ R←T._OK
+⍝Done

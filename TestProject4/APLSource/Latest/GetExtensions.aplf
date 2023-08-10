@@ -1,0 +1,4 @@
+ r←GetExtensions
+ r←'.apla' '.aplf' '.aplo' '.apln' '.aplc' '.apli'      ⍝ Common standard
+ r,←'.charlist' '.charmat' '.charstring'                ⍝ acre extensions
+ r,←'.dyalog' '.dyapp'                                  ⍝ Now deprecated, but we still need to support them

@@ -1,0 +1,29 @@
+ R←Test_UC_190(stopFlag batchFlag);⎕TRAP;data;path;parms;log;success
+⍝ Check whether a non-default "Source" is taken into account
+ ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
+
+ R←T._Failed
+
+ #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
+ path←##.CiderConfig.HOME,'/TestProject2'
+ parms←⎕SE.Cider.CreateOpenParms ⍬
+ parms.folder←path
+ parms.parent←'#'
+ parms.projectSpace←'TEMP'
+ parms.quietFlag←1
+ parms.ignoreUserExec←1
+ (success log)←⎕SE.Cider.OpenProject parms
+ Assert success
+
+ ⎕SE.Latest.CommTools.Select_Choices←1 2⍴'Please select a project' '#.TEMP *'
+ data←∆UCMD,'9999'
+ →T.GoToTidyUp~0<≢data
+ →T.GoToTidyUp∨/∨/¨'/\'∘∊¨data[;1]
+ →T.GoToTidyUp~=/≢¨data('recursive'FilesAndDirs.ListFiles #.TEMP.CiderConfig.HOME,'/',#.TEMP.CiderConfig.CIDER.source,'/')
+
+ R←T._OK
+
+∆TidyUp:
+ ⎕SE.Latest.CommTools.Cleanup
+ {}⎕SE.Cider.CloseProject'#.TEMP'
+⍝Done
