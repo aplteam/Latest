@@ -9,7 +9,7 @@
  :EndIf
 
  #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
- path←##.CiderConfig.HOME,'/TestProject4'
+ path←##.CiderConfig.HOME,'/TestData/TestProject4'
  parms←⎕SE.Cider.CreateOpenParms ⍬
  parms.folder←path
  parms.parent←'#'

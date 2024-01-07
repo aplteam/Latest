@@ -17,7 +17,7 @@
 
  #.⎕SHADOW'TEMP'
 
- path←##.CiderConfig.HOME,'/TestProject3'
+ path←##.CiderConfig.HOME,'/TestData/TestProject3'
  parms←⎕SE.Cider.CreateOpenParms ⍬
  parms.folder←path
  parms.projectSpace←'TEMP'

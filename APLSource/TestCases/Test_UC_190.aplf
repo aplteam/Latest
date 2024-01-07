@@ -5,7 +5,7 @@
  R←T._Failed
 
  #.⎕SHADOW'TEMP' ⋄ 'TEMP'#.⎕NS''
- path←##.CiderConfig.HOME,'/TestProject2'
+ path←##.CiderConfig.HOME,'/TestData/TestProject2'
  parms←⎕SE.Cider.CreateOpenParms ⍬
  parms.folder←path
  parms.parent←'#'
