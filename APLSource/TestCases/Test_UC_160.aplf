@@ -4,7 +4,7 @@
 
  R←T._Failed
 
- data←∆UCMD'./  9999 -recursive=0 -allFiles'
+ data←1↓∆UCMD'./  9999 -recursive=0 -allFiles'
  →T.PassesIf 0<≢data
  →T.FailsIf∨/∨/¨'/\'∘∊¨data[;1]
  →T.PassesIf=/≢¨data(FilesAndDirs.ListFiles'./')

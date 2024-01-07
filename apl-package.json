@@ -19,5 +19,5 @@
   source: "APLSource/Latest",
   tags: "list-apl-objects",
   userCommandScript: "APLSource/Latest_uc.dyalog",
-  version: "6.1.0+164",
+  version: "7.0.0+184",
 }

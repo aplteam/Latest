@@ -3,16 +3,16 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  R←T._Failed
 
- data←∆UCMD'# ¯999'
+ data←1↓∆UCMD'# ¯999'
  →T.PassesIf 7<≢data
 
- data2←∆UCMD'# 21000101'
+ data2←1↓∆UCMD'# 21000101'
  →T.PassesIf 3=≢data2
 
- data3←∆UCMD'# 20200101-'
- →T.PassesIf (≢data3)=+/2100>⊃∘APLTreeUtils2.ToNum¨ '-'~⍨¨4↑¨data[;2]
+ data3←1↓∆UCMD'# 20200101-'
+ →T.PassesIf(≢data3)=+/2100>⊃∘APLTreeUtils2.ToNum¨'-'~⍨¨4↑¨data[;2]
 
- data4←∆UCMD'# 21000101-21000131'
+ data4←1↓∆UCMD'# 21000101-21000131'
  →T.PassesIf 6=≢data4
 
  R←T._OK

@@ -1,0 +1,4 @@
+ InitProject y
+ :If 1 ⎕SE.Latest.CommTools.YesOrNo'RootRather⎕SE@Would you like to run #.Latest.Run rather than ⎕SE.Latest.Run?'
+     ⎕SE.Latest.∆EXEC_IN_PROJECT←1
+ :EndIf

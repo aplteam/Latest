@@ -1,4 +1,4 @@
- R←Test_API_180(stopFlag batchFlag);⎕TRAP;tempDir;list
+ R←Test_API_180(stopFlag batchFlag);⎕TRAP;tempDir;list;name
 ⍝ Test the extensions recognized
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
@@ -17,8 +17,9 @@
  {(⊂1⊃⍵)⎕NPUT 1⊃⍵}(tempDir,'/foo.dyalog')'123'
  {(⊂1⊃⍵)⎕NPUT 1⊃⍵}(tempDir,'/foo.dyapp')'123'
  {(⊂1⊃⍵)⎕NPUT 1⊃⍵}(tempDir,'/foo.txt')'123'
- list←##.Latest.Run tempDir 0 0 0 9999
+ (list name)←##.Latest.Run tempDir 0 0 0 9999
  →T.GoToTidyUp(≢##.Latest.GetExtensions)≠≢list
+ →T.GoToTidyUp 0∨≢name
 
  R←T._OK
 

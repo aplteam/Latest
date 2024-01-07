@@ -5,22 +5,38 @@
       ⎕IO←⎕ML←1
       r←⎕NS''
       r.Name←'Latest'
-      r.Desc←'Prints some/all objects found in either the workspace or files in a folder sorted by their "Changed" date'
+      r.Desc←'Prints some/all objects found in either a folder or in the workspace, sorted by their "Changed" date'
       r.Group←'FN'
      ⍝ Parsing rules for each:
-      r.Parse←' -recursive∊0 1 -stats -allFiles -version'
+      r.Parse←' -recursive∊0 1 -stats -allFiles -version -days='
     ∇
 
-    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b
+    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b;list;row;L;openCiderProjects;caption;name;f1;f2;days
       :Access Shared Public
       ⎕IO←1 ⋄ ⎕ML←3
       version←0 Args.Switch'version'
-      :If version
-          r←⎕SE.Latest.Version ⋄ →0
+      f2←0
+      :If f1←0<⎕SE.⎕NC'Latest.∆EXEC_IN_PROJECT'
+          f1←1≡⎕SE.Latest.∆EXEC_IN_PROJECT
       :EndIf
-      recursive←1 Args.Switch'recursive'    ⍝ default is 1
+      :If ~f1
+      :AndIf f2←9=⎕SE.⎕NC'Cider'
+      :AndIf f2←0<≢openCiderProjects←⎕SE.Cider.ListOpenProjects 0
+      :AndIf f2←(⊂'#.Latest')∊openCiderProjects[;1]
+          f2←1 ⎕SE.Latest.CommTools.YesOrNo'Would you like to execute code in #.Latest rather than ⎕SE.Latest?'
+      :EndIf
+      :If f1∨f2
+          L←#.Latest.Latest
+      :Else
+          L←⎕SE.Latest
+      :EndIf
+      :If version
+          r←L.Version ⋄ →0
+      :EndIf
+      recursive←1 Args.Switch'recursive'
       stats←Args.Switch'stats'              ⍝ default is empty
-      allFiles←0 Args.Switch'allFiles'      ⍝ default is 0
+      allFiles←0 Args.Switch'allFiles'
+      days←0 Args.Switch'days'
       path←''
       :If 2=≢Args.Arguments
           path←1⊃Args.Arguments
@@ -42,8 +58,11 @@
               (flag value)←⎕VFI 2⊃Args.Arguments
               :If flag
                   noOf←value
+              :ElseIf (,'⍬')≡,2⊃Args.Arguments
+                  noOf←⍬
               :Else
                   path←2⊃Args.Arguments
+                  noOf←¯1
               :EndIf
           :EndIf
       :ElseIf 1=≢Args.Arguments
@@ -59,23 +78,49 @@
               (flag value)←⎕VFI 1⊃Args.Arguments
               :If flag
                   noOf←value
+              :ElseIf (,'⍬')≡,1⊃Args.Arguments
+                  noOf←⍬
               :Else
                   path←1⊃Args.Arguments
-                  noOf←⍬
+                  noOf←¯1
               :EndIf
           :EndIf
       :ElseIf 0≠≢Args.Arguments
           'Invalid number of arguments'⎕SIGNAL 11
       :EndIf
-      :If 0=≢Args.Arguments
-          noOf←⍬
-          path←''
-      :EndIf
       :If 0=⎕SE.⎕NC'Latest'
           ref←LoadCode ⍬
           ref.⎕IO←0 ⋄ ref.⎕ML←3
       :EndIf
-      r←⎕SE.Latest.Run(path recursive stats allFiles noOf)
+      :If 0=≢Args.Arguments
+          noOf←¯1
+          path←''
+      :EndIf
+      :If 0≠days
+          noOf←-|days
+      :EndIf
+      (r name)←L.Run(path recursive stats allFiles noOf)
+      →(0=+/≢¨r name)/0
+      :If stats
+          :If 0<≢name
+              caption←']Latest statistics on:' ''name
+          :Else
+              caption←']Latest statistics on:' ''path
+          :EndIf
+          r←caption⍪r,⊂''
+      :Else
+          :If 0<≢name
+              caption←']Latest on ',name
+          :Else
+              caption←']Latest on ',path
+          :EndIf
+          :If 2=⍴⍴r
+              'Nothing found'⎕SIGNAL 6/⍨0=≢r
+              r←((⊂caption),(⊂'≢ ←→ ',⍕≢r),(¯2+2⊃⍴r)⍴⊂'')⍪r
+          :Else
+              r←caption,'   ≢ ←→ 0'
+          :EndIf
+      :EndIf
       ⍝Done
     ∇
 
@@ -85,10 +130,10 @@
       r←''
       :Select level
       :Case 0
-          r,←⊂']Latest [<no arg>|<int>|<txt>|<int&txt] -recursive=1|0 -allFiles -stats -version'
+          r,←⊂']Latest [<no arg>|<int>|<txt>|<int&txt] -recursive=1|0 -allFiles -stats -version -days='
       :Case 1
-          r,←⊂'Lists the latests changes. Is mainly designed to act on Cider projects but'
-          r,←⊂'can also deal with just the workspace or with any folder. However, when acting on'
+          r,←⊂'Lists the latests changes. Is mainly designed to act on LINKed namespaces but can also'
+          r,←⊂'deal with the workspace or with any folder on disk. However, when acting on'
           r,←⊂'the workspace it reports only functions and operators not stemming from a script,'
           r,←⊂'since only those carry a timestamp.'
           r,←⊂''
@@ -109,11 +154,16 @@
           r,←⊂' * 20220101-20221231 is treated as "from-to" (inclusive)'
           r,←⊂''
           r,←⊂'Options:'
-          r,←⊂'-recursive=0|1  Defaults to 1, meaning that the path is searched recursively'
-          r,←⊂'-allFiles       By default only APL source files are considered (by extension)'
-          r,←⊂'-stats          If this flag is specified you get a matrix with change statistics'
-          r,←⊂'-version        Prints the version number of the user command to the session'
+          r,←⊂'-allFiles       By default only APL source files are considered (by extension).'
+          r,←⊂'-days=          Number of days changes should be reported on. You must not specify'
+          r,←⊂'                an integer when specifying this.'
+          r,←⊂'-recursive=0|1  Defaults to 1, meaning that the path is searched recursively.'
+          r,←⊂'-stats          If this flag is specified you get a matrix with change statistics;'
+          r,←⊂'                any other flag is ignored'
+          r,←⊂'-version        Prints the version number of the user command to the session.'
           r,←⊂'                If this is specified any argument and all other flags are ignored.'
+      :Case 2
+          r←⎕SE.UCMD'ADOC ⎕SE.Latest'
       :EndSelect
     ∇
 

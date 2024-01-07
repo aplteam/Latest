@@ -1,4 +1,4 @@
- R←Test_API_190(stopFlag batchFlag);⎕TRAP;data;path;parms;log;success;files
+ R←Test_API_190(stopFlag batchFlag);⎕TRAP;data;path;parms;log;success;files;name
 ⍝ Check whether a non-default "Source" is taken into account
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
 
@@ -10,13 +10,13 @@
  parms.folder←path
  parms.parent←'#'
  parms.projectSpace←'TEMP'
- parms.quietFlag←1
  parms.ignoreUserExec←1
+ ⎕SE.Cider.##.CommTools.YesOrNo_Answers←1 2⍴'ChangeCurrentDir@' 'n'
  (success log)←⎕SE.Cider.OpenProject parms
  Assert success
 
- CommTools.Select_Choices←1 2⍴'Please select a project' '#.TEMP*'
- data←##.Latest.Run'' 1 0 0 9999
+ ##.Latest.CommTools.Select_Choices←1 2⍴'SelectLINK@Please select a project' '#.TEMP*'
+ (data name)←##.Latest.Run'' 1 0 0 9999
  →T.GoToTidyUp~0<≢data
  →T.GoToTidyUp∨/∨/¨'/\'∘∊¨data[;1]
  files←('recursive'FilesAndDirs.ListFiles #.TEMP.CiderConfig.HOME,'/',#.TEMP.CiderConfig.CIDER.source,'/')
@@ -25,6 +25,7 @@
  R←T._OK
 
 ∆TidyUp:
- CommTools.Cleanup
+ ⎕SE.Cider.##.CommTools.Cleanup
+ ##.Latest.CommTools.Cleanup
  {}⎕SE.Cider.CloseProject'#.TEMP'
 ⍝Done

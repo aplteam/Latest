@@ -1,0 +1,6 @@
+ bool←IsRedirected
+⍝ Checks whether the `Latest` code is executed in # rather than ⎕SE>
+ bool←0
+ :If 0<⎕SE.Latest.⎕NC'∆EXEC_IN_PROJECT'
+     bool←⎕SE.Latest.∆EXEC_IN_PROJECT
+ :EndIf

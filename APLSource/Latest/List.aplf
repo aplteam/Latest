@@ -35,7 +35,7 @@
                  r←(-noOfLines⌊1⊃⍴r)↑[1]r
              :EndIf
          :ElseIf (,¯1)≡,×type
-             r←({⍵∊(noOfDays⌊⍴,⍵)↑∪⍵}10↑¨r[;2])⌿r
+             r←(noOfDays{⍵∊(⍺⌊≢⍵)↑∪⍵}10↑¨r[;2])⌿r
          :EndIf
      :EndIf
  :EndIf

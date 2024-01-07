@@ -1,3 +1,5 @@
- r←Version;json;ns
+ r←Version;json;⎕IO;⎕ML
 ⍝ See also `History`
- r←'Latest' '6.1.0-beta-1+144' '2023-08-10'
+ ⎕ML←1 ⋄ ⎕IO←1
+ json←⎕JSON⍠('Dialect' 'JSON5')⊣⊃⎕NGET TatinVars.HOME,'/apl-package.json'
+ r←'Latest'json.version'2024-01-05'

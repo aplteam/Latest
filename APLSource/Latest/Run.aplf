@@ -1,149 +1,57 @@
- r←Run(path_ recursive stats all noOf);hasOpenAcreProjects;F;A;bool;projects;buff;pathFlag;path;projects1;hasOpenCiderProjects;projects2;ind;ref;name;isAcreProject;isCiderProject;⎕ML;⎕IO;dates
+  (r name)←Run(path recursive stats allFiles noOf);F;A;linkList;pathFlag;path;dates;buff;cancelled;caption;ind
 ⍝ Handles the following cases:
-⍝ * Investigate the workspace (simple namespace or #)
-⍝ * Investigate (currently tracked/opened) acre projects
-⍝ * Investigate (currently tracked/opened) Cider projects
-⍝ * Investigate a folder
+⍝ * Investigate any LINKed namespaces
+⍝ * Investigate the workspace (simple namespace or #/⎕SE)
+⍝ * Investigate the current directory / any given path
  ⎕IO←0 ⋄ ⎕ML←3
  A←APLTreeUtils2 ⋄ F←FilesAndDirs
- r←''
- pathFlag←hasOpenAcreProjects←hasOpenCiderProjects←0
- path←path_
- isAcreProject←isCiderProject←0
- :If 0=≢path                            ⍝ Only true if we deal with a project
-     projects1←projects2←0 2⍴''
-     :If 9=⎕SE.⎕NC'acre'
-         projects1←⎕SE.acre.Projects ⍬
-         hasOpenAcreProjects←0<≢projects1
+ r←name←linkList←''
+ pathFlag←0
+ :If 0=≢path                            ⍝ Only true if we deal with a LINK
+     (cancelled path name linkList)←GetLinks ⍬
+     →cancelled/0
+     :If 0=≢path
+         path←F.PWD,F.CurrentSep
+         ('Is not a folder: ',path)⎕SIGNAL 6/⍨~F.IsDir path
+     :AndIf ~CommTools.YesOrNo'Are you sure you want to act on ',path,' ?'
+         name←''
+         :Return
      :EndIf
-     :If 9=⎕SE.⎕NC'Cider'
-         {}⎕SE.UCMD'Cider.Version'
-         hasOpenCiderProjects←0<≢projects2←⎕SE.Cider.ListOpenProjects 0
-     :EndIf
-     projects←(projects1,1)⍪(projects2,2)
-     :If 0=≢projects
-         path←'expand'F.NormalizePath F.PWD,F.CurrentSep  ⍝ Current dir is the best we can do here
-         :If CommTools.YesOrNo'Are you sure that you want to scan ',path,' ?'
+     pathFlag←1
+ :Else
+     :If ∨/'/\'∊path
+         'Is not a directory'⎕SIGNAL 6/⍨~F.IsDir path
+     :Else
+         linkList←1↓⎕SE.Link.Status''
+         :If (⊂path)∊linkList[;0]
+             ind←linkList[;0]⍳⊂path
+             name←path
+             path←2⊃linkList[ind;]
              pathFlag←1
+         :ElseIf 0<≢path
+             ind←F.EnforceSlash¨(linkList[;1])⍳⊂F.EnforceSlash path
+             :If ind=≢linkList
+                 :If ~(⊂1 ⎕C,path)∊,¨'#' '⎕SE'
+                     'Neither a directory nor a namespace'⎕SIGNAL 6/⍨~9=⎕NC path
+                 :EndIf
+             :EndIf
          :Else
-             :Return
+             (cancelled path name)←allFiles SelectLink linkList
+             →cancelled/0
          :EndIf
      :EndIf
- :ElseIf ~(1⍴path)∊'#⎕'                 ⍝ True if it's a folder path
+ :EndIf
+ :If 0=≢path
+     path←F.PWD,F.CurrentSep
+ :EndIf
+ :If 0=≢name
+ :AndIf ~(1⍴path)∊'#⎕'                 ⍝ True if it's a folder path
      path←('expand'F.NormalizePath path),F.CurrentSep
      ('Is not a folder: ',path)⎕SIGNAL 6/⍨~F.IsDir path
      pathFlag←1
  :EndIf
- :If 0=≢path
- :AndIf 0=hasOpenAcreProjects+hasOpenCiderProjects
-     path←F.PWD,F.CurrentSep,'APLSource'
-     pathFlag←F.IsDir path
+ :If noOf≡0
+     noOf←¯1
  :EndIf
- :If hasOpenAcreProjects∨hasOpenCiderProjects
-     :If 1=≢projects
-         name←↑projects
-         :If 1=≢projects1
-             path←↑projects1[;1]
-             path←(~all){⍵.AcreConfig.ProjectFolder,⍺/'APLSource/'}⍎name  ⍝ Fixed in acre
-             isAcreProject←1
-         :Else
-             path←(~all){⍵.HOME,'/',⍺/⍵.CIDER.source}⍎(↑projects2),'.CiderConfig'
-             isCiderProject←1
-         :EndIf
-     :Else
-         ind←¯1+'Please select a project'CommTools.Select↓⎕FMT{⍵[;0 1],('acre project' 'Cider project')[⍵[;2]-1]}projects
-         →(¯1=ind)/0
-         name←↑projects[ind;]
-         isAcreProject←∨/name∘≡¨projects1[;0]
-         isCiderProject←∨/name∘≡¨projects2[;0]
-         :If isCiderProject
-             path←(~all){⍵.HOME,'/',⍺/⍵.CIDER.source}⍎name,'.CiderConfig'
-         :ElseIf isAcreProject
-             path←(~all){⍵.AcreConfig.ProjectFolder,⍺/'APLSource/'}⍎name  ⍝ Fixed in acre
-         :EndIf
-     :EndIf
-     projects1[;1]←F.NormalizePath projects1[;1]
-     projects2[;1]←F.NormalizePath projects2[;1]
- :EndIf
- :If isAcreProject∨isCiderProject∨pathFlag
-     path←'expand'F.NormalizePath path,F.CurrentSep
-     :If F.IsDir path
-         r←⍉⊃('recursive'recursive)('type'(0 1 3))F.Dir path
-         →(0=≢r)/0
-         r←(r[;1]=2)⌿r                 ⍝ Only regular files
-         :If all
-             r←(~{≢'[/\\]\.git[/\\]'⎕S 0⊣⍵}¨r[;0])⌿r
-         :Else
-             r←(({2⊃⎕NPARTS ⍵}¨r[;0])∊GetExtensions)⌿r
-         :EndIf
-         r[;2]←↓A.FormatDateTime⊃r[;2]
-         r←r[⍋⊃r[;2];0 2]
-         :If stats
-             r←{⍺(≢⍵)}⌸10↑¨r[;1]
-         :Else
-      ⍝ `noOf` is ...
-      ⍝ ⍬ in case no argument was provided
-      ⍝ 0 in case text was provided as argument
-      ⍝ An integer
-      ⍝ Two integers
-             :If 0=all
-                 :If ⍬≡noOf
-                     r←((10↑¨r[;1])≡¨⊂10↑1⊃r[¯1+≢r;])⌿r  ⍝ All from the day with the latest change
-                 :ElseIf 0≢noOf
-                     :If 2=≢noOf
-                     :AndIf 2=≡noOf
-                         dates←↑∘A.ToNum¨'-'~⍨¨10↑¨r[;1]
-                         r←((dates≤↑1⊃noOf)∧(dates≥↑0⊃noOf))⌿r
-                     :ElseIf ¯1=×noOf
-                         buff←10↑¨r[;1]  ⍝ YYYY-MM-DD
-                         r←(buff∊noOf{(⍺⌊≢⍵)↑⍵}⌽∪⌽buff)⌿r
-                     :ElseIf 8=≢⍕noOf ⍝ Is it a date (yyyymmdd)?
-                         r←(noOf={↑↑(//)⎕VFI ⍵}¨↓(⊃r[;1])[;0 1 2 3 5 6 8 9])⌿r
-                     :Else
-                         r←(-noOf⌊≢r)↑r
-                     :EndIf
-                 :EndIf
-             :EndIf
-             :If 0=+/≢¨r[;0]
-                 r←0 2⍴''
-             :EndIf
-             :If 0<≢r
-                 :If pathFlag
-                     :If (⊂path_)∊'./' '.\'
-                         r[;0]←(1+≢F.PWD)↓¨r[;0]
-                     :Else
-                         r[;0]←(≢path)↓¨r[;0]
-                     :EndIf
-                 :ElseIf all
-                     r[;0]←(≢path){∧/~'/\'∊⍵:⍵ ⋄ ⍺↓⍵}¨r[;0]
-                 :Else
-                     :If ∨/name∘≡¨projects1[;0]
-                         r[;0]←⎕SE.acre.Itemname r[;0]
-                     :ElseIf ∨/name∘≡¨projects2[;0]
-                         r[;0]←⎕SE.Link.GetItemName¨F.EnforceSlash¨r[;0]
-                     :EndIf
-                     r←(0<≢¨r[;0])⌿r
-                 :EndIf
-             :EndIf
-         :EndIf
-     :Else
-         r←0 0⍴''
-     :EndIf
- :ElseIf ((,'#')≡,path)∨(('⎕SE')≡1 ⎕C,path)∨9=⎕NC path
-     :If 0=≢noOf
-     :AndIf 0=stats
-         noOf←¯1
-     :EndIf
-     :If (,'#')≡,path
-         r←List noOf 1
-     :Else
-         r←path List noOf 1
-     :EndIf
-     :If stats
-         r←{⍺(≢⍵)}⌸10↑¨r[;1]
-     :ElseIf 0=recursive
-         r←(~'.'∊¨(1+≢path)↓¨r[;0])⌿r
-     :EndIf
- :Else
-     r←'Nothing found'
- :EndIf
+ (r name)←linkList FetchData path recursive stats allFiles noOf pathFlag name
+⍝Done

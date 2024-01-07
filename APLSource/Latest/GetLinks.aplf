@@ -1,0 +1,19 @@
+ (op path name list)←GetLinks dummy;ind
+⍝ op is 1 if the user has cancelled, ohtherwise 0
+ path←name←''
+ op←0
+ :If 2=⍴⍴list←1↓⎕SE.Link.Status''               ⍝ Otherwise it is a message rather than a real result
+ :AndIf 0<≢list                                 ⍝ Once Link become a real API...
+     ('No LINKs detected')⎕SIGNAL 11/⍨0=≢list
+     :If 1<≢list
+         :If 0<≢ind←'SelectLINK@Select LINKed namespace ]Latest should act on'CommTools.Select↓⎕FMT list
+             (name path)←list[ind-1;0 2]
+         :Else
+             op←1
+         :EndIf
+     :Else
+         (name path)←list[0;0 2]
+     :EndIf
+ :Else
+     list←''
+ :EndIf
