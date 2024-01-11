@@ -30,5 +30,6 @@
 ∆TidyUp:
  ⎕SE.Latest.CommTools.Cleanup
  ⎕SE.Cider.##.CommTools.Cleanup
+ #.Latest.Latest.CommTools.Cleanup
  {}⎕SE.Cider.CloseProject'#.TEMP'
 ⍝Done

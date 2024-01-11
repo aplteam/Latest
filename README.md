@@ -48,6 +48,3 @@ Note that by providing a path as an argument you can extend the meaning of `]Lat
 This will make the user commands of `Latest` available, but it will not establish the API. However, executing any of its user commands will force `Latest` to load the API into `⎕SE`. For that, executing `]Latest.Version` will do.
 
 If you want the API to be available right from the start then please consult the article [Dyalog User Commands](https://aplwiki.com/wiki/Dyalog_User_Commands "Link to the APL wiki").
-
-
-## 

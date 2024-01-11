@@ -8,10 +8,10 @@
       r.Desc←'Prints some/all objects found in either a folder or in the workspace, sorted by their "Changed" date'
       r.Group←'FN'
      ⍝ Parsing rules for each:
-      r.Parse←' -recursive∊0 1 -stats -allFiles -version -days='
+      r.Parse←' -recursive∊0 1 -stats -allFiles -version -days= -se'
     ∇
 
-    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b;list;row;L;openCiderProjects;caption;name;f1;f2;days
+    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b;list;row;L;openCiderProjects;caption;name;f1;f2;days;includeQSE
       :Access Shared Public
       ⎕IO←1 ⋄ ⎕ML←3
       version←0 Args.Switch'version'
@@ -37,6 +37,7 @@
       stats←Args.Switch'stats'              ⍝ default is empty
       allFiles←0 Args.Switch'allFiles'
       days←0 Args.Switch'days'
+      includeQSE←0 Args.Switch'se'
       path←''
       :If 2=≢Args.Arguments
           path←1⊃Args.Arguments
@@ -99,7 +100,7 @@
       :If 0≠days
           noOf←-|days
       :EndIf
-      (r name)←L.Run(path recursive stats allFiles noOf)
+      (r name)←L.Run(path recursive stats allFiles noOf includeQSE)
       →(0=+/≢¨r name)/0
       :If stats
           :If 0<≢name
@@ -158,6 +159,7 @@
           r,←⊂'-days=          Number of days changes should be reported on. You must not specify'
           r,←⊂'                an integer when specifying this.'
           r,←⊂'-recursive=0|1  Defaults to 1, meaning that the path is searched recursively.'
+          r,←⊂'-se             By default linked namespaces in ⎕SE are ignored. Change with -se.'
           r,←⊂'-stats          If this flag is specified you get a matrix with change statistics;'
           r,←⊂'                any other flag is ignored'
           r,←⊂'-version        Prints the version number of the user command to the session.'

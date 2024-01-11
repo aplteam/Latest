@@ -1,8 +1,11 @@
- (op path name list)←GetLinks dummy;ind
-⍝ op is 1 if the user has cancelled, ohtherwise 0
+ (op path name list)←GetLinks includeQSE;ind
+⍝ op is 1 if the user has cancelled, ohtherwise 0.
  path←name←''
  op←0
  :If 2=⍴⍴list←1↓⎕SE.Link.Status''               ⍝ Otherwise it is a message rather than a real result
+     :If ~includeQSE
+         list←('⎕SE.'∘≢¨1 ⎕C 4↑¨list[;0])⌿list
+     :EndIf
  :AndIf 0<≢list                                 ⍝ Once Link become a real API...
      ('No LINKs detected')⎕SIGNAL 11/⍨0=≢list
      :If 1<≢list

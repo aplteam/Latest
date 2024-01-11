@@ -3,18 +3,18 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  R←T._Failed
 
- (data name)←##.Latest.Run'#' 1 0 0 ¯999
+ (data name)←##.Latest.Run'#' 1 0 0 ¯999 0
  noOf←≢data
  →T.PassesIf 7<noOf
  →T.PassesIf'#'≡name
 
- (data name)←##.Latest.Run'#' 1 0 0 ¯999
+ (data name)←##.Latest.Run'#' 1 0 0 ¯999  0
  →T.PassesIf noOf=≢data
 
- (data name)←##.Latest.Run'#' 1 0 0 21000101
+ (data name)←##.Latest.Run'#' 1 0 0 21000101 0
  →T.PassesIf 3=≢data
 
- (data name)←##.Latest.Run'#' 1 0 0(21000101 21000131)
+ (data name)←##.Latest.Run'#' 1 0 0(21000101 21000131) 0
  →T.PassesIf 6=≢data
 
  R←T._OK

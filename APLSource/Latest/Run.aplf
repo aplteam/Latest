@@ -1,4 +1,4 @@
-  (r name)←Run(path recursive stats allFiles noOf);F;A;linkList;pathFlag;path;dates;buff;cancelled;caption;ind
+  (r name)←Run(path recursive stats allFiles noOf includeQSE);F;A;linkList;pathFlag;path;dates;buff;cancelled;caption;ind
 ⍝ Handles the following cases:
 ⍝ * Investigate any LINKed namespaces
 ⍝ * Investigate the workspace (simple namespace or #/⎕SE)
@@ -8,7 +8,7 @@
  r←name←linkList←''
  pathFlag←0
  :If 0=≢path                            ⍝ Only true if we deal with a LINK
-     (cancelled path name linkList)←GetLinks ⍬
+     (cancelled path name linkList)←GetLinks includeQSE
      →cancelled/0
      :If 0=≢path
          path←F.PWD,F.CurrentSep
