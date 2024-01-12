@@ -1,6 +1,11 @@
 (
  'Test cases polished and pushed, but no new version created'
  ''
+ '* 7.0.1 from 2024-01-12   '
+ ''
+ '  * Bug fix: Latest could only deal with newer versions of Link, when `Status` returns a 4-column matrix.'
+ '    Older versions returned a three-column matrix. '
+ ''
  '* 7.0.0 from 2024-01-05'
  '  * By default, ]Latest acts on a LINKed directory. If there are multiple LINKs the user is asked '
  '    which one to act on.'
