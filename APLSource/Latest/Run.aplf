@@ -1,4 +1,4 @@
-  (r name)←Run(path recursive stats allFiles noOf includeQSE);F;A;linkList;pathFlag;path;dates;buff;cancelled;caption;ind
+ (r name)←Run(path recursive stats allFiles noOf includeQSE);F;A;linkList;pathFlag;path;dates;buff;cancelled;caption;ind
 ⍝ Handles the following cases:
 ⍝ * Investigate any LINKed namespaces
 ⍝ * Investigate the workspace (simple namespace or #/⎕SE)
@@ -22,22 +22,25 @@
      :If ∨/'/\'∊path
          'Is not a directory'⎕SIGNAL 6/⍨~F.IsDir path
      :Else
-         linkList←1↓⎕SE.Link.Status''
-         :If (⊂path)∊linkList[;0]
-             ind←linkList[;0]⍳⊂path
-             name←path
-             path←2⊃linkList[ind;]
-             pathFlag←1
-         :ElseIf 0<≢path
-             ind←F.EnforceSlash¨(linkList[;1])⍳⊂F.EnforceSlash path
-             :If ind=≢linkList
-                 :If ~(⊂1 ⎕C,path)∊,¨'#' '⎕SE'
-                     'Neither a directory nor a namespace'⎕SIGNAL 6/⍨~9=⎕NC path
+         :If 2=⍴⍴linkList←⎕SE.Link.Status''
+         :OrIf 'No active links'≢∊linkList
+             linkList←1↓linkList
+             :If (⊂path)∊linkList[;0]
+                 ind←linkList[;0]⍳⊂path
+                 name←path
+                 path←2⊃linkList[ind;]
+                 pathFlag←1
+             :ElseIf 0<≢path
+                 ind←F.EnforceSlash¨(linkList[;1])⍳⊂F.EnforceSlash path
+                 :If ind=≢linkList
+                     :If ~(⊂1 ⎕C,path)∊,¨'#' '⎕SE'
+                         'Neither a directory nor a namespace'⎕SIGNAL 6/⍨~9=⎕NC path
+                     :EndIf
                  :EndIf
+             :Else
+                 (cancelled path name)←allFiles SelectLink linkList
+                 →cancelled/0
              :EndIf
-         :Else
-             (cancelled path name)←allFiles SelectLink linkList
-             →cancelled/0
          :EndIf
      :EndIf
  :EndIf
