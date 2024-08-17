@@ -67,10 +67,15 @@
               :EndIf
           :EndIf
       :ElseIf 1=≢Args.Arguments
+          :If 5='-'+.=↑Args.Arguments
+              (↑Args.Arguments)←{('-'~⍨10↑⍵),'-',('-'~⍨11↓⍵)}↑Args.Arguments
+          :ElseIf ('-'+.=↑Args.Arguments)∊2 3
+              (↑Args.Arguments)←'-'~⍨10↑↑Args.Arguments
+          :EndIf
           :If ∧/('-'~⍨↑Args.Arguments)∊⎕D
-          :AndIf '-'∊↑Args.Arguments
-              'Invalid argument'⎕SIGNAL 11/⍨1≠'-'+.=↑Args.Arguments
-              (from to)←2↑'-'(≠⊆⊢)1⊃Args.Arguments
+          :AndIf ∧/10000000<↑(//)⎕VFI↑Args.Arguments
+              'Invalid Argument'⎕SIGNAL 11/⍨~('-'+.=↑Args.Arguments)∊0 1
+              (from to)←2↑'-'(≠⊆⊢)1⊃Args.Arguments,'-'
               :If 0=≢to~' '
                   to←↑,/4 2 2{(-⍺)↑'000',⍕⍵}¨3↑⎕TS
               :EndIf
@@ -134,30 +139,33 @@
           r,←⊂']Latest [<no arg>|<int>|<txt>|<int&txt] -recursive=1|0 -allFiles -stats -version -days='
       :Case 1
           r,←⊂'Lists the latests changes. Is mainly designed to act on LINKed namespaces but can also'
-          r,←⊂'deal with the workspace or with any folder on disk. However, when acting on'
-          r,←⊂'the workspace it reports only functions and operators not stemming from a script,'
-          r,←⊂'since only those carry a timestamp.'
+          r,←⊂'deal with the workspace or with any folder on disk. However, when acting on the workspace'
+          r,←⊂'it reports only functions and operators not stemming from a script, since only those'
+          r,←⊂'carry a timestamp.'
           r,←⊂''
           r,←⊂'May be called with:'
           r,←⊂' * no argument at all'
           r,←⊂' * an integer'
           r,←⊂' * a character vector'
           r,←⊂' * both an integer and a character vector'
-          r,←⊂' * 20230807-'
+          r,←⊂' * 20230807'
+          r,←⊂' * 2023-08-07'
           r,←⊂' * 20220101-20221231'
+          r,←⊂' * 2022-01-01-2022-12-31'
           r,←⊂''
           r,←⊂'A character vector may specify either a namespace or a folder on disk.'
           r,←⊂''
           r,←⊂' * An integer smaller than 1E7 is treated as number of items to be reported'
           r,←⊂' * An integer greater than 1E7 is treated as a specific date (YYYYMMDD)'
           r,←⊂' * A negative integer is treated as number of days'
-          r,←⊂' * 20230807- is treated as "from 2023-08-07 till now"'
+          r,←⊂' * 20230807 is treated as "from 2023-08-07 till now"'
           r,←⊂' * 20220101-20221231 is treated as "from-to" (inclusive)'
           r,←⊂''
           r,←⊂'Options:'
           r,←⊂'-allFiles       By default only APL source files are considered (by extension).'
-          r,←⊂'-days=          Number of days changes should be reported on. You must not specify'
-          r,←⊂'                an integer when specifying this.'
+          r,←⊂'                Change by specifying this flag.'
+          r,←⊂'-days=          Number of days changes should be reported on.'
+          r,←⊂'                You must not specify an integer when specifying this.'
           r,←⊂'-recursive=0|1  Defaults to 1, meaning that the path is searched recursively.'
           r,←⊂'-se             By default linked namespaces in ⎕SE are ignored. Change with -se.'
           r,←⊂'-stats          If this flag is specified you get a matrix with change statistics;'

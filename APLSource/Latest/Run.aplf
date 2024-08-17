@@ -34,7 +34,7 @@
                  ind←F.EnforceSlash¨(linkList[;1])⍳⊂F.EnforceSlash path
                  :If ind=≢linkList
                      :If ~(⊂1 ⎕C,path)∊,¨'#' '⎕SE'
-                         'Neither a directory nor a namespace'⎕SIGNAL 6/⍨~9=⎕NC path
+                         'First argument is neither a directory nor a namespace'⎕SIGNAL 6/⍨~9=⎕NC path
                      :EndIf
                  :EndIf
              :Else
