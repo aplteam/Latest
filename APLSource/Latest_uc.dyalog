@@ -8,13 +8,14 @@
       r.Desc←'Prints some/all objects found in either a folder or in the workspace, sorted by their "Changed" date'
       r.Group←'FN'
      ⍝ Parsing rules for each:
-      r.Parse←' -recursive∊0 1 -stats -allFiles -version -days= -se'
+      r.Parse←' -recursive∊0 1 -stats -allFiles -version -days= -se -noAPI∊0 1'
     ∇
 
-    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b;list;row;L;openCiderProjects;caption;name;f1;f2;days;includeQSE
+    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b;list;row;L;openCiderProjects;caption;name;f1;f2;days;includeQSE;noAPI
       :Access Shared Public
       ⎕IO←1 ⋄ ⎕ML←3
       version←0 Args.Switch'version'
+      noOf←¯1
       f2←0
       :If f1←0<⎕SE.⎕NC'Latest.∆EXEC_IN_PROJECT'
           f1←1≡⎕SE.Latest.∆EXEC_IN_PROJECT
@@ -38,6 +39,7 @@
       allFiles←0 Args.Switch'allFiles'
       days←0 Args.Switch'days'
       includeQSE←0 Args.Switch'se'
+      noAPI←1 Args.Switch'noAPI'
       path←''
       :If 2=≢Args.Arguments
           path←1⊃Args.Arguments
@@ -63,7 +65,6 @@
                   noOf←⍬
               :Else
                   path←2⊃Args.Arguments
-                  noOf←¯1
               :EndIf
           :EndIf
       :ElseIf 1=≢Args.Arguments
@@ -105,7 +106,7 @@
       :If 0≠days
           noOf←-|days
       :EndIf
-      (r name)←L.Run(path recursive stats allFiles noOf includeQSE)
+      (r name)←L.Run(path recursive stats allFiles noOf includeQSE noAPI)
       →(0=+/≢¨r name)/0
       :If stats
           :If 0<≢name
@@ -157,7 +158,7 @@
           r,←⊂''
           r,←⊂' * An integer smaller than 1E7 is treated as number of items to be reported'
           r,←⊂' * An integer greater than 1E7 is treated as a specific date (YYYYMMDD)'
-          r,←⊂' * A negative integer is treated as number of days'
+          r,←⊂' * A negative integer is treated as number of days (deprecated, see -days instead)'
           r,←⊂' * 20230807 is treated as "from 2023-08-07 till now"'
           r,←⊂' * 20220101-20221231 is treated as "from-to" (inclusive)'
           r,←⊂''
@@ -170,10 +171,14 @@
           r,←⊂'-se             By default linked namespaces in ⎕SE are ignored. Change with -se.'
           r,←⊂'-stats          If this flag is specified you get a matrix with change statistics;'
           r,←⊂'                any other flag is ignored'
+          r,←⊂'-noAPI=0|1      Defaults to 1, meaning that what is defined as a package API is ignored'
           r,←⊂'-version        Prints the version number of the user command to the session.'
           r,←⊂'                If this is specified any argument and all other flags are ignored.'
+          r,←⊂''
+          r,←⊂'For a detailed reference enter:'
+          r,←⊂']Latest -???'
       :Case 2
-          r←⎕SE.UCMD'ADOC ⎕SE.Latest'
+          r←⎕SE.UCMD'ADOC ⎕SE.Latest -title="]Latest Reference"'
       :EndSelect
     ∇
 

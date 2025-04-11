@@ -1,3 +1,0 @@
- res←{noOf}r path
- noOf←{0<⎕NC ⍵:⍎⍵ ⋄ ⍬}'noOf'
- res←Latest.Run path 1 0 1 noOf 0

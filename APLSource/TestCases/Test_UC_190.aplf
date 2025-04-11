@@ -11,14 +11,14 @@
  parms.parent←'#'
  parms.projectSpace←'TEMP'
  parms.ignoreUserExec←1
- ⎕SE.Cider.##.CommTools.YesOrNo_Answers←1 2⍴'ChangeCurrentDir@' 'n'
+ ⎕SE.Cider.##.CommTools.AddAutomation'YesOrNo' 'ChangeCurrentDir@' 'n'
  (success log)←⎕SE.Cider.OpenProject parms
  Assert success
 
  :If IsRedirected
-     #.Latest.Latest.CommTools.Select_Choices←1 2⍴'SelectLINK@' '#.TEMP *'
+     #.Latest.Latest.CommTools.AddAutomation'Select' 'SelectLINK@' '#.TEMP *'
  :Else
-     ⎕SE.Latest.CommTools.Select_Choices←1 2⍴'SelectLINK@' '#.TEMP *'
+     ⎕SE.Latest.CommTools.AddAutomation'Select' 'SelectLINK@' '#.TEMP *'
  :EndIf
  data←1↓∆UCMD,'9999'
  →T.GoToTidyUp~0<≢data

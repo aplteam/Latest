@@ -5,12 +5,12 @@
 
  R←T._Failed
 
- (data name)←##.Latest.Run ##.CiderConfig.HOME 1 0 0 9999 0
+ (data name)←##.Latest.Run ##.CiderConfig.HOME 1 0 0 9999 0 0
  noOf←+/('APLSource',FilesAndDirs.CurrentSep){⍺∘≡¨(≢⍺)↑¨⍵}1⊃∘⎕NPARTS¨data[;1]
  →T.PassesIf noOf=+/FilesAndDirs.IsFile⊃('recursive' 1)FilesAndDirs.Dir ##.CiderConfig.HOME,'/APLSource/*'
  →T.PassesIf 0=≢name
 
- (dataAll name)←##.Latest.Run ##.CiderConfig.HOME 1 0 1 9999 0
+ (dataAll name)←##.Latest.Run ##.CiderConfig.HOME 1 0 1 9999 0 0
  →T.PassesIf</≢¨data dataAll
  →T.PassesIf∧/0 1∊'APLSource'{⍺∘≡¨(≢⍺)↑¨⍵}1⊃∘⎕NPARTS¨dataAll[;1]
 

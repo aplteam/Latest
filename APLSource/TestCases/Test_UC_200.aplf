@@ -25,7 +25,7 @@
  parms.checkPackageVersions←0
  parms.suppressInit←1
  parms.ignoreUserExec←1
- ⎕SE.Cider.##.CommTools.YesOrNo_Answers←1 2⍴'ChangeCurrentDir@' 'n'
+ ⎕SE.Cider.##.CommTools.AddAutomation'YesOrNo' 'ChangeCurrentDir@' 'n'
  (success log)←⎕SE.Cider.OpenProject parms
  'Opening the Cider project failed'Assert success
 

@@ -1,14 +1,22 @@
- list←HandleAPI(name path links);link;refLink;cfg;subNss;json
+ list←HandleAPI(name path links);link;refLink;cfg;subNss;json;bool
 ⍝ Returns a list with all the name defined as an API according to the package config or an empty vector
  list←''
- :If 0<≢link←,name{f1←⍺∘≡¨⍵ ⋄ l←(¯1+≢¨⍵)↑¨⊂⍺ ⋄ b←⍵∊l ⋄ 0=+/b:'' ⋄ ⊃b/⍵}links[;0]
+ :If 2=⍴⍴linkList
+ :AndIf 0<≢link←,name{b←⍺∘≡¨⍵ ⋄ ∨/b:↑b⌿⍵ ⋄ l←(¯1+≢¨⍵)↑¨⊂⍺ ⋄ b←⍵∊l ⋄ 0=+/b:'' ⋄ ⊃b/⍵}links[;0]
      refLink←⍎link
      :If 0<refLink.⎕NC'TatinVars'
          json←refLink.TatinVars.CONFIG
      :Else
          subNss←refLink.⎕NL-9.1
          subNss←'#._tatin.'{⍵/⍨⍺∘≢¨(≢⍺)↑¨⍕¨⍵}⍕¨refLink.⍎¨subNss                 ⍝ Remove refs o Tatin packages
-         refLink←refLink.⍎(↑⍸9=(refLink.⍎¨subNss).{⊃⎕NC'TatinVars'}⊂⍬)⊃subNss
+         bool←9=↑¨(refLink.⍎¨subNss).{⊃⎕NC'TatinVars'}⊂⍬
+         :If 0=+/bool
+             :Return
+         :EndIf
+         refLink←refLink.⍎(↑⍸bool)⊃subNss
+         :If 0=refLink.⎕NC'TatinVars'
+             :Return
+         :EndIf
          json←refLink.TatinVars.CONFIG
      :EndIf
      cfg←⎕JSON⍠('Dialect' 'JSON5')⊢json

@@ -25,13 +25,13 @@
  parms.checkPackageVersions←0
  parms.suppressInit←1
  parms.ignoreUserExec←1
- ⎕SE.Cider.##.CommTools.YesOrNo_Answers←1 2⍴'ChangeCurrentDir@' 'n'
+ ⎕SE.Cider.##.CommTools.AddAutomation'YesOrNo' 'ChangeCurrentDir@' 'n'
  (success log)←⎕SE.Cider.OpenProject parms
  'Opening the Cider project failed'Assert success
 
  path2←path,'/APLSource/'
  all←1
- (data name)←##.Latest.Run path2 1 0 all ⍬ 0
+ (data name)←##.Latest.Run path2 1 0 all ⍬ 0 0
  expected←{⍵/⍨FilesAndDirs.IsFile ⍵}1⊃('recursive' 1)FilesAndDirs.Dir path2
  →T.GoToTidyUp≠/≢¨data expected
  →T.GoToTidyUp 0≠≢name

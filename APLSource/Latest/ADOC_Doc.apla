@@ -58,7 +58,7 @@
  '`-noAPI=0|1`'
  ''
  ': The default is 1, meaning that the Tatin package API is ignored, if any.'
- '  If you include them specify don''t want this then specify a 0.'
+ '  If you want to include them, specify a 0.'
  '       '
  '  '
  '`-stats`'

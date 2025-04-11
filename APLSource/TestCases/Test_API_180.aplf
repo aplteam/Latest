@@ -17,7 +17,7 @@
  {(⊂1⊃⍵)⎕NPUT 1⊃⍵}(tempDir,'/foo.dyalog')'123'
  {(⊂1⊃⍵)⎕NPUT 1⊃⍵}(tempDir,'/foo.dyapp')'123'
  {(⊂1⊃⍵)⎕NPUT 1⊃⍵}(tempDir,'/foo.txt')'123'
- (list name)←##.Latest.Run tempDir 0 0 0 9999 0
+ (list name)←##.Latest.Run tempDir 0 0 0 9999 0 0
  →T.GoToTidyUp(≢##.Latest.GetExtensions)≠≢list
  →T.GoToTidyUp 0∨≢name
 
