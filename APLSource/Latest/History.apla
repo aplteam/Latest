@@ -1,4 +1,6 @@
 (
+ '* 7.3.0 from 2025-04-11'
+ '  * ]Latest now ignores all APL objects belonging to a Tatin package API but see -noAPI=0'
  '* 7.2.0 from 2024-09-10'
  '  * Doublet dates removed for clarity '
  '* 7.1.0 from 2024-08-16'

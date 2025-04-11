@@ -1,4 +1,4 @@
- (r name)←links FetchData(path recursive stats allFiles noOf pathFlag name);path;noOf;dates;buff;ind
+ (r name)←links FetchData(path recursive stats allFiles noOf pathFlag name noAPI);path;noOf;dates;buff;ind;api
  :If pathFlag
      path←'expand'F.NormalizePath path,F.CurrentSep
      :If F.IsDir path
@@ -54,6 +54,11 @@
              r←(0<≢¨r[;0])⌿r
              r,←11↓¨r[;1]
              r[;1]←10↑¨r[;1]
+             :If 0<≢r
+             :AndIf noAPI
+             :AndIf 0<≢api←HandleAPI(name path links)
+                 r⌿⍨←~r[;0]∊api
+             :EndIf
              r[⍸{~(⍵⍳⍵)=⍳≢⍵}r[;1];1]←⊂''
          :EndIf
      :Else
