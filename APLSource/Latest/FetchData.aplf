@@ -1,8 +1,8 @@
- (r name)←links FetchData(path recursive stats allFiles noOf pathFlag name noAPI);path;noOf;dates;buff;ind;api
+ (r name)←links FetchData(path recursive stats allFiles noOf pathFlag name noAPI);path;noOf;dates;buff;ind;api;abs
  :If pathFlag
      path←'expand'F.NormalizePath path,F.CurrentSep
      :If F.IsDir path
-         r←⍉⊃('recursive'recursive)('type'(0 1 3))F.Dir path
+         r←⍉⊃('recurse'recursive)('type'(0 1 3))F.Dir2 path
          →(0=≢r)/0
          r←(r[;1]=2)⌿r                 ⍝ Only regular files
          :If allFiles
@@ -26,22 +26,11 @@
                  :ElseIf allFiles
                      r[;0]←(≢path){∧/~'/\'∊⍵:⍵ ⋄ ⍺↓⍵}¨r[;0]
                  :EndIf
-                 :If 0<≢links
-                 :AndIf (⊂name)∊links[;0]
-                     ind←links[;0]⍳⊂name
-                     r[;0]←⎕SE.Link.GetItemName∘F.EnforceSlash¨r[;0]
-                 :Else
-                     r[;0]←(≢path)↓¨r[;0]
-                 :EndIf
              :EndIf
              r←(0<≢¨r[;0])⌿r
              r,←11↓¨r[;1]
              r[;1]←10↑¨r[;1]
-             :If 0<≢r
-             :AndIf noAPI
-             :AndIf 0<≢api←HandleAPI(name path links)
-                 r⌿⍨←~r[;0]∊api
-             :EndIf
+             abs←0
              :If 0=allFiles
                  :If ⍬≡noOf
                  :ElseIf 0≢noOf
@@ -55,9 +44,24 @@
                      :ElseIf 8=≢⍕noOf ⍝ Is it a date (yyyymmdd)?
                          r←(noOf={↑↑(//)⎕VFI ⍵}¨↓(⊃r[;1])[;0 1 2 3 5 6 8 9])⌿r
                      :Else
-                         r←(-noOf⌊≢r)↑r
+                         abs←1
                      :EndIf
                  :EndIf
+             :EndIf
+             :If 0<≢links
+             :AndIf (⊂name)∊links[;0]
+                 ind←links[;0]⍳⊂name
+                 r[;0]←⎕SE.Link.GetItemName F.EnforceSlash¨r[;0]
+             :Else
+                 r[;0]←(≢path)↓¨r[;0]
+             :EndIf
+             :If 0<≢r
+             :AndIf noAPI
+             :AndIf 0<≢api←HandleAPI(name path links)
+                 r⌿⍨←~r[;0]∊api
+             :EndIf
+             :If abs
+                 r←(-noOf⌊≢r)↑r
              :EndIf
              r[⍸{~(⍵⍳⍵)=⍳≢⍵}r[;1];1]←⊂''
          :EndIf

@@ -1,4 +1,8 @@
 (
+ '* 7.4.0 from 2025-04-18'
+ '  * Dramatic performance improvement for projects with lots of sub directories.'
+ '  * Bug fixes'
+ '    * `HandleAPI` only worked with packages having their API as a child of the project'
  '* 7.3.0 from 2025-04-11'
  '  * ]Latest now ignores all APL objects belonging to a Tatin package API but see -noAPI=0'
  '* 7.2.0 from 2024-09-10'

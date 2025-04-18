@@ -1,7 +1,7 @@
  list←HandleAPI(name path links);link;refLink;cfg;subNss;json;bool
-⍝ Returns a list with all the name defined as an API according to the package config or an empty vector
+⍝ Returns a list with all the names defined as an API according to the package config or an empty vector
  list←''
- :If 2=⍴⍴linkList
+ :If 2=⍴⍴links
  :AndIf 0<≢link←,name{b←⍺∘≡¨⍵ ⋄ ∨/b:↑b⌿⍵ ⋄ l←(¯1+≢¨⍵)↑¨⊂⍺ ⋄ b←⍵∊l ⋄ 0=+/b:'' ⋄ ⊃b/⍵}links[;0]
      refLink←⍎link
      :If 0<refLink.⎕NC'TatinVars'
@@ -21,6 +21,19 @@
      :EndIf
      cfg←⎕JSON⍠('Dialect' 'JSON5')⊢json
  :AndIf 0<≢cfg.api
-     list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓refLink.⍎cfg.api,'.⎕NL⍳16'
+     ⍝ We assume that the package-stuff lives in...
+     ⍝ * a namespace `Core` or `core`
+     ⍝ * a namespace with the same name as the project
+     ⍝ * the root of the project (nnot recommended)
+     ⍝ This is necessary because that bit of information about the structure is not available anywhere
+     :If 9=refLink.⎕NC'Core'
+         list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓refLink.⍎'Core.',cfg.api,'.⎕NL⍳16'
+     :ElseIf 9=refLink.⎕NC'core'
+         list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓refLink.⍎'core.',cfg.api,'.⎕NL⍳16'
+     :ElseIf 9=refLink.⎕NC A.Last name
+         list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓refLink.⍎(A.Last name),'.',cfg.api,'.⎕NL⍳16'
+     :ElseIf 9=refLink.⎕NC cfg.api
+         list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓refLink.⍎cfg.api,'.⎕NL⍳16'
+     :EndIf
  :EndIf
 ⍝Done
