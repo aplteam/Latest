@@ -1,5 +1,5 @@
 (
- '* 7.4.0 from 2025-04-18'
+ '* 7.4.0 from 2025-04-21'
  '  * Dramatic performance improvement for projects with lots of sub directories.'
  '  * Bug fixes'
  '    * `HandleAPI` only worked with packages having their API as a child of the project'

@@ -31,9 +31,9 @@
      :ElseIf 9=refLink.⎕NC'core'
          list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓refLink.⍎'core.',cfg.api,'.⎕NL⍳16'
      :ElseIf 9=refLink.⎕NC A.Last name
-         list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓refLink.⍎(A.Last name),'.',cfg.api,'.⎕NL⍳16'
+         list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓(refLink.⍎(A.Last name)),'.',cfg.api,'.⎕NL⍳16'
      :ElseIf 9=refLink.⎕NC cfg.api
-         list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓refLink.⍎cfg.api,'.⎕NL⍳16'
+         list←((⍕refLink),'.',cfg.api,'.')∘,¨' '~⍨¨↓(refLink.⍎cfg.api),'.⎕NL⍳16'
      :EndIf
  :EndIf
 ⍝Done
