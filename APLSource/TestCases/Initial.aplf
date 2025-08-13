@@ -33,6 +33,11 @@
  buff[2]←⊂date←2100 2 1 17 0 0 0
  buff(1159⌶)'#.TEMP.Sub2.Hello7'
  ∆DATES⍪←'#.TEMP.Sub2Hello7'date
+ :If 0=⎕SE.⎕NC'acre'
+     :Trap 0
+         {}⎕SE.UCMD']acre.Version'
+     :EndTrap
+ :EndIf
  {}FilesAndDirs.Cd ##.CiderConfig.HOME
  ⎕←'*** Current dir is now: ',FilesAndDirs.PWD
 ⍝Done

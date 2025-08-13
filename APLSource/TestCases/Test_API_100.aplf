@@ -4,7 +4,7 @@
  R←T._Failed
 
  :Trap 6
-     (res name)←##.Latest.Run'#.DoesNotExist' 0 0 0 0 0 0
+     (res name)←##.Latest.Run'#.DoesNotExist' 0 0 0 0 0 0 0
      →T.FailsIf 1
  :Else
      qdmx←⎕DMX

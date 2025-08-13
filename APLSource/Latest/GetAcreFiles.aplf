@@ -1,0 +1,20 @@
+ (op path name)←acre GetAcreFiles includeQSE;ind;list
+⍝ op is 1 if the user has cancelled, ohtherwise 0.
+ path←name←''
+ op←0
+ :If ~IsAcreAvailable
+     'Acre is not available'⎕SIGNAL(~acre)/6
+ :EndIf
+ list←⎕SE.acre.Projects''
+ :If 0<≢list
+     :If 1=≢list
+         (name path)←list[0;]
+     :Else
+         :If 0<≢ind←'Which project?'CommTools.Select list[;0]
+             (name path)←list[ind-1;]
+         :EndIf
+     :EndIf
+ :Else
+     op←1
+ :EndIf
+⍝Done

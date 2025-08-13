@@ -14,10 +14,12 @@ There is a Dyalog user command that does something similar. However, it takes ti
 ## Overview
 
 * `]latest` can act on a LINK, that is anything returned by `]Link.Status`; specify the LINKed namespace for this
+* `]latest` can act on [acre](https://github.com/the-carlisle-group/acre-desktop "Link to acre on GitHub") projects.
 * `]latest` can act on the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
+* If you use the project manager acre and Linked folders in parallel then the flag `-acre` allows you to tell `]Latest` that it should focus on acre project(s)
 * `]latest` can act on a specific (un-linked) folder like `C:\MyProjects\ThisProject\APLSource`
 
-If no argument is specified and there are no LINKed namespaces, then it falls back to the current directory but will ask the user for confirmation.
+If no argument is specified and there are no LINKed namespaces and the `-acre` was not specified and there are no acre project then it falls back to the current directory but will ask the user for confirmation.
 
 By default the user command reports all objects or files changed lately (read: last day something was changed).
 
@@ -48,3 +50,5 @@ Note that by providing a path as an argument you can extend the meaning of `]Lat
 This will make the user commands of `Latest` available, but it will not establish the API. However, executing any of its user commands will force `Latest` to load the API into `⎕SE`. For that, executing `]Latest.Version` will do.
 
 If you want the API to be available right from the start then please consult the article [Dyalog User Commands](https://aplwiki.com/wiki/Dyalog_User_Commands "Link to the APL wiki").
+
+

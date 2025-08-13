@@ -1,4 +1,4 @@
-﻿:Class  Latest_uc
+:Class  Latest_uc
 
     ∇ r←List;⎕IO;⎕ML ⍝ this function usually returns 1 or more namespaces (here only 1)
       :Access Shared Public
@@ -8,15 +8,16 @@
       r.Desc←'Prints some/all objects found in either a folder or in the workspace, sorted by their "Changed" date'
       r.Group←'FN'
      ⍝ Parsing rules for each:
-      r.Parse←' -recursive∊0 1 -stats -allFiles -version -days= -se -noAPI∊0 1'
+      r.Parse←' -recursive∊0 1 -stats -allFiles -version -days= -se -noAPI∊0 1 -acre'
     ∇
 
-    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b;list;row;L;openCiderProjects;caption;name;f1;f2;days;includeQSE;noAPI
+    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b;list;row;L;openCiderProjects;caption;name;f1;f2;days;includeQSE;noAPI;acre;C
       :Access Shared Public
       ⎕IO←1 ⋄ ⎕ML←3
       version←0 Args.Switch'version'
       noOf←¯1
       f2←0
+      C←⎕SE.Latest.CommTools
       :If f1←0<⎕SE.⎕NC'Latest.∆EXEC_IN_PROJECT'
           f1←1≡⎕SE.Latest.∆EXEC_IN_PROJECT
       :EndIf
@@ -24,7 +25,7 @@
       :AndIf f2←9=⎕SE.⎕NC'Cider'
       :AndIf f2←0<≢openCiderProjects←⎕SE.Cider.ListOpenProjects 0
       :AndIf f2←(⊂'#.Latest')∊openCiderProjects[;1]
-          f2←1 ⎕SE.Latest.CommTools.YesOrNo'Would you like to execute code in #.Latest rather than ⎕SE.Latest?'
+          f2←1 C.YesOrNo'Would you like to execute code in #.Latest rather than ⎕SE.Latest?'
       :EndIf
       :If f1∨f2
           L←#.Latest.Latest
@@ -40,6 +41,7 @@
       days←0 Args.Switch'days'
       includeQSE←0 Args.Switch'se'
       noAPI←1 Args.Switch'noAPI'
+      acre←0 Args.Switch'acre'
       path←''
       :If 2=≢Args.Arguments
           path←1⊃Args.Arguments
@@ -106,7 +108,7 @@
       :If 0≠days
           noOf←-|days
       :EndIf
-      (r name)←L.Run(path recursive stats allFiles noOf includeQSE noAPI)
+      (r name)←L.Run(path recursive stats allFiles noOf includeQSE noAPI acre)
       →(0=+/≢¨r name)/0
       :If stats
           :If 0<≢name
@@ -137,12 +139,12 @@
       r←''
       :Select level
       :Case 0
-          r,←⊂']Latest [<no arg>|<int>|<txt>|<int&txt] -recursive=1|0 -allFiles -stats -version -days='
+          r,←⊂']Latest [<no arg>|<int>|<txt>|<int&txt] -recursive=1|0 -allFiles -stats -version -days= -acre'
       :Case 1
           r,←⊂'Lists the latests changes. Is mainly designed to act on LINKed namespaces but can also'
-          r,←⊂'deal with the workspace or with any folder on disk. However, when acting on the workspace'
-          r,←⊂'it reports only functions and operators not stemming from a script, since only those'
-          r,←⊂'carry a timestamp.'
+          r,←⊂'deal with acre projects, the workspace or with any folder on disk. However, when acting on the'
+          r,←⊂'workspace it does not report dfns & functions & operators stemming from a script: they do not'
+          r,←⊂'have a timestamp.'
           r,←⊂''
           r,←⊂'May be called with:'
           r,←⊂' * no argument at all'
@@ -163,6 +165,10 @@
           r,←⊂' * 20220101-20221231 is treated as "from-to" (inclusive)'
           r,←⊂''
           r,←⊂'Options:'
+          r,←⊂'-acre           Check for open acre projects. If there is just one, act on it.'
+          r,←⊂'                If there are multiple one, question the user.'
+          r,←⊂'                Specify only if you have both projects & Linked folders and want'
+          r,←⊂'                ]Latest to act on the acre projects.'
           r,←⊂'-allFiles       By default only APL source files are considered (by extension).'
           r,←⊂'                Change by specifying this flag.'
           r,←⊂'-days=          Number of days changes should be reported on.'

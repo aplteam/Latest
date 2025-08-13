@@ -1,0 +1,13 @@
+ r←IsAcreAvailable
+⍝ Returns a Bollean indicating the availability of acre.
+⍝ As a side effect acre is loaded into ⎕SE if not already there (if possible).
+ :If 0=⎕SE.⎕NC'acre'
+     :Trap 0
+         {}⎕SE.UCMD']acre.Version'
+         r←1
+     :Else
+         r←0
+     :EndTrap
+ :Else
+     r←1
+ :EndIf

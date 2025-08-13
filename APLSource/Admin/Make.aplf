@@ -40,7 +40,6 @@
      :EndSection
      ⎕←'Using "MakeHelpers" version ',⎕SE.MakeHelpers.Version
      C←##.CiderConfig
-     ⎕←'' ⋄ 0 0⍴⍞,0/⍞←'Pause sync services like Dropbox, Google Drive etc. in order to avoid FILE ACCESS errors. Press <enter> to continue '
      :If ⎕NULL≡cfg←M.EditPackageConfigFile ##.Latest.TatinVars
          ⎕←'Cancelled by user' ⋄ →0
      :EndIf

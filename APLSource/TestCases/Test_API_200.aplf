@@ -31,7 +31,7 @@
 
  path2←path,'/APLSource/'
  all←1
- (data name)←##.Latest.Run path2 1 0 all ⍬ 0 0
+ (data name)←##.Latest.Run path2 1 0 all ⍬ 0 0 0
  expected←{⍵/⍨FilesAndDirs.IsFile ⍵}1⊃('recursive' 1)FilesAndDirs.Dir path2
  →T.GoToTidyUp≠/≢¨data expected
  →T.GoToTidyUp 0≠≢name

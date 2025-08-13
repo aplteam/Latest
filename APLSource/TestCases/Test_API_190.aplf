@@ -16,7 +16,7 @@
  Assert success
 
  ##.Latest.CommTools.AddAutomation'Select' 'SelectLINK@Please select a project' '#.TEMP*'
- (data name)←##.Latest.Run'' 1 0 0 9999 0 0
+ (data name)←##.Latest.Run'' 1 0 0 9999 0 0 0
  →T.GoToTidyUp~0<≢data
  →T.GoToTidyUp∨/∨/¨'/\'∘∊¨data[;1]
  files←('recursive'FilesAndDirs.ListFiles #.TEMP.CiderConfig.HOME,'/',#.TEMP.CiderConfig.CIDER.source,'/')

@@ -3,12 +3,12 @@
  ⎕TRAP←(999 'C' '∘∘∘ ⍝ Deliberate error')(0 'N')
  R←T._Failed
 
- (data name)←##.Latest.Run'#.TEMP' 1 1 0 ⍬ 0 0
+ (data name)←##.Latest.Run'#.TEMP' 1 1 0 ⍬ 0 0 0
                         ⍝   recursive stats allFiles noOf links
  →T.PassesIf 4=≢data
  →T.PassesIf 7=+/data[;2]
 
- (data name)←##.Latest.Run'#' 1 1 0 ⍬ 0 0
+ (data name)←##.Latest.Run'#' 1 1 0 ⍬ 0 0 0
  →T.PassesIf 4<≢data
  →T.PassesIf 7<+/data[;2]
 

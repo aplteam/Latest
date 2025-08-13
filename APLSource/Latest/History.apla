@@ -1,4 +1,7 @@
 (
+ '* 7.5.0 from 2025-08-24'
+ '  * Flag -acre added that forces Latest to deal with acre projects'
+ '  * If there aren''t any Linked folders and acre is available then ]Latest acts on ace projects, if any.'
  '* 7.4.0 from 2025-04-21'
  '  * Dramatic performance improvement for projects with lots of sub directories.'
  '  * Bug fixes'

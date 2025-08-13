@@ -1,4 +1,4 @@
- (r name)←Run(path recursive stats allFiles noOf includeQSE noAPI);F;A;linkList;pathFlag;path;dates;buff;cancelled;caption;ind
+ (r name)←Run(path recursive stats allFiles noOf includeQSE noAPI acre);F;A;linkList;pathFlag;path;dates;buff;cancelled;caption;ind
 ⍝ Handles the following cases:
 ⍝ * Investigate any LINKed namespaces
 ⍝ * Investigate the workspace (simple namespace or #/⎕SE)
@@ -7,9 +7,19 @@
  A←APLTreeUtils2 ⋄ F←FilesAndDirs
  r←name←linkList←''
  pathFlag←0
- :If 0=≢path                            ⍝ Only true if we deal with a LINK
-     (cancelled path name linkList)←GetLinks includeQSE
-     →cancelled/0
+ :If 0=≢path                            ⍝ Only true if we deal with a LINK or an acre project
+     :If acre
+         cancelled←0
+         linkList←''
+     :Else
+         (cancelled path name linkList)←GetLinks includeQSE
+     :EndIf
+     :If cancelled∨0=≢linkList
+     :AndIf IsAcreAvailable
+         (cancelled path name)←acre GetAcreFiles includeQSE
+         →cancelled/0
+         acre←1
+     :EndIf
      :If 0=≢path
          path←F.PWD,F.CurrentSep
          ('Is not a folder: ',path)⎕SIGNAL 6/⍨~F.IsDir path
@@ -56,5 +66,5 @@
  :If noOf≡0
      noOf←¯1
  :EndIf
- (r name)←linkList FetchData path recursive stats allFiles noOf pathFlag name noAPI
+ (r name)←linkList FetchData path recursive stats allFiles noOf pathFlag name noAPI acre
 ⍝Done
