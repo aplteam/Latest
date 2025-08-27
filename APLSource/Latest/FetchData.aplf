@@ -55,7 +55,6 @@
              :ElseIf acre
              :AndIf 0<⎕SE.⎕NC'acre'
                  r[;0]←⎕SE.acre.Itemname r[;0]
-                 r[;0]←(≢path)↓¨r[;0]
              :Else
                  r[;0]←(≢path)↓¨r[;0]
              :EndIf

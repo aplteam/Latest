@@ -1,4 +1,6 @@
 (
+ '* 7.5.1 from 2025-08-27'
+ '  * Result was mutilated for acre projects'
  '* 7.5.0 from 2025-08-24'
  '  * Flag -acre added that forces Latest to deal with acre projects'
  '  * If there aren''t any Linked folders and acre is available then ]Latest acts on ace projects, if any.'
