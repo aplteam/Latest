@@ -1,5 +1,7 @@
  List_NS←{
      r←⍵{⊃∇/⍺.(⍺{(0,⍵)/⍨0,(⍺≠⍵)∧⍺=⍵.##}⍎⍕'⍺',⌽↓⎕NL 9.1 9.2),⊂⍵,⍺}⍬
+     r←(1=↑¨⍴∘⍴¨⍕¨r)/r      ⍝ Exclude ⎕EM etc
+     r←(~∨/¨'('∊¨⍕¨r)/r     ⍝ Exclude stuff like (System) etc
      (0=≢r):''
      r/⍨←{0::0 ⋄ 'Namespace'≡⍵.⎕WG'Type':1 ⋄ ⍵.KeepOnClose∧'Form'≡⍵.⎕WG'Type'}¨r
      (0=≢r):''
@@ -9,6 +11,6 @@
 ⍝ ← ns and all nss below
 ⍝   excludes nss whose only ref is outside parent
 ⍝   as well as those having a "[" in their name
-⍝ Originally Phil Last ⍝ 2008-04-30 00:30
-⍝ Line 2 added for special purposes by Kai Jaeger
+⍝ Originally Phil Last      ⍝ 2008-04-30 00:30
+⍝ Lines 2-4 added for special purposes by Kai Jaeger
  }

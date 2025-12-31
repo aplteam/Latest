@@ -1,6 +1,7 @@
 {
   api: "",
   assets: "",
+  checkLICENSEfile: 1,
   description: "Lists APL objects by change date/time",
   documentation: "",
   files: "",
@@ -19,5 +20,5 @@
   source: "APLSource/Latest",
   tags: "list-apl-objects",
   userCommandScript: "APLSource/Latest_uc.dyalog",
-  version: "7.5.1+223",
+  version: "7.5.2+224",
 }
