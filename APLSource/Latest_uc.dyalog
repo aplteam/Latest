@@ -144,7 +144,7 @@
           r,←⊂'Lists the latests changes. Is mainly designed to act on LINKed namespaces but can also'
           r,←⊂'deal with acre projects, the workspace or with any folder on disk. However, when acting on the'
           r,←⊂'workspace it does not report dfns & functions & operators stemming from a script: they do not'
-          r,←⊂'have a timestamp.'
+          r,←⊂'have a timestamp. Also, unnamed namespaces are ignored.'
           r,←⊂''
           r,←⊂'May be called with:'
           r,←⊂' * no argument at all'
