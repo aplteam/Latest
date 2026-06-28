@@ -8,10 +8,10 @@
       r.Desc←'Prints some/all objects found in either a folder or in the workspace, sorted by their "Changed" date'
       r.Group←'FN'
      ⍝ Parsing rules for each:
-      r.Parse←' -recursive∊0 1 -stats -allFiles -version -days= -se -noAPI∊0 1 -acre'
+      r.Parse←' -recursive∊0 1 -stats -allFiles -version -days= -se -api -acre'
     ∇
 
-    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b;list;row;L;openCiderProjects;caption;name;f1;f2;days;includeQSE;noAPI;acre;C
+    ∇ r←Run(Cmd Args);⎕IO;⎕ML;stats;noOf;flag;value;ref;recursive;path;allFiles;version;from;to;b;list;row;L;openCiderProjects;caption;name;f1;f2;days;includeQSE;api;acre;C
       :Access Shared Public
       ⎕IO←1 ⋄ ⎕ML←3
       version←0 Args.Switch'version'
@@ -40,7 +40,7 @@
       allFiles←0 Args.Switch'allFiles'
       days←0 Args.Switch'days'
       includeQSE←0 Args.Switch'se'
-      noAPI←1 Args.Switch'noAPI'
+      api←Args.Switch'api'
       acre←0 Args.Switch'acre'
       path←''
       :If 2=≢Args.Arguments
@@ -108,7 +108,7 @@
       :If 0≠days
           noOf←-|days
       :EndIf
-      (r name)←L.Run(path recursive stats allFiles noOf includeQSE noAPI acre)
+      (r name)←L.Run(path recursive stats allFiles noOf includeQSE api acre)
       →(0=+/≢¨r name)/0
       :If stats
           :If 0<≢name
@@ -177,7 +177,7 @@
           r,←⊂'-se             By default linked namespaces in ⎕SE are ignored. Change with -se.'
           r,←⊂'-stats          If this flag is specified you get a matrix with change statistics;'
           r,←⊂'                any other flag is ignored'
-          r,←⊂'-noAPI=0|1      Defaults to 1, meaning that what is defined as a package API is ignored'
+          r,←⊂'-api            Useful if you really want the API to be included; Requieres Cider.'
           r,←⊂'-version        Prints the version number of the user command to the session.'
           r,←⊂'                If this is specified any argument and all other flags are ignored.'
           r,←⊂''

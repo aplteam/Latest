@@ -1,4 +1,4 @@
- (r name)←Run(path recursive stats allFiles noOf includeQSE noAPI acre);F;A;linkList;pathFlag;path;dates;buff;cancelled;caption;ind
+ (r name)←Run(path recursive stats allFiles noOf includeQSE api acre);F;A;linkList;pathFlag;path;dates;buff;cancelled;caption;ind
 ⍝ Handles the following cases:
 ⍝ * Investigate any LINKed namespaces
 ⍝ * Investigate the workspace (simple namespace or #/⎕SE)
@@ -66,5 +66,5 @@
  :If noOf≡0
      noOf←¯1
  :EndIf
- (r name)←linkList FetchData path recursive stats allFiles noOf pathFlag name noAPI acre
+ (r name)←linkList FetchData path recursive stats allFiles noOf pathFlag name api acre
 ⍝Done
