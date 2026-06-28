@@ -27,7 +27,7 @@
          cfg←⎕JSON⍠('Dialect' 'JSON5')⊢json
      :AndIf 0<≢cfg.api      ⍝ No API defined?
          prjPath←AddSlash⍎name,'.TatinVars.HOME'
-         list_←(≢prjPath)↓¨FilesAndDirs.ListFiles2 AddSlash prjPath,cfg.source,'/',cfg.api
+         list_←FilesAndDirs.ListFiles2 AddSlash prjPath,cfg.source,'/',cfg.api
          list←⎕SE.Link.GetItemName list_
      :EndIf
  :EndIf
