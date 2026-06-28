@@ -2,28 +2,63 @@
 
 ## What is it good for
 
-The general idea of the `Latest` user command is to list the latest changes the user made to the APL code.
+`]Latest` lists the most recent changes to APL source code, sorted by modification date.
 
-Imagine you left a project half-baked because of a change of priorities or whatever. When you come back after a day or a week or a month you might or might not be able to continue where you left depending on your memory. `]Latest` to the rescue.
+Imagine returning to a project after a day, a week, or a month. `]Latest` shows you exactly what changed and when, so you can
+pick up where you left off.
 
-By default all changes made on the last day the code was changed are listed.
+By default it reports everything changed on the last day any code was touched.
 
-There is a Dyalog user command that does something similar. However, it takes timestamps into account, meaning that it is helpless when it comes to scripts and dfns because neither have a timestamp.
-
+There is a built-in Dyalog user command that does something similar, but it relies on timestamps — which means it cannot handle
+scripts and dfns, since those carry no timestamp. `]Latest` does not have this limitation.
 
 ## Overview
 
-* `]latest` can act on a LINK, that is anything returned by `]Link.Status`; specify the LINKed namespace for this
-* `]latest` can act on [acre](https://github.com/the-carlisle-group/acre-desktop "Link to acre on GitHub") projects.
-* `]latest` can act on the workspace, meaning that you need to specify something like `#` or `⎕SE` or `#.Foo` as argument
-* If you use the project manager acre and Linked folders in parallel then the flag `-acre` allows you to tell `]Latest` that it should focus on acre project(s)
-* `]latest` can act on a specific (un-linked) folder like `C:\MyProjects\ThisProject\APLSource`
+`]Latest` can target:
 
-If no argument is specified and there are no LINKed namespaces and the `-acre` was not specified and there are no acre project then it falls back to the current directory but will ask the user for confirmation.
+* A LINKed namespace — anything returned by `]Link.Status`
+* An [acre](https://github.com/the-carlisle-group/acre-desktop "acre on GitHub") project
+* The workspace — pass `#`, `⎕SE`, or a specific namespace like `#.Foo`
+* A plain folder on disk — pass a path like `C:\MyProjects\Foo\APLSource`
 
-By default the user command reports all objects or files changed lately (read: last day something was changed).
+If no argument is specified and there are no LINKed namespaces and the `-acre` was not specified and there are no acre projects then it falls back to the current directory but will ask the user for confirmation.
 
-Note that by providing a path as an argument you can extend the meaning of `]Latest` beyond APL source files, in particular together with the `-allFiles` flag.
+When both Linked folders and open acre projects are present, use `-acre` to direct `]Latest` at the acre project(s).
+
+By default only APL source files are considered (by file extension). Pass `-allFiles` to include everything, which makes
+`]Latest` useful beyond APL source — for example, to survey a mixed project folder.
+
+
+## Arguments
+
+`]Latest` accepts an optional namespace/path and an optional integer or date:
+
+| Argument | Meaning |
+|---|---|
+| *(none)* | Changes on the last modified day |
+| `5` | The 5 most recently changed objects |
+| `20230807` | All changes from 2023-08-07 to now |
+| `2023-08-07` | Same, hyphenated date form |
+| `20220101-20221231` | Changes within a date range (inclusive) |
+| `2022-01-01-2022-12-31` | Same, hyphenated date form |
+
+An integer smaller than 1E7 is a count; an integer larger than 1E7 is a date (YYYYMMDD). A negative integer means that many
+days back (deprecated — use `-days=` instead).
+
+
+## Flags
+
+| Flag | Description |
+|---|---|
+| `-acre` | Target open acre project(s) instead of Linked folders |
+| `-allFiles` | Include all files, not just APL source files |
+| `-api` | Include Tatin package API objects in results (excluded by default) |
+| `-days=n` | Report changes from the last *n* days |
+| `-recursive=0\|1` | Search sub-folders recursively (default: 1) |
+| `-se` | Include Linked namespaces in `⎕SE` (excluded by default) |
+| `-stats` | Show a change-statistics matrix instead of the object list |
+| `-version` | Print the version number; all other arguments are ignored |
+
 
 ## Examples
 
@@ -35,20 +70,20 @@ Note that by providing a path as an argument you can extend the meaning of `]Lat
  #.Latest.Latest.EndIf            2022-05-22 13:57:12 
  #.Latest.Latest.History          2022-05-22 13:57:12 
  #.Latest.Latest.Run              2022-05-22 13:57:12 
-      ]latest -v
-7.0.0+127 from 2023-12-28
+      ]latest -version
+8.0.0+227 from 2026-06-28
 ```
 
 ## Installation
 
-`Latest` can be installed as a Tatin package:
+Install `Latest` as a Tatin package:
 
 ```
 ]Tatin.InstallPackages [tatin]latest [MyUCMDs]
 ```
 
-This will make the user commands of `Latest` available, but it will not establish the API. However, executing any of its user commands will force `Latest` to load the API into `⎕SE`. For that, executing `]Latest.Version` will do.
+This makes the `]Latest` user command available. The API (`⎕SE.Latest`) is loaded on first use — running `]Latest -version`
+is the lightest way to trigger this.
 
 If you want the API to be available right from the start then please consult the article [Dyalog User Commands](https://aplwiki.com/wiki/Dyalog_User_Commands "Link to the APL wiki").
-
 
