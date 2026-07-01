@@ -49,8 +49,8 @@
                  :EndIf
              :EndIf
              :If 0<≢links
-             :AndIf (⊂name)∊links[;0]
                  ind←links[;0]⍳⊂name
+             :AndIf (⊂name)∊links[;0]
                  r[;0]←⎕SE.Link.GetItemName F.EnforceSlash¨r[;0]
              :ElseIf acre
              :AndIf 0<⎕SE.⎕NC'acre'
@@ -60,7 +60,8 @@
              :EndIf
              :If 0<≢r
              :AndIf ~api
-             :AndIf 0<≢api←GetAPI(name path links)
+             :AndIf 0<≢links
+             :AndIf 0<≢api←GetAPI(name path(↑links[ind;]))
                  r⌿⍨←~r[;0]∊api
              :EndIf
              :If abs

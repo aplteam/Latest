@@ -1,4 +1,8 @@
 (
+ '* 8.0.2 from 2026-07-01'
+ '  * Bug fix in `GetAPI`'
+ '* 8.0.1 from 2026-07-01'
+ '  * New features that tries to establish an API did work with Tatin packages, but not otherwise'
  '* 8.0.0 from 2026-06-28'
  '  * The -noAPI= options has been removed. Instead use the new -api flag.'
  '    This implies that an API is removed by default now, and that you have to specify -api in order to include it.'
