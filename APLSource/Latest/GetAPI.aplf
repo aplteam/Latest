@@ -1,4 +1,4 @@
- list←GetAPI(name path link);refLink;cfg;json;list_;tv;sub
+ list←GetAPI(name path link);refLink;cfg;json;list_;tv;sub;path_
 ⍝ Returns a list with all the names defined as an API according to the package config, or an empty vector.
  list←sub←''
  :If 0=⎕SE.⎕NC'Cider'
@@ -23,7 +23,9 @@
      :EndIf
      cfg←⎕JSON⍠('Dialect' 'JSON5')⊢json
      :If 0<≢cfg.api      ⍝ No API defined?
-         list_←FilesAndDirs.ListFiles2(AddSlash path),(AddSlash cfg.source),cfg.api
+         path_←(AddSlash refLink.TatinVars.HOME),(AddSlash cfg.source),cfg.api
+     :AndIf F.IsDir path_
+         list_←F.ListFiles2 path_
          list←⎕SE.Link.GetItemName list_
      :EndIf
  :EndIf
