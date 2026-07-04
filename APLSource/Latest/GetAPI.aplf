@@ -1,4 +1,4 @@
- list←GetAPI(name path link);refLink;cfg;json;list_;tv;sub;path_
+  list←GetAPI(name path link);refLink;cfg;json;list_;tv;sub;path_
 ⍝ Returns a list with all the names defined as an API according to the package config, or an empty vector.
  list←sub←''
  :If 0=⎕SE.⎕NC'Cider'
@@ -26,7 +26,7 @@
          path_←(AddSlash refLink.TatinVars.HOME),(AddSlash cfg.source),cfg.api
      :AndIf F.IsDir path_
          list_←F.ListFiles2 path_
-         list←⎕SE.Link.GetItemName list_
+         list←⎕SE.Link.GetItemName F.EnforceSlash¨list_
      :EndIf
  :EndIf
 ⍝Done

@@ -20,5 +20,5 @@
   source: "APLSource/Latest",
   tags: "list-apl-objects",
   userCommandScript: "APLSource/Latest_uc.dyalog",
-  version: "8.0.3+232",
+  version: "8.0.4-beta-2+234",
 }
